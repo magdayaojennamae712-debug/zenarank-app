@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ZenaRank — Sign In</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://js.stripe.com/v3/"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;700;800;900&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -697,6 +698,28 @@ const SUPABASE_URL = 'https://gzdekxyqfxzvyyqibksz.supabase.co';
 const SUPABASE_KEY = 'sb_publishable__xRkw74bDu0atMTDFeNyag_NAaQcDkX';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+/* ── STRIPE CONFIG ── */
+// PASTE YOUR STRIPE PUBLISHABLE KEY BELOW (starts with pk_live_ or pk_test_)
+const STRIPE_KEY = 'pk_test_51THJxgJeWuOMWiImeZzBQgPxUI1GbtwoiXtQs0iQ0YqjEsFg1S8Ta1W6kUSbDQ8kQW1b8XVSVeH08qvJvVuN7hFp00gadbtm11';
+let stripeInstance = null;
+function getStripe(){
+  if(!stripeInstance && STRIPE_KEY !== 'pk_test_51THJxgJeWuOMWiImeZzBQgPxUI1GbtwoiXtQs0iQ0YqjEsFg1S8Ta1W6kUSbDQ8kQW1b8XVSVeH08qvJvVuN7hFp00gadbtm11'){
+    stripeInstance = Stripe(STRIPE_KEY);
+  }
+  return stripeInstance;
+}
+
+// PASTE YOUR STRIPE PRICE IDs BELOW
+// (get these from Stripe Dashboard → Products → each plan → Price ID)
+const STRIPE_PRICES = {
+  starter_monthly: 'price_1TVuh6JeWuOMWilmeaCFUyjA',   // e.g. price_1ABC...
+  starter_annual:  'price_1TVuh6JeWuOMWilmeaCFUyjA',
+  pro_monthly:     'price_1TVuwJJeWuOMWilmGcZDMu3C',
+  pro_annual:      'price_1TVuwJJeWuOMWilmGcZDMu3C',
+  agency_monthly:  'price_1TVuxlJeWuOMWilmq6N2cE60',
+  agency_annual:   'price_1TVuxlJeWuOMWilmq6N2cE60',
+};
+
 /* ── CURSOR ── */
 const cur=document.getElementById('cur'),curR=document.getElementById('cur-r');
 let mx=0,my=0,rx=0,ry=0;
@@ -768,6 +791,88 @@ function setLoading(btnId,spinId,txtId,loading){
   document.getElementById(btnId).disabled=loading;
   document.getElementById(spinId).style.display=loading?'block':'none';
   document.getElementById(txtId).style.display=loading?'none':'block';
+}
+
+/* ── STRIPE CHECKOUT ── */
+async function startCheckout(planName, isAnnual=false){
+  // Check if Stripe is configured
+  if(STRIPE_KEY === 'pk_test_51THJxgJeWuOMWiImeZzBQgPxUI1GbtwoiXtQs0iQ0YqjEsFg1S8Ta1W6kUSbDQ8kQW1b8XVSVeH08qvJvVuN7hFp00gadbtm11'){
+    sT('💳','Stripe not configured yet — see setup guide!');
+    return;
+  }
+  
+  const periodKey = isAnnual ? 'annual' : 'monthly';
+  const priceId = STRIPE_PRICES[planName+'_'+periodKey];
+  
+  if(!priceId || priceId.startsWith('PASTE_')){
+    sT('⚠️','Price ID not configured for '+planName);
+    return;
+  }
+  
+  if(!currentUser){
+    openAuth('signup');
+    sT('👋','Create an account first, then upgrade!');
+    return;
+  }
+  
+  sT('💳','Opening secure checkout...');
+  
+  try {
+    // Create checkout session via Supabase Edge Function
+    const {data, error} = await sb.functions.invoke('create-checkout', {
+      body: {
+        price_id: priceId,
+        user_id: currentUser.id,
+        user_email: currentUser.email,
+        success_url: 'https://zenarank.com?payment=success&plan='+planName,
+        cancel_url: 'https://zenarank.com?payment=cancelled',
+      }
+    });
+    
+    if(error) throw error;
+    
+    if(data?.url){
+      // Redirect to Stripe checkout
+      window.location.href = data.url;
+    } else {
+      throw new Error('No checkout URL returned');
+    }
+  } catch(err){
+    console.error('Checkout error:', err);
+    sT('⚠️','Checkout error: '+err.message);
+  }
+}
+
+/* ── HANDLE PAYMENT RETURN ── */
+async function handlePaymentReturn(){
+  const params = new URLSearchParams(window.location.search);
+  const payment = params.get('payment');
+  const plan = params.get('plan');
+  
+  if(payment === 'success' && plan){
+    sT('🎉','Payment successful! Activating your '+plan+' plan...');
+    // Refresh user profile from Supabase (webhook updates it)
+    setTimeout(async()=>{
+      if(currentUser?.id){
+        try {
+          const {data:profile} = await sb.from('profiles').select('*').eq('id',currentUser.id).single();
+          if(profile){
+            currentUser.plan = profile.plan;
+            currentUser.trial_ends_at = profile.trial_ends_at;
+            localStorage.setItem('zr_user', JSON.stringify(currentUser));
+            // Refresh dashboard
+            showDashboard(currentUser);
+            sT('✅','Welcome to '+plan.charAt(0).toUpperCase()+plan.slice(1)+' plan!');
+          }
+        } catch(e){}
+      }
+      // Clean URL
+      window.history.replaceState({}, '', 'https://zenarank.com');
+    }, 2000);
+  } else if(payment === 'cancelled'){
+    sT('↩️','Payment cancelled — no charge made.');
+    window.history.replaceState({}, '', 'https://zenarank.com');
+  }
 }
 
 /* ── SIGN IN ── */
@@ -923,9 +1028,9 @@ function showDashboard(user){
   if(plan === 'founder'){
     upgradeBox.innerHTML = `<div class="sb-up-title">♾️ Founder Account</div><div class="sb-up-desc" style="color:rgba(255,255,255,.4)">Free forever. Thank you for building ZenaRank!</div>`;
   } else if(plan === 'starter'){
-    upgradeBox.innerHTML = `<div class="sb-up-title">✅ Starter Plan</div><div class="sb-up-desc">Upgrade to Pro for 5 projects & more.</div><button class="sb-up-btn" onclick="sT('💳','Upgrade coming soon!')">Upgrade to Pro — $79/mo</button>`;
+    upgradeBox.innerHTML = `<div class="sb-up-title">✅ Starter Plan</div><div class="sb-up-desc">Upgrade to Pro for 5 projects & more.</div><button class="sb-up-btn" onclick="startCheckout('pro', false)">Upgrade to Pro — $79/mo</button>`;
   } else if(plan === 'pro'){
-    upgradeBox.innerHTML = `<div class="sb-up-title">✅ Pro Plan</div><div class="sb-up-desc">You're on Pro. Upgrade to Agency for unlimited.</div><button class="sb-up-btn" onclick="sT('💳','Upgrade coming soon!')">Upgrade to Agency</button>`;
+    upgradeBox.innerHTML = `<div class="sb-up-title">✅ Pro Plan</div><div class="sb-up-desc">You're on Pro. Upgrade to Agency for unlimited.</div><button class="sb-up-btn" onclick="startCheckout('pro', false)">Upgrade to Agency</button>`;
   } else if(plan === 'agency'){
     upgradeBox.innerHTML = `<div class="sb-up-title">✅ Agency Plan</div><div class="sb-up-desc" style="color:rgba(255,255,255,.4)">Unlimited everything. You're all set!</div>`;
   } else if(trialExpired && plan === 'trial'){
@@ -934,7 +1039,7 @@ function showDashboard(user){
     return;
   } else {
     // TRIAL ACTIVE
-    upgradeBox.innerHTML = `<div class="sb-up-title">🕐 Trial — ${trialDaysLeft} days left</div><div class="sb-up-desc">Upgrade to keep access after your trial ends.</div><button class="sb-up-btn" onclick="sT('💳','Checkout coming soon!')">Upgrade — from $29/mo</button>`;
+    upgradeBox.innerHTML = `<div class="sb-up-title">🕐 Trial — ${trialDaysLeft} days left</div><div class="sb-up-desc">Upgrade to keep access after your trial ends.</div><button class="sb-up-btn" onclick="startCheckout(currentUser?.plan==='starter'?'pro':'pro', false)">Upgrade — from $29/mo</button>`;
     // Show trial warning only for non-founder trial users < 3 days left
     if(trialDaysLeft <= 3 && plan === 'trial'){
       showTrialWarning(trialDaysLeft);
@@ -994,7 +1099,7 @@ function showTrialWarning(days){
     banner.style.borderColor='rgba(239,68,68,.2)';
     banner.querySelector('.sb-title2').textContent = days <= 0 ? '⚠️ Trial expired!' : `⚠️ Trial ends in ${days} day${days===1?'':'s'}!`;
     banner.querySelector('.sb-desc2').textContent = 'Upgrade now to keep access to all your data and tools.';
-    banner.querySelector('.sb-progress').innerHTML = `<button onclick="sT('💳','Checkout coming soon!')" style="padding:5px 14px;background:var(--re);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:none;font-family:inherit">Upgrade now — from $29/mo →</button>`;
+    banner.querySelector('.sb-progress').innerHTML = `<button onclick="startCheckout(currentUser?.plan==='starter'?'pro':'pro', false)" style="padding:5px 14px;background:var(--re);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:none;font-family:inherit">Upgrade now — from $29/mo →</button>`;
   }
 }
 
@@ -1012,18 +1117,18 @@ function showPaywall(){
         <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px;text-align:center">
           <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:28px;font-weight:900;color:#fff">$29<span style="font-size:14px;color:rgba(255,255,255,.4)">/mo</span></div>
           <div style="font-size:11px;color:rgba(255,255,255,.3);margin:6px 0 14px;text-transform:uppercase;letter-spacing:.08em">Starter</div>
-          <button onclick="sT('💳','Starter checkout coming soon!')" style="width:100%;padding:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);border-radius:8px;font-size:13px;font-weight:700;cursor:none;font-family:inherit;transition:all .2s">Choose Starter</button>
+          <button onclick="startCheckout('starter', false)" style="width:100%;padding:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);border-radius:8px;font-size:13px;font-weight:700;cursor:none;font-family:inherit;transition:all .2s">Choose Starter</button>
         </div>
         <div style="background:rgba(20,184,166,.08);border:2px solid rgba(20,184,166,.3);border-radius:14px;padding:20px;text-align:center;position:relative">
           <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--t);color:#fff;font-size:9px;font-weight:700;padding:3px 10px;border-radius:100px;white-space:nowrap">MOST POPULAR</div>
           <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:28px;font-weight:900;color:#fff">$79<span style="font-size:14px;color:rgba(255,255,255,.4)">/mo</span></div>
           <div style="font-size:11px;color:rgba(255,255,255,.3);margin:6px 0 14px;text-transform:uppercase;letter-spacing:.08em">Pro</div>
-          <button onclick="sT('💳','Pro checkout coming soon!')" style="width:100%;padding:10px;background:var(--t);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:none;font-family:inherit">Choose Pro</button>
+          <button onclick="startCheckout('pro', false)" style="width:100%;padding:10px;background:var(--t);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:none;font-family:inherit">Choose Pro</button>
         </div>
         <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px;text-align:center">
           <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:28px;font-weight:900;color:#fff">$149<span style="font-size:14px;color:rgba(255,255,255,.4)">/mo</span></div>
           <div style="font-size:11px;color:rgba(255,255,255,.3);margin:6px 0 14px;text-transform:uppercase;letter-spacing:.08em">Agency</div>
-          <button onclick="sT('💳','Agency checkout coming soon!')" style="width:100%;padding:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);border-radius:8px;font-size:13px;font-weight:700;cursor:none;font-family:inherit;transition:all .2s">Choose Agency</button>
+          <button onclick="startCheckout('agency', false)" style="width:100%;padding:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);border-radius:8px;font-size:13px;font-weight:700;cursor:none;font-family:inherit;transition:all .2s">Choose Agency</button>
         </div>
       </div>
       <p style="font-size:13px;color:rgba(255,255,255,.2)">All plans include 30-day money-back guarantee · Cancel anytime</p>
@@ -1084,6 +1189,9 @@ function fixIssue(btn){
   const cur=parseInt(document.getElementById('kpi-issues').textContent)||31;
   if(cur>0){document.getElementById('kpi-issues').textContent=cur-1;sT('✅','Issue marked as fixed! Score improving...')}
 }
+
+/* ── CHECK PAYMENT RETURN ── */
+handlePaymentReturn();
 
 /* ── GREETING ── */
 const hr2=new Date().getHours();
