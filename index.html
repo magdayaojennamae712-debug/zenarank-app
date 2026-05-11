@@ -531,7 +531,7 @@ table.kwt tr:hover td{background:rgba(255,255,255,.025);cursor:none}
         <div class="sb-project" onclick="switchView('project_main')" id="nav-project_main" style="cursor:none">
           <div class="sp-dot" style="background:#2dd4bf"></div>
           <span class="sp-name" id="project-domain-name">zenarank.com</span>
-          <span class="sp-score">74</span>
+          <span class="sp-score" id="project-score">—</span>
         </div>
         <div class="sb-project" onclick="sT('➕','Add project — coming soon! Pro plan allows 5 projects.')" style="opacity:.5;cursor:none">
           <div class="sp-dot" style="background:rgba(255,255,255,.2)"></div>
@@ -568,7 +568,7 @@ table.kwt tr:hover td{background:rgba(255,255,255,.025);cursor:none}
       <div class="dash-header">
         <div>
           <div class="dh-title" id="dash-greeting">Good morning, Magda 👋</div>
-          <div class="dh-sub">mybusiness.com · Last crawled 2 hours ago · <span style="color:#2dd4bf">All systems operational</span></div>
+          <div class="dh-sub" id="dash-domain-sub">zenarank.com · <span style="color:#2dd4bf">All systems operational</span></div>
         </div>
         <div class="dh-actions">
           <button class="dash-btn db-ghost" onclick="sT('🕷️','Running new crawl...')">🕷️ Run audit</button>
@@ -912,7 +912,7 @@ function showDashboard(user){
   animCount('kpi-issues',0,31,'');
   
   // ── PLAN HANDLING ──
-  const plan = user.plan || 'trial';
+  const plan = (user.plan && user.plan !== '') ? user.plan : 'trial';
   const trialEnd = user.trial_ends_at ? new Date(user.trial_ends_at) : null;
   const now = new Date();
   const trialDaysLeft = trialEnd ? Math.ceil((trialEnd - now) / 86400000) : 0;
@@ -972,6 +972,14 @@ function showDashboard(user){
   const ddEmail = document.getElementById('dd-email');
   if(ddEmail && !ddEmail.nextElementSibling) ddEmail.after(planEl);
 
+  // Update domain display
+  const domSub = document.getElementById('dash-domain-sub');
+  if(domSub) domSub.innerHTML = 'zenarank.com · <span style="color:#2dd4bf">All systems operational</span>';
+  const projName = document.getElementById('project-domain-name');
+  if(projName) projName.textContent = 'zenarank.com';
+  const projScore = document.getElementById('project-score');
+  if(projScore) projScore.textContent = '74';
+  
   sT('🎉',`Welcome back, ${firstName}!`);
   window.scrollTo(0,0);
   document.querySelectorAll('.rev').forEach(el=>{el.classList.remove('vis');ro.observe(el)});
@@ -1296,7 +1304,17 @@ sb.auth.onAuthStateChange(async (event, session) => {
     const user = session.user;
     const name = user.user_metadata?.full_name || user.email.split('@')[0];
     const capitalName = name.charAt(0).toUpperCase() + name.slice(1);
-    currentUser = {name: capitalName, email: user.email, id: user.id};
+    let userData = {name: capitalName, email: user.email, id: user.id, plan:'trial'};
+    // Always fetch fresh profile from Supabase
+    try {
+      const {data:profile} = await sb.from('profiles').select('*').eq('id',user.id).single();
+      if(profile){
+        userData.plan = profile.plan || 'trial';
+        userData.trial_ends_at = profile.trial_ends_at;
+        userData.full_name = profile.full_name || capitalName;
+      }
+    } catch(e){ console.log('Profile fetch error:', e); }
+    currentUser = userData;
     localStorage.setItem('zr_user', JSON.stringify(currentUser));
     closeAuth();
     showDashboard(currentUser);
@@ -1311,17 +1329,25 @@ sb.auth.onAuthStateChange(async (event, session) => {
 
 /* ── CHECK EXISTING SESSION ON LOAD ── */
 (async () => {
+  // Always clear localStorage on load to prevent stale plan data
+  localStorage.removeItem('zr_user');
+  
   const { data: { session } } = await sb.auth.getSession();
   if(session) {
     const user = session.user;
     const name = user.user_metadata?.full_name || user.email.split('@')[0];
     const capitalName = name.charAt(0).toUpperCase() + name.slice(1);
-    let userData = {name: capitalName, email: user.email, id: user.id};
-    // Fetch plan
+    let userData = {name: capitalName, email: user.email, id: user.id, plan:'trial'};
+    // Always fetch fresh profile
     try {
-      const {data:profile} = await sb.from('profiles').select('*').eq('id',user.id).single();
-      if(profile){ userData.plan=profile.plan; userData.trial_ends_at=profile.trial_ends_at; }
-    } catch(e){}
+      const {data:profile, error} = await sb.from('profiles').select('*').eq('id',user.id).single();
+      if(profile && !error){
+        userData.plan = profile.plan || 'trial';
+        userData.trial_ends_at = profile.trial_ends_at;
+        userData.full_name = profile.full_name || capitalName;
+        userData.name = profile.full_name || capitalName;
+      }
+    } catch(e){ console.log('Session profile error:', e); }
     currentUser = userData;
     localStorage.setItem('zr_user', JSON.stringify(currentUser));
     showDashboard(currentUser);
