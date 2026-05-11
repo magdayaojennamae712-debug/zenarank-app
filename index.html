@@ -946,7 +946,12 @@ async function handleSignUp(){
       // Add a button to go to sign in
       setTimeout(()=>{
         const msg = document.getElementById('success-msg');
-        msg.innerHTML = 'We sent a confirmation link to <strong>'+email+'</strong>.<br><br>1. Open your email inbox<br>2. Click the confirmation link<br>3. Come back and sign in!<br><br><button onclick="switchTab('signin')" style="padding:10px 20px;background:var(--t);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px">Go to Sign In →</button>';
+        const btn = document.createElement('button');
+        btn.textContent = 'Go to Sign In →';
+        btn.style.cssText = 'padding:10px 20px;background:var(--t);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;display:block';
+        btn.onclick = function(){ switchTab('signin'); };
+        msg.innerHTML = 'We sent a confirmation link to <strong>'+email+'</strong>.<br><br>1. Open your inbox<br>2. Click the confirmation link<br>3. Come back and sign in!<br><br>';
+        msg.appendChild(btn);
       }, 500);
       return;
     }
