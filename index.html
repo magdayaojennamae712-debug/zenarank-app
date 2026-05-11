@@ -885,11 +885,15 @@ async function handleSignIn(){
   if(!valid)return;
   setLoading('si-btn','si-spin','si-txt',true);
   try {
-    const {data,error} = await sb.auth.signInWithPassword({email,password:pass});
+    // 8 second timeout
+    const timeout = new Promise((_,reject) => setTimeout(()=>reject(new Error('timeout')),8000));
+    const authCall = sb.auth.signInWithPassword({email,password:pass});
+    const {data,error} = await Promise.race([authCall, timeout]);
     setLoading('si-btn','si-spin','si-txt',false);
     if(error){
-      if(error.message.includes('Invalid'))showErr('si-pass-err','Incorrect email or password');
-      else if(error.message.includes('Email'))showErr('si-email-err','Please verify your email first');
+      if(error.message.includes('Invalid')||error.message.includes('invalid'))showErr('si-pass-err','Incorrect email or password. Try creating an account first!');
+      else if(error.message.includes('Email')||error.message.includes('email'))showErr('si-email-err','Please verify your email address first — check your inbox!');
+      else if(error.message.includes('not found')||error.message.includes('No user'))showErr('si-email-err','No account found. Click "Create one free" below!');
       else showErr('si-pass-err',error.message);
       return;
     }
@@ -898,7 +902,11 @@ async function handleSignIn(){
     loginSuccess({name,email:user.email,id:user.id});
   } catch(e){
     setLoading('si-btn','si-spin','si-txt',false);
-    showErr('si-pass-err','Connection error. Please try again.');
+    if(e.message==='timeout'){
+      showErr('si-pass-err','Connection timed out. Check your internet and try again.');
+    } else {
+      showErr('si-pass-err','Error: '+e.message);
+    }
   }
 }
 
@@ -1439,6 +1447,12 @@ sb.auth.onAuthStateChange(async (event, session) => {
 (async () => {
   // Always clear localStorage on load to prevent stale plan data
   localStorage.removeItem('zr_user');
+  
+  // Handle OAuth callback token in URL hash
+  if(window.location.hash.includes('access_token')){
+    // Let Supabase process the OAuth callback
+    await new Promise(r => setTimeout(r, 1000));
+  }
   
   const { data: { session } } = await sb.auth.getSession();
   if(session) {
