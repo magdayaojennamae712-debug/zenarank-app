@@ -3,31 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZenaRank — Calm, Powerful SEO for Small Businesses</title>
-<meta name="description" content="ZenaRank gives small businesses calm, clear SEO. Keyword research, site audits, rank tracking & AI briefs. Start free today.">
+<title>ZenaRank — Sign In</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;700;800;900&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --t:#0d9488;--t2:#14b8a6;--t3:#2dd4bf;--t4:#99f6e4;--tbg:#f0fdfa;--tb:#ccfbf1;
+  --t:#0d9488;--t2:#14b8a6;--t3:#2dd4bf;--tbg:#f0fdfa;--tb:#ccfbf1;
   --ink:#0a1628;--ink2:#1e293b;--ink3:#334155;--mu:#64748b;--sub:#94a3b8;
   --bd:#e2e8f0;--sf:#f8fafc;--wh:#fff;
-  --dk:#0f1923;--dk2:#151f2e;--dk3:#1a2535;--dk4:#1e2d40;
-  --dkb:rgba(255,255,255,.06);--dkb2:rgba(255,255,255,.1);
+  --dk:#0f1923;--dk2:#151f2e;--dk3:#1a2535;
   --sh:0 1px 3px rgba(0,0,0,.06);--shm:0 4px 20px rgba(0,0,0,.08);
   --shl:0 24px 64px rgba(0,0,0,.14);--sht:0 8px 32px rgba(13,148,136,.25);
-  --shdk:0 32px 80px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.05);
+  --re:#ef4444;--gr:#22c55e;--am:#f59e0b;--or:#f97316;--pu:#8b5cf6;--bl:#3b82f6;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{font-family:'Instrument Sans',sans-serif;background:var(--wh);color:var(--ink);overflow-x:hidden;cursor:none}
+#cur{position:fixed;width:10px;height:10px;background:var(--t2);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s}
+#cur-r{position:fixed;width:36px;height:36px;border:1.5px solid var(--t3);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.4;transition:all .12s}
 
-/* CURSOR */
-#cur{position:fixed;width:10px;height:10px;background:var(--t2);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s}
-#cur-r{position:fixed;width:36px;height:36px;border:1.5px solid var(--t3);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.45;transition:all .12s}
+/* ── VIEWS ── */
+#view-landing{display:block}
+#view-dashboard{display:none}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:300;height:64px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.88);backdrop-filter:blur(24px);border-bottom:1px solid rgba(226,232,240,.5);transition:all .3s}
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;height:64px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(226,232,240,.5);transition:all .3s}
 nav.solid{background:rgba(255,255,255,.98);box-shadow:var(--sh)}
 .logo{display:flex;align-items:center;gap:9px;text-decoration:none}
 .logo-ic{width:34px;height:34px;background:var(--t);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:18px;color:#fff;box-shadow:0 4px 12px rgba(13,148,136,.3);transition:transform .3s}
@@ -46,7 +46,7 @@ nav.solid{background:rgba(255,255,255,.98);box-shadow:var(--sh)}
 .btn-lg{padding:15px 30px;font-size:16px;border-radius:12px}
 .btn-xl{padding:18px 36px;font-size:17px;border-radius:13px}
 
-/* HERO */
+/* ── HERO ── */
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 5% 80px;position:relative;overflow:hidden;background:linear-gradient(170deg,#f0fdfa 0%,#fff 55%,#f0f9ff 100%)}
 .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(13,148,136,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(13,148,136,.04) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(ellipse 80% 80% at 50% 40%,black 20%,transparent 100%);pointer-events:none}
 .hero-inner{max-width:840px;text-align:center;position:relative;z-index:2}
@@ -55,977 +55,832 @@ nav.solid{background:rgba(255,255,255,.98);box-shadow:var(--sh)}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(20,184,166,.5)}60%{box-shadow:0 0 0 7px rgba(20,184,166,0)}}
 h1.hh{font-family:'Cabinet Grotesk',sans-serif;font-size:clamp(44px,7.5vw,90px);font-weight:900;line-height:.92;letter-spacing:-.05em;color:var(--ink);margin-bottom:24px;opacity:0;animation:up .7s .2s both}
 h1.hh .tl{color:var(--t);position:relative;display:inline-block}
-h1.hh .tl::after{content:'';position:absolute;bottom:-5px;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--t3),var(--t));border-radius:2px;transform:scaleX(0);transform-origin:left;animation:growX 1s 1.2s both}
-@keyframes growX{to{transform:scaleX(1)}}
+h1.hh .tl::after{content:'';position:absolute;bottom:-5px;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--t3),var(--t));border-radius:2px;transform:scaleX(0);transform-origin:left;animation:gx 1s 1.2s both}
+@keyframes gx{to{transform:scaleX(1)}}
 .hero-p{font-size:18px;line-height:1.67;color:var(--mu);max-width:580px;margin:0 auto 36px;opacity:0;animation:up .7s .35s both}
 .hero-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;opacity:0;animation:up .7s .5s both}
 .hero-meta{margin-top:36px;display:flex;align-items:center;justify-content:center;gap:28px;opacity:0;animation:up .6s .65s both;flex-wrap:wrap}
 .hm{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mu)}
 .hm-n{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:15px;color:var(--ink)}
 .hm-div{width:1px;height:20px;background:var(--bd)}
+@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
 
-/* HERO MOCKUP — big dashboard preview */
-.hero-mockup{max-width:1000px;width:100%;margin:64px auto 0;position:relative;z-index:1;opacity:0;animation:up 1s .7s both}
-.mock-shadow{position:absolute;bottom:-40px;left:10%;right:10%;height:60px;background:radial-gradient(ellipse,rgba(13,148,136,.15),transparent 70%);filter:blur(20px);pointer-events:none}
-.mock-frame{background:var(--dk);border-radius:20px;overflow:hidden;box-shadow:var(--shdk);border:1px solid rgba(255,255,255,.07)}
-.mock-bar{background:var(--dk2);padding:13px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.05)}
-.m-dots{display:flex;gap:6px}
-.m-dot{width:11px;height:11px;border-radius:50%}
-.m-url{flex:1;background:rgba(255,255,255,.05);border-radius:6px;padding:5px 12px;font-size:11px;color:rgba(255,255,255,.3);font-family:'Instrument Sans',sans-serif;display:flex;align-items:center;gap:6px}
-.mock-body{display:grid;grid-template-columns:200px 1fr;min-height:400px}
-.mock-sb{background:rgba(255,255,255,.02);border-right:1px solid rgba(255,255,255,.04);padding:18px 14px}
-.sb-logo{display:flex;align-items:center;gap:8px;margin-bottom:22px;padding:0 4px}
-.sb-logo-ic{width:26px;height:26px;background:var(--t);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;font-family:'Cabinet Grotesk',sans-serif}
-.sb-logo-nm{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:13px;color:rgba(255,255,255,.8)}
-.sb-nav{list-style:none;display:flex;flex-direction:column;gap:2px}
-.sb-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;font-size:12px;font-family:'Instrument Sans',sans-serif;font-weight:500;color:rgba(255,255,255,.3);transition:all .2s;cursor:none}
+/* ── AUTH MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(10,22,40,.6);backdrop-filter:blur(8px);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:#fff;border-radius:24px;width:100%;max-width:440px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.2),0 0 0 1px rgba(0,0,0,.05);transform:translateY(20px) scale(.97);transition:transform .35s cubic-bezier(.2,.8,.2,1);position:relative}
+.modal-overlay.open .modal{transform:translateY(0) scale(1)}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:var(--sf);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:none;font-size:14px;color:var(--mu);transition:all .2s;z-index:10}
+.modal-close:hover{background:var(--bd);color:var(--ink)}
+.modal-top{padding:32px 32px 0;text-align:center}
+.modal-logo{width:44px;height:44px;background:var(--t);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:22px;color:#fff;margin:0 auto 16px;box-shadow:var(--sht)}
+.modal-title{font-family:'Cabinet Grotesk',sans-serif;font-size:22px;font-weight:900;color:var(--ink);letter-spacing:-.02em;margin-bottom:6px}
+.modal-sub{font-size:14px;color:var(--mu)}
+.modal-body{padding:24px 32px 32px}
+.tab-row{display:grid;grid-template-columns:1fr 1fr;background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:3px;margin-bottom:22px;gap:3px}
+.tab-btn{padding:9px;border-radius:8px;font-size:14px;font-weight:600;cursor:none;border:none;background:transparent;color:var(--mu);transition:all .2s;font-family:'Instrument Sans',sans-serif}
+.tab-btn.on{background:#fff;color:var(--ink);box-shadow:var(--sh)}
+
+/* GOOGLE BTN */
+.google-btn{width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--bd);background:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px;font-weight:600;color:var(--ink2);cursor:none;transition:all .22s;font-family:'Instrument Sans',sans-serif;margin-bottom:16px}
+.google-btn:hover{border-color:var(--t3);background:var(--tbg);transform:translateY(-1px);box-shadow:0 4px 16px rgba(13,148,136,.1)}
+.google-ic{width:18px;height:18px}
+.divider{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.div-line{flex:1;height:1px;background:var(--bd)}
+.div-text{font-size:12px;color:var(--sub);font-weight:600}
+
+/* FORM */
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:12px;font-weight:700;color:var(--ink3);margin-bottom:6px;letter-spacing:.04em}
+.form-input{width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--bd);font-size:14px;font-family:'Instrument Sans',sans-serif;color:var(--ink);background:#fff;outline:none;transition:all .2s}
+.form-input:focus{border-color:var(--t3);box-shadow:0 0 0 3px rgba(20,184,166,.1)}
+.form-input.error{border-color:var(--re);box-shadow:0 0 0 3px rgba(239,68,68,.08)}
+.form-input.success{border-color:var(--gr)}
+.form-hint{font-size:11px;color:var(--sub);margin-top:5px}
+.form-error{font-size:11px;color:var(--re);margin-top:5px;display:none}
+.form-error.show{display:block}
+.forgot-link{font-size:12px;color:var(--t);font-weight:600;text-decoration:none;display:block;text-align:right;margin-top:-8px;margin-bottom:14px;cursor:none;transition:color .2s}
+.forgot-link:hover{color:#0f766e}
+.submit-btn{width:100%;padding:13px;border-radius:10px;background:var(--t);color:#fff;font-size:15px;font-weight:700;border:none;cursor:none;font-family:'Instrument Sans',sans-serif;transition:all .22s;position:relative;overflow:hidden;box-shadow:var(--sht)}
+.submit-btn:hover{background:#0f766e;transform:translateY(-1px);box-shadow:0 12px 36px rgba(13,148,136,.3)}
+.submit-btn:disabled{background:var(--sub);transform:none;box-shadow:none;cursor:not-allowed}
+.btn-spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.modal-footer{font-size:13px;color:var(--mu);text-align:center;margin-top:16px}
+.modal-footer a{color:var(--t);font-weight:600;text-decoration:none;cursor:none}
+.modal-footer a:hover{color:#0f766e}
+
+/* PASSWORD STRENGTH */
+.pw-strength{margin-top:6px;display:none}
+.pw-strength.show{display:block}
+.pw-bars{display:flex;gap:4px;margin-bottom:4px}
+.pw-bar{flex:1;height:3px;border-radius:2px;background:var(--bd);transition:background .3s}
+.pw-label{font-size:11px;font-weight:600}
+
+/* SUCCESS STATE */
+.auth-success{display:none;text-align:center;padding:20px 0}
+.auth-success.show{display:block}
+.success-ic{width:60px;height:60px;background:var(--tbg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;border:2px solid var(--tb)}
+
+/* ── DASHBOARD ── */
+#view-dashboard{background:var(--dk);min-height:100vh;font-family:'Instrument Sans',sans-serif}
+.dash-nav{height:56px;background:var(--dk2);border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;padding:0 24px;gap:16px;position:sticky;top:0;z-index:100}
+.dash-logo{display:flex;align-items:center;gap:8px;text-decoration:none;margin-right:24px}
+.dash-logo-ic{width:28px;height:28px;background:var(--t);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:14px;color:#fff}
+.dash-logo-nm{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:15px;color:#fff;letter-spacing:-.01em}
+.dash-logo-nm em{color:var(--t3);font-style:normal}
+.dash-nav-links{display:flex;gap:2px;flex:1}
+.dn-link{padding:6px 12px;border-radius:7px;font-size:13px;font-weight:500;color:rgba(255,255,255,.35);cursor:none;transition:all .2s;display:flex;align-items:center;gap:6px}
+.dn-link:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.7)}
+.dn-link.on{background:rgba(20,184,166,.1);color:#2dd4bf}
+.dash-nav-right{display:flex;align-items:center;gap:10px;margin-left:auto}
+.dash-notif{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:none;transition:background .2s;position:relative}
+.dash-notif:hover{background:rgba(255,255,255,.1)}
+.notif-badge{position:absolute;top:-3px;right:-3px;width:16px;height:16px;background:var(--re);border-radius:50%;font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid var(--dk2)}
+.dash-avatar{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--t),#0f766e);display:flex;align-items:center;justify-content:center;font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:14px;color:#fff;cursor:none;border:2px solid rgba(255,255,255,.1)}
+.dash-avatar-wrap{position:relative}
+.dash-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:var(--dk3);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:8px;min-width:200px;box-shadow:0 16px 48px rgba(0,0,0,.4);display:none;z-index:200}
+.dash-avatar-wrap:hover .dash-dropdown,.dash-dropdown:hover{display:block}
+.dd-user{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:6px}
+.dd-name{font-size:13px;font-weight:700;color:#fff;margin-bottom:2px}
+.dd-email{font-size:11px;color:rgba(255,255,255,.3)}
+.dd-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;font-size:13px;color:rgba(255,255,255,.5);cursor:none;transition:all .2s}
+.dd-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.8)}
+.dd-item.danger:hover{background:rgba(239,68,68,.1);color:#f87171}
+
+/* DASH BODY */
+.dash-body{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 56px)}
+.dash-sb{background:rgba(255,255,255,.015);border-right:1px solid rgba(255,255,255,.04);padding:20px 14px;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
+.sb-section{margin-bottom:24px}
+.sb-sec-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:.12em;padding:0 8px;margin-bottom:8px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13px;font-weight:500;color:rgba(255,255,255,.35);cursor:none;transition:all .2s;margin-bottom:2px;position:relative}
 .sb-item:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.7)}
 .sb-item.on{background:rgba(20,184,166,.12);color:#2dd4bf}
-.sb-ic{font-size:14px;opacity:.7}
-.sb-badge{margin-left:auto;background:rgba(20,184,166,.2);color:#2dd4bf;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px}
-.mock-main{padding:20px;display:flex;flex-direction:column;gap:14px;overflow:hidden}
-.mock-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
-.mock-title{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:16px;color:rgba(255,255,255,.85)}
-.mock-sub{font-size:11px;color:rgba(255,255,255,.25);margin-top:2px}
-.mock-btn{padding:6px 14px;background:var(--t);color:#fff;border-radius:7px;font-size:11px;font-weight:700;font-family:'Instrument Sans',sans-serif}
-.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.kpi{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:11px;padding:13px 14px;transition:all .25s;cursor:none}
-.kpi:hover{background:rgba(255,255,255,.07);border-color:rgba(20,184,166,.2);transform:translateY(-2px)}
-.kpi-l{font-size:9px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;font-family:'Instrument Sans',sans-serif}
-.kpi-v{font-family:'Cabinet Grotesk',sans-serif;font-size:24px;font-weight:900;line-height:1}
-.kpi-c{font-size:10px;margin-top:4px;font-family:'Instrument Sans',sans-serif}
-.up{color:#2dd4bf}.dn{color:#f87171}
-.chart-wrap{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:11px;padding:14px;flex:1}
-.chart-hd{font-size:11px;font-weight:600;color:rgba(255,255,255,.4);margin-bottom:10px;font-family:'Instrument Sans',sans-serif;display:flex;align-items:center;justify-content:space-between}
-.chart-tag{background:rgba(20,184,166,.15);color:#2dd4bf;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px}
-.kw-table{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:11px;overflow:hidden}
-.kwt-h{display:grid;grid-template-columns:1fr 64px 60px 64px;padding:8px 14px;font-size:9.5px;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:.08em;background:rgba(255,255,255,.02);font-family:'Instrument Sans',sans-serif;border-bottom:1px solid rgba(255,255,255,.04)}
-.kwt-r{display:grid;grid-template-columns:1fr 64px 60px 64px;padding:9px 14px;font-size:11.5px;border-bottom:1px solid rgba(255,255,255,.03);transition:background .15s;cursor:none;font-family:'Instrument Sans',sans-serif}
-.kwt-r:last-child{border-bottom:none}
-.kwt-r:hover{background:rgba(255,255,255,.03)}
-.kwt-kw{color:rgba(255,255,255,.65);font-weight:500}
-.kwt-v{color:rgba(255,255,255,.3)}
-.kwt-kd{display:inline-flex;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700}
-.ke{background:rgba(45,212,191,.15);color:#2dd4bf}
-.km{background:rgba(251,191,36,.15);color:#fbbf24}
-.kh{background:rgba(248,113,113,.15);color:#f87171}
-.pos{color:rgba(255,255,255,.4);display:flex;align-items:center;gap:3px;font-size:11px}
+.sb-ic{font-size:15px;opacity:.8;flex-shrink:0}
+.sb-badge{margin-left:auto;background:rgba(20,184,166,.18);color:#2dd4bf;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px}
+.sb-badge.red{background:rgba(239,68,68,.18);color:#f87171}
+.sb-project{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;cursor:none;transition:background .2s;margin-bottom:3px}
+.sb-project:hover{background:rgba(255,255,255,.04)}
+.sp-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sp-name{font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);flex:1}
+.sp-score{font-size:11px;color:rgba(255,255,255,.25);font-family:'Cabinet Grotesk',sans-serif;font-weight:700}
+.sb-upgrade{background:linear-gradient(135deg,rgba(20,184,166,.1),rgba(59,130,246,.06));border:1px solid rgba(20,184,166,.15);border-radius:10px;padding:14px;margin-top:16px}
+.sb-up-title{font-size:12px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:4px}
+.sb-up-desc{font-size:11px;color:rgba(255,255,255,.25);line-height:1.5;margin-bottom:10px}
+.sb-up-btn{width:100%;padding:8px;background:var(--t);color:#fff;border-radius:7px;font-size:12px;font-weight:700;border:none;cursor:none;font-family:'Instrument Sans',sans-serif;transition:all .2s}
+.sb-up-btn:hover{background:#0f766e}
 
-/* MARQUEE */
-.mq{padding:22px 0;background:var(--dk2);overflow:hidden;border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04)}
-.mq-l{text-align:center;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.18);margin-bottom:14px}
-.mtrack{overflow:hidden}
-.minner{display:flex;animation:mq 26s linear infinite;white-space:nowrap}
-.minner:hover{animation-play-state:paused}
-.ml{padding:0 32px;font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:15px;color:rgba(255,255,255,.15);flex-shrink:0;transition:color .3s;letter-spacing:-.01em;cursor:none}
-.ml:hover{color:rgba(255,255,255,.45)}
-@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* DASH MAIN */
+.dash-main{padding:28px;overflow-y:auto}
+.dash-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.dh-title{font-family:'Cabinet Grotesk',sans-serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:4px;letter-spacing:-.02em}
+.dh-sub{font-size:13px;color:rgba(255,255,255,.3)}
+.dh-actions{display:flex;gap:8px}
+.dash-btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:none;border:none;font-family:'Instrument Sans',sans-serif;transition:all .2s;display:flex;align-items:center;gap:6px}
+.db-primary{background:var(--t);color:#fff;box-shadow:0 4px 16px rgba(13,148,136,.25)}
+.db-primary:hover{background:#0f766e;transform:translateY(-1px)}
+.db-ghost{background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.08)}
+.db-ghost:hover{background:rgba(255,255,255,.1);color:#fff}
 
-/* STATS */
-.stats{background:linear-gradient(135deg,var(--t),#0c7a70);padding:56px 5%;position:relative;overflow:hidden}
-.stats::after{content:'';position:absolute;top:-60%;right:-5%;width:500px;height:500px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none}
-.stats-g{max-width:960px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
-.stat-c{padding:24px 20px;background:rgba(255,255,255,.08);border-radius:16px;border:1px solid rgba(255,255,255,.12);transition:all .3s;cursor:none}
-.stat-c:hover{background:rgba(255,255,255,.14);transform:translateY(-4px)}
-.stat-n{font-family:'Cabinet Grotesk',sans-serif;font-size:44px;font-weight:900;color:#fff;letter-spacing:-.04em;line-height:1}
-.stat-n s2{color:rgba(255,255,255,.5)}
-.stat-l{font-size:12px;color:rgba(255,255,255,.55);margin-top:6px;font-weight:600}
+/* KPI ROW */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:18px 18px 14px;cursor:none;transition:all .25s;position:relative;overflow:hidden}
+.kpi-card:hover{background:rgba(255,255,255,.07);border-color:rgba(20,184,166,.2);transform:translateY(-3px)}
+.kpi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:2px 2px 0 0;opacity:0;transition:opacity .3s}
+.kpi-card:hover::after{opacity:1}
+.kpi-card.kc-teal::after{background:var(--t2)}
+.kpi-card.kc-blue::after{background:var(--bl)}
+.kpi-card.kc-orange::after{background:var(--or)}
+.kpi-card.kc-red::after{background:var(--re)}
+.kpi-label{font-size:10px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;font-weight:700}
+.kpi-value{font-family:'Cabinet Grotesk',sans-serif;font-size:28px;font-weight:900;line-height:1;margin-bottom:6px}
+.kpi-change{font-size:11px;display:flex;align-items:center;gap:4px;font-weight:600}
+.kc-up{color:#2dd4bf}.kc-dn{color:#f87171}.kc-neu{color:rgba(255,255,255,.25)}
+.kpi-sparkline{position:absolute;bottom:0;right:0;opacity:.15}
 
-/* SECTION LAYOUT */
-.sec{padding:100px 5%}
-.sec.alt{background:var(--sf)}
-.sec.dark{background:var(--dk);color:#fff}
-.si{max-width:1200px;margin:0 auto}
-.lbl{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--t);margin-bottom:14px}
-.lbl::before{content:'';width:18px;height:2px;background:var(--t2);border-radius:1px}
-.dark .lbl{color:var(--t3)}
-.dark .lbl::before{background:var(--t3)}
-h2.sh{font-family:'Cabinet Grotesk',sans-serif;font-size:clamp(30px,4vw,50px);font-weight:900;letter-spacing:-.03em;line-height:1.05;color:var(--ink);margin-bottom:14px}
-.dark h2.sh{color:#fff}
-h2.sh .hi{background:linear-gradient(130deg,var(--t),var(--t2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.dark h2.sh .hi{background:linear-gradient(130deg,var(--t3),#5eead4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.sp{font-size:17px;color:var(--mu);line-height:1.65;max-width:520px}
-.dark .sp{color:rgba(255,255,255,.4)}
+/* CHARTS ROW */
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:20px}
+.dash-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:18px}
+.dc-title{font-size:13px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.dc-badge{font-size:10px;padding:3px 8px;border-radius:5px;font-weight:700}
+.dcb-green{background:rgba(45,212,191,.15);color:#2dd4bf}
+.dcb-red{background:rgba(248,113,113,.12);color:#f87171}
 
-/* FEATURE ROWS — Notion/Linear style */
-.feat-row{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-bottom:120px}
-.feat-row:last-child{margin-bottom:0}
-.feat-row.flip{direction:rtl}
-.feat-row.flip>*{direction:ltr}
-.feat-text{}
-.feat-chip{display:inline-flex;align-items:center;gap:7px;padding:4px 12px;background:var(--tbg);border:1px solid var(--tb);border-radius:100px;font-size:11px;font-weight:700;color:var(--t);letter-spacing:.05em;text-transform:uppercase;margin-bottom:18px}
-.dark .feat-chip{background:rgba(20,184,166,.1);border-color:rgba(20,184,166,.2);color:var(--t3)}
-.feat-title{font-family:'Cabinet Grotesk',sans-serif;font-size:clamp(26px,3.2vw,38px);font-weight:900;letter-spacing:-.03em;color:var(--ink);margin-bottom:14px;line-height:1.1}
-.dark .feat-title{color:#fff}
-.feat-desc{font-size:16px;color:var(--mu);line-height:1.72;margin-bottom:24px}
-.dark .feat-desc{color:rgba(255,255,255,.45)}
-.feat-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
-.feat-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--ink3);line-height:1.5}
-.dark .feat-list li{color:rgba(255,255,255,.6)}
-.fl-ck{width:20px;height:20px;border-radius:6px;background:var(--tbg);border:1.5px solid var(--tb);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--t);flex-shrink:0;margin-top:1px}
-.dark .fl-ck{background:rgba(20,184,166,.12);border-color:rgba(20,184,166,.2);color:var(--t3)}
+/* QUICK WINS */
+.qw-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:rgba(255,255,255,.03);border-radius:9px;margin-bottom:7px;cursor:none;transition:background .2s}
+.qw-item:hover{background:rgba(255,255,255,.06)}
+.qw-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.qw-text{flex:1;font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.45}
+.qw-impact{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0}
+.qi-high{background:rgba(239,68,68,.12);color:#f87171}
+.qi-med{background:rgba(251,191,36,.12);color:#fbbf24}
+.qi-low{background:rgba(45,212,191,.12);color:#2dd4bf}
 
-/* PRODUCT MOCKUP CONTAINERS */
-.mockup{position:relative}
-.mockup-frame{background:var(--dk);border-radius:18px;overflow:hidden;box-shadow:var(--shdk);border:1px solid rgba(255,255,255,.07);position:relative}
-.sec:not(.dark) .mockup-frame{box-shadow:0 32px 80px rgba(10,22,40,.18),0 0 0 1px rgba(10,22,40,.06)}
-.mf-bar{background:var(--dk2);padding:11px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.05)}
-.mf-dots{display:flex;gap:5px}
-.mf-dot{width:10px;height:10px;border-radius:50%}
-.mf-title{flex:1;text-align:center;font-size:10px;color:rgba(255,255,255,.2);font-family:'Instrument Sans',sans-serif}
-.mf-body{padding:16px}
+/* KEYWORD TABLE */
+.kw-table-wrap{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;margin-bottom:20px}
+.kwt-header{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:space-between}
+.kwt-title{font-size:13px;font-weight:700;color:rgba(255,255,255,.6)}
+.kwt-actions{display:flex;gap:6px}
+.kwt-btn{padding:5px 12px;border-radius:7px;font-size:12px;font-weight:600;cursor:none;border:none;font-family:'Instrument Sans',sans-serif;transition:all .2s}
+.kwt-btn-ghost{background:rgba(255,255,255,.05);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.08)}
+.kwt-btn-ghost:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8)}
+.kwt-btn-primary{background:var(--t);color:#fff}
+.kwt-btn-primary:hover{background:#0f766e}
+table.kwt{width:100%;border-collapse:collapse}
+table.kwt th{padding:9px 16px;text-align:left;font-size:9.5px;font-weight:700;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:.09em;background:rgba(255,255,255,.02);border-bottom:1px solid rgba(255,255,255,.04)}
+table.kwt td{padding:11px 16px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle;font-family:'Instrument Sans',sans-serif}
+table.kwt tr:last-child td{border-bottom:none}
+table.kwt tr:hover td{background:rgba(255,255,255,.025);cursor:none}
+.td-kw{color:rgba(255,255,255,.7);font-weight:500}
+.td-v{color:rgba(255,255,255,.3)}
+.td-kd{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;display:inline-flex}
+.kd-e{background:rgba(45,212,191,.15);color:#2dd4bf}
+.kd-m{background:rgba(251,191,36,.12);color:#fbbf24}
+.kd-h{background:rgba(248,113,113,.12);color:#f87171}
+.td-int{font-size:11px;padding:2px 7px;border-radius:4px}
+.int-c{background:rgba(139,92,246,.12);color:#a78bfa}
+.int-i{background:rgba(96,165,250,.12);color:#60a5fa}
+.int-t{background:rgba(34,197,94,.12);color:#4ade80}
+.td-pos{color:rgba(255,255,255,.5);display:flex;align-items:center;gap:5px;font-size:12px}
+.pos-up{color:#2dd4bf;font-size:10px}
+.pos-dn{color:#f87171;font-size:10px}
+.td-cpc{color:rgba(255,255,255,.3)}
 
-/* FLOAT BADGES on mockups */
-.fbadge{position:absolute;background:#fff;border-radius:12px;padding:9px 13px;box-shadow:0 8px 32px rgba(0,0,0,.15),0 0 0 1px rgba(0,0,0,.05);display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--ink2);white-space:nowrap;z-index:10;animation:fbob 5s ease-in-out infinite}
-@keyframes fbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-.fbadge.dark-badge{background:var(--dk3);color:rgba(255,255,255,.8);box-shadow:0 8px 32px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.08)}
-.fb-ic{font-size:16px}
-.fb-num{font-family:'Cabinet Grotesk',sans-serif;font-size:18px;font-weight:900;color:var(--t);line-height:1}
-.fb-lbl{font-size:10px;color:var(--mu);font-weight:600;display:block}
+/* RECENT ISSUES */
+.issues-wrap{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden}
+.iss-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);cursor:none;transition:background .15s}
+.iss-row:last-child{border-bottom:none}
+.iss-row:hover{background:rgba(255,255,255,.03)}
+.iss-sev{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.is-c{background:#f87171}.is-w{background:#fbbf24}.is-i{background:#60a5fa}
+.iss-info{flex:1}
+.iss-title{font-size:13px;font-weight:600;color:rgba(255,255,255,.65);margin-bottom:2px}
+.iss-url{font-size:11px;color:rgba(255,255,255,.2)}
+.iss-fix-btn{font-size:11px;padding:4px 10px;background:rgba(20,184,166,.12);color:#2dd4bf;border-radius:6px;font-weight:700;border:none;cursor:none;font-family:'Instrument Sans',sans-serif;transition:all .2s;white-space:nowrap}
+.iss-fix-btn:hover{background:var(--t);color:#fff}
+.fixed-tag{font-size:11px;padding:4px 10px;background:rgba(34,197,94,.1);color:#4ade80;border-radius:6px;font-weight:700}
 
-/* ── KEYWORD MOCKUP ── */
-.kw-mockup-body{display:flex;flex-direction:column;gap:0;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.06)}
-.kw-search{display:flex;gap:8px;margin-bottom:12px;background:rgba(255,255,255,.04);border-radius:8px;padding:10px 12px;border:1px solid rgba(255,255,255,.07);align-items:center}
-.kw-search-inp{flex:1;font-size:12px;color:rgba(255,255,255,.6);font-family:'Instrument Sans',sans-serif}
-.kw-search-btn{padding:5px 12px;background:var(--t);color:#fff;border-radius:6px;font-size:11px;font-weight:700;font-family:'Instrument Sans',sans-serif}
-.kw-filters{display:flex;gap:6px;margin-bottom:12px}
-.kw-filter-btn{padding:4px 10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:6px;font-size:10px;color:rgba(255,255,255,.4);font-family:'Instrument Sans',sans-serif;cursor:none;transition:all .2s}
-.kw-filter-btn.on{background:rgba(20,184,166,.15);border-color:rgba(20,184,166,.25);color:#2dd4bf}
-.kw-tbl-h{display:grid;grid-template-columns:1fr 56px 52px 60px 44px;padding:7px 12px;font-size:9px;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:.1em;background:rgba(255,255,255,.02);border-bottom:1px solid rgba(255,255,255,.04);font-family:'Instrument Sans',sans-serif}
-.kw-tbl-r{display:grid;grid-template-columns:1fr 56px 52px 60px 44px;padding:9px 12px;font-size:11.5px;border-bottom:1px solid rgba(255,255,255,.03);font-family:'Instrument Sans',sans-serif;transition:background .15s;cursor:none;align-items:center}
-.kw-tbl-r:hover{background:rgba(255,255,255,.03)}
-.kw-tbl-r:last-child{border-bottom:none}
-.kwr-nm{color:rgba(255,255,255,.7);font-weight:500}
-.kwr-v{color:rgba(255,255,255,.35)}
-.kwr-kd{padding:2px 7px;border-radius:4px;font-size:9.5px;font-weight:700;display:inline-flex}
-.kwr-int{font-size:10px;padding:2px 6px;border-radius:4px}
-.int-c{background:rgba(139,92,246,.15);color:#a78bfa}
-.int-i{background:rgba(59,130,246,.15);color:#60a5fa}
-.int-t{background:rgba(34,197,94,.15);color:#4ade80}
-.cpc-v{color:rgba(255,255,255,.35);font-size:11px}
-.ai-suggest{background:linear-gradient(135deg,rgba(20,184,166,.1),rgba(59,130,246,.06));border:1px solid rgba(20,184,166,.18);border-radius:8px;padding:10px 12px;margin-top:10px;font-size:11.5px;color:rgba(255,255,255,.6);display:flex;gap:8px;line-height:1.55;font-family:'Instrument Sans',sans-serif}
+/* SETUP BANNER */
+.setup-banner{background:linear-gradient(135deg,rgba(20,184,166,.08),rgba(59,130,246,.05));border:1px solid rgba(20,184,166,.15);border-radius:14px;padding:18px 20px;margin-bottom:20px;display:flex;align-items:center;gap:16px}
+.sb-ic2{font-size:28px;flex-shrink:0}
+.sb-text{flex:1}
+.sb-title2{font-size:14px;font-weight:700;color:rgba(255,255,255,.75);margin-bottom:3px}
+.sb-desc2{font-size:12px;color:rgba(255,255,255,.3);line-height:1.5}
+.sb-progress{display:flex;gap:6px;margin-top:10px}
+.sp-step{padding:4px 10px;border-radius:5px;font-size:10px;font-weight:700;cursor:none}
+.sp-done{background:rgba(20,184,166,.15);color:#2dd4bf}
+.sp-todo{background:rgba(255,255,255,.05);color:rgba(255,255,255,.3)}
+.sb-close{font-size:18px;color:rgba(255,255,255,.2);cursor:none;transition:color .2s;background:none;border:none;flex-shrink:0}
+.sb-close:hover{color:rgba(255,255,255,.5)}
 
-/* ── AUDIT MOCKUP ── */
-.audit-layout{display:grid;grid-template-columns:120px 1fr;gap:12px}
-.audit-score-side{display:flex;flex-direction:column;gap:10px}
-.audit-ring{position:relative;width:100px;height:100px;margin:0 auto}
-.audit-ring svg{transform:rotate(-90deg)}
-.audit-ring-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.arn{font-family:'Cabinet Grotesk',sans-serif;font-size:28px;font-weight:900;color:#fff;line-height:1}
-.arl{font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em}
-.audit-pills{display:flex;flex-direction:column;gap:5px}
-.ap{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;border-radius:6px;font-size:10px;font-weight:700}
-.ap-r{background:rgba(248,113,113,.12);color:#f87171}
-.ap-a{background:rgba(251,191,36,.12);color:#fbbf24}
-.ap-b{background:rgba(96,165,250,.12);color:#60a5fa}
-.ap-n{font-family:'Cabinet Grotesk',sans-serif;font-size:14px;font-weight:900}
-.audit-issues{display:flex;flex-direction:column;gap:1px}
-.iss{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.02);transition:background .15s;cursor:none;border-radius:6px;margin-bottom:2px}
-.iss:hover{background:rgba(255,255,255,.04)}
-.iss-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.isc{background:#f87171}.isw{background:#fbbf24}.isi{background:#60a5fa}
-.iss-txt{flex:1;font-size:11px;font-weight:600;color:rgba(255,255,255,.65);font-family:'Instrument Sans',sans-serif}
-.iss-fix{font-size:9px;padding:3px 7px;background:rgba(20,184,166,.15);color:#2dd4bf;border-radius:4px;font-weight:700;cursor:none;font-family:'Instrument Sans',sans-serif}
-
-/* ── RANK TRACKER MOCKUP ── */
-.rank-chart-area{margin-bottom:12px;position:relative}
-.rank-legend{display:flex;gap:14px;margin-bottom:10px}
-.rl-item{display:flex;align-items:center;gap:5px;font-size:10px;color:rgba(255,255,255,.3);font-family:'Instrument Sans',sans-serif}
-.rl-line{width:16px;height:2px;border-radius:1px}
-.rank-rows{display:flex;flex-direction:column;gap:1px}
-.rank-row{display:grid;grid-template-columns:32px 1fr 52px 48px 48px;gap:8px;padding:8px 10px;background:rgba(255,255,255,.02);border-radius:7px;font-size:11px;align-items:center;cursor:none;transition:background .15s;font-family:'Instrument Sans',sans-serif;margin-bottom:2px}
-.rank-row:hover{background:rgba(255,255,255,.05)}
-.rr-pos{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:14px;color:var(--t3);text-align:center}
-.rr-kw{font-weight:500;color:rgba(255,255,255,.65)}
-.rr-prev{color:rgba(255,255,255,.25);text-align:center}
-.rr-ch{text-align:center;font-weight:700;font-size:10px;padding:2px 5px;border-radius:3px}
-.ru{background:rgba(45,212,191,.15);color:#2dd4bf}
-.rd{background:rgba(248,113,113,.12);color:#f87171}
-.req{background:rgba(255,255,255,.05);color:rgba(255,255,255,.3)}
-.rr-url{font-size:10px;color:rgba(255,255,255,.2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* ── AI BRIEF MOCKUP ── */
-.brief-layout{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.brief-input-side{display:flex;flex-direction:column;gap:8px}
-.brief-inp-row{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:10px 12px}
-.bir-label{font-size:9px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;font-family:'Instrument Sans',sans-serif}
-.bir-val{font-size:12px;color:rgba(255,255,255,.65);font-family:'Instrument Sans',sans-serif;font-weight:500}
-.brief-gen-btn{padding:10px;background:var(--t);color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-align:center;font-family:'Instrument Sans',sans-serif;margin-top:4px}
-.brief-output-side{display:flex;flex-direction:column;gap:6px}
-.bo-section{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:10px 12px}
-.bos-title{font-size:9px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;font-family:'Instrument Sans',sans-serif}
-.bos-item{font-size:11px;color:rgba(255,255,255,.55);padding:5px 8px;background:rgba(255,255,255,.03);border-radius:5px;margin-bottom:4px;font-family:'Instrument Sans',sans-serif;border-left:2px solid rgba(20,184,166,.4);line-height:1.4}
-.bos-tag{display:inline-block;padding:2px 8px;background:rgba(20,184,166,.12);color:#2dd4bf;border-radius:4px;font-size:9.5px;font-weight:700;margin:2px;font-family:'Instrument Sans',sans-serif}
-.brief-meta-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}
-.bm{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:7px;padding:8px;text-align:center}
-.bm-v{font-family:'Cabinet Grotesk',sans-serif;font-size:18px;font-weight:900;color:#2dd4bf}
-.bm-l{font-size:9px;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;font-family:'Instrument Sans',sans-serif}
-
-/* ── BACKLINK MOCKUP ── */
-.bl-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.blm{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:9px;padding:12px;text-align:center}
-.blm-n{font-family:'Cabinet Grotesk',sans-serif;font-size:22px;font-weight:900;color:var(--t3)}
-.blm-l{font-size:9px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.07em;margin-top:3px;font-family:'Instrument Sans',sans-serif}
-.blm-ch{font-size:10px;color:#2dd4bf;margin-top:4px;font-weight:700}
-.bl-chart{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:9px;padding:12px;margin-bottom:12px}
-.bl-chart-lbl{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:8px;font-family:'Instrument Sans',sans-serif}
-.bl-bars{display:flex;align-items:flex-end;gap:4px;height:50px}
-.bl-bar{flex:1;border-radius:3px 3px 0 0;transition:height .5s}
-.anc-rows{display:flex;flex-direction:column;gap:5px}
-.anc-row{display:flex;align-items:center;gap:8px;padding:6px 10px;background:rgba(255,255,255,.02);border-radius:6px;font-size:11px;font-family:'Instrument Sans',sans-serif;cursor:none;transition:background .15s}
-.anc-row:hover{background:rgba(255,255,255,.04)}
-.anc-nm{flex:1;color:rgba(255,255,255,.55);font-weight:500}
-.anc-pct{color:rgba(255,255,255,.25)}
-.anc-bar-wrap{width:60px;height:4px;background:rgba(255,255,255,.06);border-radius:2px}
-.anc-bar-fill{height:100%;background:var(--t2);border-radius:2px}
-
-/* ── COMPETITOR MOCKUP ── */
-.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.comp-side{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:9px;padding:12px}
-.comp-side-title{font-size:10px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;font-family:'Instrument Sans',sans-serif}
-.comp-domain-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.comp-d-name{font-size:11px;font-weight:600;color:rgba(255,255,255,.6);min-width:80px;font-family:'Instrument Sans',sans-serif}
-.comp-bar-w{flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:3px}
-.comp-bar-f{height:100%;border-radius:3px;transition:width 1.2s}
-.comp-score{font-family:'Cabinet Grotesk',sans-serif;font-size:13px;font-weight:800;color:rgba(255,255,255,.6);min-width:28px;text-align:right}
-.gap-kw-row{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:rgba(255,255,255,.03);border-radius:6px;margin-bottom:5px;font-size:11px;font-family:'Instrument Sans',sans-serif;cursor:none;transition:background .15s}
-.gap-kw-row:hover{background:rgba(255,255,255,.06)}
-.gap-kw-nm{color:rgba(255,255,255,.6);font-weight:500}
-.gap-kw-opp{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:700}
-.gap-h{background:rgba(45,212,191,.15);color:#2dd4bf}
-.gap-m{background:rgba(251,191,36,.12);color:#fbbf24}
-
-/* PRICING */
-.pricing-sec{padding:100px 5%;background:linear-gradient(180deg,#fff 0%,var(--tbg) 50%,#fff 100%)}
-.pricing-toggle{display:flex;align-items:center;justify-content:center;gap:12px;margin:28px 0 52px}
-.tt{width:50px;height:28px;background:var(--t);border-radius:14px;cursor:none;position:relative;transition:background .3s;box-shadow:inset 0 1px 4px rgba(0,0,0,.15)}
-.tth{width:22px;height:22px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:transform .3s;box-shadow:0 2px 6px rgba(0,0,0,.2)}
-.tth.on{transform:translateX(22px)}
-.tl2{font-size:14px;font-weight:600;color:var(--mu)}
-.tl2.act{color:var(--ink)}
-.sbg{background:var(--tb);color:var(--t);font-size:10px;font-weight:800;padding:3px 8px;border-radius:100px}
-.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1040px;margin:0 auto}
-.pc{background:#fff;border:2px solid var(--bd);border-radius:24px;overflow:hidden;transition:all .4s cubic-bezier(.2,.8,.2,1);position:relative}
-.pc:hover{transform:translateY(-8px);box-shadow:var(--shl),0 0 0 1px var(--tb)}
-.pc.pop{background:var(--ink2);border-color:var(--ink2);transform:scale(1.02)}
-.pc.pop:hover{transform:scale(1.02) translateY(-8px)}
-.pc-topbar{height:4px;background:var(--bd)}
-.pc.pop .pc-topbar{background:linear-gradient(90deg,var(--t3),var(--t))}
-.pc:not(.pop):hover .pc-topbar{background:linear-gradient(90deg,var(--t3),var(--t));transition:background .3s}
-.pop-pill{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--t2),var(--t));color:#fff;font-size:11px;font-weight:700;letter-spacing:.06em;padding:5px 18px;border-radius:0 0 12px 12px;white-space:nowrap}
-.ph{padding:28px 28px 0}
-.pn2{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin-bottom:7px}
-.pc.pop .pn2{color:rgba(255,255,255,.3)}
-.pp{font-family:'Cabinet Grotesk',sans-serif;font-size:56px;font-weight:900;letter-spacing:-.05em;color:var(--ink);line-height:1}
-.pc.pop .pp{color:#fff}
-.pp sup{font-size:24px;vertical-align:super;margin-right:2px}
-.pp sub{font-size:16px;font-weight:500;color:var(--mu);letter-spacing:0}
-.pc.pop .pp sub{color:rgba(255,255,255,.35)}
-.ptag{font-size:13px;color:var(--mu);margin:7px 0 20px;line-height:1.5}
-.pc.pop .ptag{color:rgba(255,255,255,.4)}
-.pcta{margin:0 28px 20px;padding:14px;width:calc(100% - 56px);border-radius:12px;font-size:15px;font-weight:700;cursor:none;border:none;transition:all .22s;font-family:'Instrument Sans',sans-serif}
-.cta-out{background:transparent;border:2px solid var(--bd);color:var(--ink)}
-.cta-out:hover{background:var(--tbg);border-color:var(--t);color:var(--t)}
-.cta-wh{background:#fff;color:var(--ink);box-shadow:0 4px 20px rgba(0,0,0,.12)}
-.cta-wh:hover{background:var(--tbg);transform:translateY(-1px)}
-.pdiv{height:1px;background:var(--bd);margin:0 28px 20px}
-.pc.pop .pdiv{background:rgba(255,255,255,.07)}
-.pfs{list-style:none;padding:0 28px;display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
-.pfs li{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;color:var(--ink3);line-height:1.4}
-.pc.pop .pfs li{color:rgba(255,255,255,.6)}
-.pck{width:18px;height:18px;border-radius:50%;background:var(--tbg);border:1.5px solid var(--tb);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--t);flex-shrink:0;margin-top:1px}
-.pc.pop .pck{background:rgba(20,184,166,.15);border-color:rgba(20,184,166,.25);color:var(--t3)}
-.pl-txt{flex:1}
-.pl-tip{font-size:11px;color:var(--sub);display:block;margin-top:1px}
-.pc.pop .pl-tip{color:rgba(255,255,255,.2)}
-.see-more{width:100%;padding:13px 28px;background:transparent;border:none;border-top:1px solid var(--bd);color:var(--t);font-size:13px;font-weight:700;cursor:none;transition:all .2s;font-family:'Instrument Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px}
-.pc.pop .see-more{border-color:rgba(255,255,255,.07);color:var(--t3)}
-.see-more:hover{background:var(--tbg)}
-.pc.pop .see-more:hover{background:rgba(255,255,255,.04)}
-.see-more .arr{transition:transform .3s;display:inline-block}
-.see-more.open .arr{transform:rotate(180deg)}
-.extra{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.2,.8,.2,1)}
-.extra.open{max-height:500px}
-.pfoot{padding:14px 28px;font-size:11px;color:var(--mu);text-align:center;line-height:1.6}
-.pc.pop .pfoot{color:rgba(255,255,255,.2)}
-
-/* TESTIMONIALS */
-.testi{background:var(--dk);padding:100px 5%;position:relative;overflow:hidden}
-.testi::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(20,184,166,.3),transparent)}
-.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px}
-.tc{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:28px;transition:all .35s;cursor:none;position:relative}
-.tc:hover{background:rgba(255,255,255,.07);border-color:rgba(20,184,166,.25);transform:translateY(-6px)}
-.tc-q{font-size:44px;color:rgba(20,184,166,.2);font-family:Georgia,serif;line-height:.8;margin-bottom:10px}
-.tc-stars{color:var(--t3);font-size:12px;letter-spacing:2px;margin-bottom:12px}
-.tc-text{font-size:15px;line-height:1.75;color:rgba(255,255,255,.6);margin-bottom:20px}
-.tc-author{display:flex;align-items:center;gap:12px}
-.tc-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:17px;color:#fff;flex-shrink:0;border:2px solid rgba(255,255,255,.08)}
-.tc-name{font-weight:700;font-size:14px;color:#fff}
-.tc-role{font-size:11px;color:rgba(255,255,255,.28)}
-
-/* FAQ */
-.faq-sec{padding:100px 5%}
-.faq-g{max-width:740px;margin:48px auto 0;display:flex;flex-direction:column;gap:5px}
-.fi{border:1.5px solid var(--bd);border-radius:13px;overflow:hidden;transition:all .25s}
-.fi:hover{border-color:var(--t3);box-shadow:0 4px 20px rgba(13,148,136,.07)}
-.fi.open{border-color:var(--t);box-shadow:var(--sht)}
-.fq{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;cursor:none;font-size:15px;font-weight:600;color:var(--ink2);gap:16px;user-select:none;transition:background .2s}
-.fq:hover{background:var(--tbg)}
-.fic{width:25px;height:25px;border-radius:7px;background:var(--sf);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:all .3s;color:var(--mu)}
-.fi.open .fic{background:var(--t);border-color:var(--t);color:#fff;transform:rotate(45deg)}
-.fa{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.2,.8,.2,1)}
-.fa-in{padding:0 22px 18px;font-size:14px;color:var(--mu);line-height:1.75}
-
-/* CTA */
-.cta-sec{padding:120px 5%;text-align:center;background:linear-gradient(180deg,var(--sf) 0%,#fff 100%);position:relative;overflow:hidden}
-.cta-blob{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(13,148,136,.08),transparent 70%);pointer-events:none}
-.cta-sec h2{font-family:'Cabinet Grotesk',sans-serif;font-size:clamp(32px,5vw,58px);font-weight:900;letter-spacing:-.04em;color:var(--ink);max-width:680px;margin:14px auto 16px;line-height:1.05}
-.cta-sec h2 em{color:var(--t);font-style:normal}
-.cta-p{font-size:18px;color:var(--mu);max-width:500px;margin:0 auto 36px;line-height:1.65}
-
-/* FOOTER */
-footer{background:var(--ink);padding:72px 5% 40px}
-.ft-top{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr;gap:52px;margin-bottom:44px}
-.ft-desc{font-size:13.5px;color:rgba(255,255,255,.28);line-height:1.72;margin-top:10px;max-width:240px}
-.ft-ch{font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:11px;color:rgba(255,255,255,.38);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
-.ft-ls{list-style:none;display:flex;flex-direction:column;gap:9px}
-.ft-ls a{font-size:13.5px;color:rgba(255,255,255,.25);text-decoration:none;transition:color .2s}
-.ft-ls a:hover{color:var(--t3)}
-.ft-bot{max-width:1200px;margin:0 auto;border-top:1px solid rgba(255,255,255,.06);padding-top:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.ft-copy{font-size:12px;color:rgba(255,255,255,.14)}
-
-/* UTILS */
-.rev{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
-.rev.vis{opacity:1;transform:none}
-.fr{opacity:0;transform:translateX(-40px);transition:opacity .8s,transform .8s}
-.fr.vis{opacity:1;transform:none}
-.fr-r{opacity:0;transform:translateX(40px);transition:opacity .8s .15s,transform .8s .15s}
-.fr-r.vis{opacity:1;transform:none}
-.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
-@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
-.toast{position:fixed;bottom:24px;right:24px;background:var(--ink2);color:#fff;padding:13px 18px;border-radius:12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px;box-shadow:var(--shl);transform:translateY(80px);opacity:0;transition:all .35s cubic-bezier(.2,.8,.2,1);z-index:500;max-width:320px}
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink2);color:#fff;padding:13px 18px;border-radius:12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px;box-shadow:var(--shl);transform:translateY(80px);opacity:0;transition:all .35s cubic-bezier(.2,.8,.2,1);z-index:600;max-width:320px}
 .toast.show{transform:translateY(0);opacity:1}
 .tx{margin-left:6px;cursor:none;color:rgba(255,255,255,.4);font-size:16px}.tx:hover{color:#fff}
-@media(max-width:900px){.feat-row,.feat-row.flip{grid-template-columns:1fr;gap:36px;direction:ltr}.mock-body{grid-template-columns:1fr}.mock-sb{display:none}.pg,.tg,.ft-top{grid-template-columns:1fr}.stats-g{grid-template-columns:repeat(2,1fr)}.kw-tbl-r,.kwt-h{grid-template-columns:1fr 52px 48px}.kw-tbl-r .kwr-int,.kwt-h :nth-child(4){display:none}.brief-layout,.audit-layout{grid-template-columns:1fr}.comp-grid{grid-template-columns:1fr}}
+
+/* MISC */
+.rev{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
+.rev.vis{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+@media(max-width:768px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.charts-row{grid-template-columns:1fr}.dash-body{grid-template-columns:1fr}.dash-sb{display:none}.nav-links{display:none}}
 </style>
 </head>
 <body>
 <div id="cur"></div><div id="cur-r"></div>
 <div class="toast" id="toast"><span id="ti">✓</span><span id="tm"></span><span class="tx" onclick="hT()">×</span></div>
 
-<!-- NAV -->
-<nav id="nav">
-  <a class="logo" href="#"><div class="logo-ic">Z</div><span class="logo-nm">Zena<em>Rank</em></span></a>
-  <div class="nav-links">
-    <a href="#features" class="nav-a">Features</a>
-    <a href="#pricing" class="nav-a">Pricing</a>
-    <a href="#reviews" class="nav-a">Reviews</a>
-    <a href="#faq" class="nav-a">FAQ</a>
-    <a href="#" class="nav-a" onclick="sT('✍️','Blog launching soon!')">Blog</a>
-  </div>
-  <div class="nav-r">
-    <a href="#" class="btn btn-ghost" onclick="sT('👋','Sign in coming soon!')">Sign in</a>
-    <a href="#pricing" class="btn btn-teal">Start free trial</a>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-grid"></div>
-  <div class="hero-inner">
-    <div class="hero-chip"><span class="chip-dot"></span>Calm, powerful SEO · Launching 2026</div>
-    <h1 class="hh">Make your business<br><span class="tl">impossible to ignore</span></h1>
-    <p class="hero-p">ZenaRank gives you keyword research, site audits, rank tracking, backlink analysis, and AI content briefs — all in one calm, clear dashboard. No overwhelm, no agency fees.</p>
-    <div class="hero-btns">
-      <a href="#pricing" class="btn btn-teal btn-xl">Start free 14-day trial <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <a href="#features" class="btn btn-ghost btn-xl">See all features ↓</a>
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuth()">✕</button>
+    <div class="modal-top">
+      <div class="modal-logo">Z</div>
+      <div class="modal-title" id="modal-title">Welcome to ZenaRank</div>
+      <div class="modal-sub" id="modal-sub">Sign in to your account to continue</div>
     </div>
-    <div class="hero-meta">
-      <div class="hm"><span class="hm-n" id="hc">2,400</span><span>+ businesses</span></div>
-      <div class="hm-div"></div>
-      <div class="hm"><span class="hm-n">4.9★</span><span> on G2</span></div>
-      <div class="hm-div"></div>
-      <div class="hm"><span class="hm-n">$10/yr</span><span> total to start</span></div>
-      <div class="hm-div"></div>
-      <div class="hm"><span class="hm-n">90 sec</span><span> setup</span></div>
-    </div>
-  </div>
-
-  <!-- HERO DASHBOARD MOCKUP -->
-  <div class="hero-mockup">
-    <div class="mock-shadow"></div>
-    <div class="mock-frame">
-      <div class="mock-bar">
-        <div class="m-dots"><div class="m-dot" style="background:#ff5f57"></div><div class="m-dot" style="background:#febc2e"></div><div class="m-dot" style="background:#28c840"></div></div>
-        <div class="m-url">🔒 app.zenarank.com/dashboard · mybusiness.com</div>
+    <div class="modal-body">
+      <!-- Tab Row -->
+      <div class="tab-row">
+        <button class="tab-btn on" id="tab-signin" onclick="switchTab('signin')">Sign In</button>
+        <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">Create Account</button>
       </div>
-      <div class="mock-body">
-        <div class="mock-sb">
-          <div class="sb-logo"><div class="sb-logo-ic">Z</div><span class="sb-logo-nm">ZenaRank</span></div>
-          <ul class="sb-nav">
-            <li class="sb-item on"><span class="sb-ic">⊞</span>Dashboard</li>
-            <li class="sb-item"><span class="sb-ic">🔍</span>Keywords<span class="sb-badge">248</span></li>
-            <li class="sb-item"><span class="sb-ic">🕷️</span>Site Audit<span class="sb-badge">31</span></li>
-            <li class="sb-item"><span class="sb-ic">📈</span>Rank Tracker</li>
-            <li class="sb-item"><span class="sb-ic">🔗</span>Backlinks</li>
-            <li class="sb-item"><span class="sb-ic">🤖</span>AI Briefs</li>
-            <li class="sb-item"><span class="sb-ic">🏆</span>Competitors</li>
-            <li class="sb-item" style="margin-top:60px"><span class="sb-ic">⚙️</span>Settings</li>
-          </ul>
+
+      <!-- Google -->
+      <button class="google-btn" onclick="handleGoogle()">
+        <svg class="google-ic" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+        Continue with Google
+      </button>
+
+      <div class="divider"><div class="div-line"></div><span class="div-text">OR</span><div class="div-line"></div></div>
+
+      <!-- Sign In Form -->
+      <div id="form-signin">
+        <div class="form-group">
+          <label class="form-label">EMAIL ADDRESS</label>
+          <input class="form-input" type="email" id="si-email" placeholder="you@example.com" oninput="clearErr('si-email-err')">
+          <div class="form-error" id="si-email-err"></div>
         </div>
-        <div class="mock-main">
-          <div class="mock-header">
-            <div><div class="mock-title">Good morning, Magda 👋</div><div class="mock-sub">mybusiness.com · Last updated 2 min ago</div></div>
-            <div class="mock-btn">+ New Project</div>
-          </div>
-          <div class="kpi-row">
-            <div class="kpi"><div class="kpi-l">Health Score</div><div class="kpi-v" style="color:#2dd4bf">74</div><div class="kpi-c up">↑ +8 this week</div></div>
-            <div class="kpi"><div class="kpi-l">Keywords</div><div class="kpi-v" style="color:#38bdf8">248</div><div class="kpi-c up">↑ 12 new</div></div>
-            <div class="kpi"><div class="kpi-l">Avg Position</div><div class="kpi-v" style="color:#fb923c">14.2</div><div class="kpi-c up">↑ 2.1 pos</div></div>
-            <div class="kpi"><div class="kpi-l">Issues</div><div class="kpi-v" style="color:#f87171">31</div><div class="kpi-c dn">↓ 8 critical</div></div>
-          </div>
-          <div class="chart-wrap">
-            <div class="chart-hd"><span>Visibility Score · Last 30 days</span><span class="chart-tag">↑ +34% vs last month</span></div>
-            <svg width="100%" height="80" viewBox="0 0 560 80" preserveAspectRatio="none">
-              <defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#14b8a6" stop-opacity=".2"/><stop offset="100%" stop-color="#14b8a6" stop-opacity="0"/></linearGradient></defs>
-              <path d="M0,68 C40,65 80,58 130,50 C180,42 210,36 260,28 C310,20 360,14 410,9 C450,5 490,3 560,2 L560,80 L0,80Z" fill="url(#cg)"/>
-              <path d="M0,68 C40,65 80,58 130,50 C180,42 210,36 260,28 C310,20 360,14 410,9 C450,5 490,3 560,2" fill="none" stroke="#14b8a6" stroke-width="2.5"/>
-              <circle cx="560" cy="2" r="4" fill="#14b8a6"><animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/></circle>
-            </svg>
-          </div>
-          <div class="kw-table">
-            <div class="kwt-h"><span>Keyword</span><span>Volume</span><span>KD</span><span>Position</span></div>
-            <div class="kwt-r"><span class="kwt-kw">best seo tool small biz</span><span class="kwt-v">8.2K</span><span><span class="kwt-kd ke">32</span></span><span class="pos">4 <span class="up" style="font-size:10px">↑2</span></span></div>
-            <div class="kwt-r"><span class="kwt-kw">affordable seo software</span><span class="kwt-v">3.4K</span><span><span class="kwt-kd km">54</span></span><span class="pos">11 <span class="up" style="font-size:10px">↑1</span></span></div>
-            <div class="kwt-r"><span class="kwt-kw">rank tracking tool free</span><span class="kwt-v">12K</span><span><span class="kwt-kd ke">28</span></span><span class="pos">7 <span class="up" style="font-size:10px">↑4</span></span></div>
-          </div>
+        <div class="form-group">
+          <label class="form-label">PASSWORD</label>
+          <input class="form-input" type="password" id="si-pass" placeholder="Enter your password" oninput="clearErr('si-pass-err')">
+          <div class="form-error" id="si-pass-err"></div>
         </div>
+        <a href="#" class="forgot-link" onclick="showForgot()">Forgot password?</a>
+        <button class="submit-btn" onclick="handleSignIn()" id="si-btn">
+          <span id="si-txt">Sign In →</span>
+          <div class="btn-spinner" id="si-spin"></div>
+        </button>
+        <div class="modal-footer">Don't have an account? <a href="#" onclick="switchTab('signup')">Create one free →</a></div>
       </div>
+
+      <!-- Sign Up Form -->
+      <div id="form-signup" style="display:none">
+        <div class="form-group">
+          <label class="form-label">FULL NAME</label>
+          <input class="form-input" type="text" id="su-name" placeholder="Your name" oninput="clearErr('su-name-err')">
+          <div class="form-error" id="su-name-err"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">EMAIL ADDRESS</label>
+          <input class="form-input" type="email" id="su-email" placeholder="you@example.com" oninput="clearErr('su-email-err')">
+          <div class="form-error" id="su-email-err"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">PASSWORD</label>
+          <input class="form-input" type="password" id="su-pass" placeholder="Min 8 characters" oninput="checkPwStrength(this.value);clearErr('su-pass-err')">
+          <div class="pw-strength" id="pw-str">
+            <div class="pw-bars"><div class="pw-bar" id="pb1"></div><div class="pw-bar" id="pb2"></div><div class="pw-bar" id="pb3"></div><div class="pw-bar" id="pb4"></div></div>
+            <span class="pw-label" id="pw-lbl" style="font-size:11px;color:var(--sub)">Enter a password</span>
+          </div>
+          <div class="form-error" id="su-pass-err"></div>
+        </div>
+        <button class="submit-btn" onclick="handleSignUp()" id="su-btn" style="margin-top:6px">
+          <span id="su-txt">Create free account →</span>
+          <div class="btn-spinner" id="su-spin"></div>
+        </button>
+        <div class="modal-footer" style="margin-top:12px;font-size:11px;color:var(--sub)">By creating an account you agree to our <a href="#" style="color:var(--t);font-size:11px">Terms</a> & <a href="#" style="color:var(--t);font-size:11px">Privacy Policy</a></div>
+        <div class="modal-footer">Already have an account? <a href="#" onclick="switchTab('signin')">Sign in →</a></div>
+      </div>
+
+      <!-- Forgot Password -->
+      <div id="form-forgot" style="display:none">
+        <div style="text-align:center;margin-bottom:16px">
+          <div style="font-size:32px;margin-bottom:8px">🔑</div>
+          <div style="font-size:14px;color:var(--mu);line-height:1.6">Enter your email and we'll send you a link to reset your password.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">EMAIL ADDRESS</label>
+          <input class="form-input" type="email" id="fp-email" placeholder="you@example.com">
+        </div>
+        <button class="submit-btn" onclick="handleForgot()" id="fp-btn">
+          <span id="fp-txt">Send reset link →</span>
+          <div class="btn-spinner" id="fp-spin"></div>
+        </button>
+        <div class="modal-footer"><a href="#" onclick="switchTab('signin')">← Back to sign in</a></div>
+      </div>
+
+      <!-- Success -->
+      <div class="auth-success" id="form-success">
+        <div class="success-ic">✅</div>
+        <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:18px;font-weight:800;color:var(--ink);margin-bottom:8px" id="success-title">You're in!</div>
+        <div style="font-size:14px;color:var(--mu);margin-bottom:20px" id="success-msg">Taking you to your dashboard...</div>
+        <div style="width:100%;height:4px;background:var(--bd);border-radius:2px;overflow:hidden"><div style="height:100%;background:var(--t);border-radius:2px;animation:loadProgress 2s linear forwards" id="load-prog"></div></div>
+      </div>
+
     </div>
-  </div>
-</section>
-
-<!-- MARQUEE -->
-<div class="mq">
-  <div class="mq-l">Trusted by founders at</div>
-  <div class="mtrack"><div class="minner">
-    <span class="ml">Shopify</span><span class="ml">Webflow</span><span class="ml">Linear</span><span class="ml">Vercel</span><span class="ml">Notion</span><span class="ml">Framer</span><span class="ml">Stripe</span><span class="ml">Loom</span><span class="ml">Figma</span><span class="ml">Supabase</span><span class="ml">Resend</span><span class="ml">Cal.com</span><span class="ml">Raycast</span><span class="ml">Clerk</span><span class="ml">Railway</span><span class="ml">Fly.io</span>
-    <span class="ml">Shopify</span><span class="ml">Webflow</span><span class="ml">Linear</span><span class="ml">Vercel</span><span class="ml">Notion</span><span class="ml">Framer</span><span class="ml">Stripe</span><span class="ml">Loom</span><span class="ml">Figma</span><span class="ml">Supabase</span><span class="ml">Resend</span><span class="ml">Cal.com</span><span class="ml">Raycast</span><span class="ml">Clerk</span><span class="ml">Railway</span><span class="ml">Fly.io</span>
-  </div></div>
-</div>
-
-<!-- STATS -->
-<div class="stats rev">
-  <div class="stats-g">
-    <div class="stat-c"><div class="stat-n" id="s1">0<s2>+</s2></div><div class="stat-l">Small businesses growing</div></div>
-    <div class="stat-c"><div class="stat-n" id="s2">0<s2>B+</s2></div><div class="stat-l">Keywords in database</div></div>
-    <div class="stat-c"><div class="stat-n" id="s3">4.9<s2>★</s2></div><div class="stat-l">Average G2 rating</div></div>
-    <div class="stat-c"><div class="stat-n" id="s4">0<s2>%</s2></div><div class="stat-l">Avg traffic growth</div></div>
   </div>
 </div>
 
-<!-- FEATURES -->
-<section class="sec dark" id="features">
-  <div class="si">
-    <div class="rev" style="text-align:center;margin-bottom:72px">
-      <div class="lbl" style="justify-content:center">Product</div>
-      <h2 class="sh" style="text-align:center">Every tool your business needs<br><span class="hi">to dominate search</span></h2>
-      <p class="sp" style="margin:0 auto;text-align:center;color:rgba(255,255,255,.4)">Six powerful tools. One calm dashboard. Built for founders, not agencies.</p>
+<!-- ══════════════════════════════════════ -->
+<!-- LANDING VIEW -->
+<!-- ══════════════════════════════════════ -->
+<div id="view-landing">
+  <nav id="nav">
+    <a class="logo" href="#"><div class="logo-ic">Z</div><span class="logo-nm">Zena<em>Rank</em></span></a>
+    <div class="nav-links">
+      <a href="#" class="nav-a">Features</a>
+      <a href="#" class="nav-a">Pricing</a>
+      <a href="#" class="nav-a">Reviews</a>
+      <a href="#" class="nav-a">FAQ</a>
+    </div>
+    <div class="nav-r">
+      <button class="btn btn-ghost" onclick="openAuth('signin')">Sign in</button>
+      <button class="btn btn-teal" onclick="openAuth('signup')">Start free trial</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-inner">
+      <div class="hero-chip"><span class="chip-dot"></span>Calm, powerful SEO · Launching 2026</div>
+      <h1 class="hh">Make your business<br><span class="tl">impossible to ignore</span></h1>
+      <p class="hero-p">ZenaRank gives you keyword research, site audits, rank tracking, backlink analysis, and AI content briefs — all in one calm, clear dashboard.</p>
+      <div class="hero-btns">
+        <button class="btn btn-teal btn-xl" onclick="openAuth('signup')">Start free 14-day trial <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="btn btn-ghost btn-xl" onclick="openAuth('signin')">Sign in →</button>
+      </div>
+      <div class="hero-meta">
+        <div class="hm"><span class="hm-n">2,400</span><span>+ businesses</span></div>
+        <div class="hm-div"></div>
+        <div class="hm"><span class="hm-n">4.9★</span><span> on G2</span></div>
+        <div class="hm-div"></div>
+        <div class="hm"><span class="hm-n">Free</span><span> 14-day trial</span></div>
+        <div class="hm-div"></div>
+        <div class="hm"><span class="hm-n">No card</span><span> required</span></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- DASHBOARD VIEW -->
+<!-- ══════════════════════════════════════ -->
+<div id="view-dashboard">
+  <!-- DASH NAV -->
+  <div class="dash-nav">
+    <a class="dash-logo" href="#"><div class="dash-logo-ic">Z</div><span class="dash-logo-nm">Zena<em>Rank</em></span></a>
+    <div class="dash-nav-links">
+      <div class="dn-link on" onclick="sT('⊞','Dashboard')">⊞ Dashboard</div>
+      <div class="dn-link" onclick="sT('🔍','Keyword Explorer')">🔍 Keywords</div>
+      <div class="dn-link" onclick="sT('🕷️','Site Audit')">🕷️ Audit</div>
+      <div class="dn-link" onclick="sT('📈','Rank Tracker')">📈 Rankings</div>
+      <div class="dn-link" onclick="sT('🔗','Backlinks')">🔗 Backlinks</div>
+      <div class="dn-link" onclick="sT('🤖','AI Brief Generator')">🤖 AI Briefs</div>
+    </div>
+    <div class="dash-nav-right">
+      <div class="dash-notif" onclick="sT('🔔','3 new notifications')">🔔<div class="notif-badge">3</div></div>
+      <div class="dash-notif" onclick="sT('⚙️','Settings coming soon!')">⚙️</div>
+      <div class="dash-avatar-wrap">
+        <div class="dash-avatar" id="user-avatar">M</div>
+        <div class="dash-dropdown">
+          <div class="dd-user"><div class="dd-name" id="dd-name">Magda</div><div class="dd-email" id="dd-email">user@example.com</div></div>
+          <div class="dd-item" onclick="sT('⚙️','Settings coming soon!')">⚙️ Account settings</div>
+          <div class="dd-item" onclick="sT('💳','Billing coming soon!')">💳 Billing & plan</div>
+          <div class="dd-item" onclick="sT('📖','Docs coming soon!')">📖 Documentation</div>
+          <div class="dd-item danger" onclick="handleSignOut()">🚪 Sign out</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-body">
+    <!-- SIDEBAR -->
+    <div class="dash-sb">
+      <div class="sb-section">
+        <div class="sb-sec-label">Overview</div>
+        <div class="sb-item on"><span class="sb-ic">⊞</span>Dashboard</div>
+        <div class="sb-item" onclick="sT('📊','Analytics coming soon!')"><span class="sb-ic">📊</span>Analytics</div>
+        <div class="sb-item" onclick="sT('📋','Reports coming soon!')"><span class="sb-ic">📋</span>Reports</div>
+      </div>
+      <div class="sb-section">
+        <div class="sb-sec-label">SEO Tools</div>
+        <div class="sb-item" onclick="sT('🔍','Keyword Explorer launching soon!')"><span class="sb-ic">🔍</span>Keywords<span class="sb-badge">248</span></div>
+        <div class="sb-item" onclick="sT('🕷️','Site Audit launching soon!')"><span class="sb-ic">🕷️</span>Site Audit<span class="sb-badge red">31</span></div>
+        <div class="sb-item" onclick="sT('📈','Rank Tracker launching soon!')"><span class="sb-ic">📈</span>Rank Tracker</div>
+        <div class="sb-item" onclick="sT('🔗','Backlinks launching soon!')"><span class="sb-ic">🔗</span>Backlinks</div>
+        <div class="sb-item" onclick="sT('🤖','AI Briefs launching soon!')"><span class="sb-ic">🤖</span>AI Briefs<span class="sb-badge">5 left</span></div>
+        <div class="sb-item" onclick="sT('🏆','Competitor Gap launching soon!')"><span class="sb-ic">🏆</span>Competitors</div>
+      </div>
+      <div class="sb-section">
+        <div class="sb-sec-label">Projects</div>
+        <div class="sb-project">
+          <div class="sp-dot" style="background:#2dd4bf"></div>
+          <span class="sp-name">mybusiness.com</span>
+          <span class="sp-score">74</span>
+        </div>
+        <div class="sb-project" style="opacity:.5">
+          <div class="sp-dot" style="background:rgba(255,255,255,.2)"></div>
+          <span class="sp-name" style="color:rgba(255,255,255,.25);font-style:italic">+ Add project</span>
+        </div>
+      </div>
+      <div class="sb-upgrade">
+        <div class="sb-up-title">🚀 Upgrade to Pro</div>
+        <div class="sb-up-desc">Unlock 5 projects, 500 keywords, and 25 AI briefs/month.</div>
+        <button class="sb-up-btn" onclick="sT('💳','Upgrade coming soon — Stripe integration!')">Upgrade — $79/mo</button>
+      </div>
     </div>
 
-    <!-- KEYWORD RESEARCH -->
-    <div class="feat-row">
-      <div class="feat-text fr">
-        <div class="feat-chip">🔍 Tool 1 of 6</div>
-        <div class="feat-title">Keyword Explorer</div>
-        <div class="feat-desc">Find the exact keywords your ideal customers are searching for. Volume, difficulty, CPC, and search intent — all in one view. AI clusters related terms into content silos automatically.</div>
-        <ul class="feat-list">
-          <li><div class="fl-ck">✓</div>Volume, KD, CPC & intent for every keyword</li>
-          <li><div class="fl-ck">✓</div>AI keyword clustering into content silos</li>
-          <li><div class="fl-ck">✓</div>Bulk import up to 10,000 keywords</li>
-          <li><div class="fl-ck">✓</div>SERP analysis — see who ranks and why</li>
-          <li><div class="fl-ck">✓</div>Filter by low-competition opportunities</li>
-        </ul>
-        <a href="#pricing" class="btn btn-teal btn-lg">Try Keyword Explorer →</a>
-      </div>
-      <div class="mockup fr-r">
-        <div class="fbadge dark-badge" style="top:-18px;right:-18px;animation-delay:0s"><span class="fb-ic">🎯</span><div><div class="fb-num">32</div><span class="fb-lbl">easy wins found</span></div></div>
-        <div class="fbadge dark-badge" style="bottom:-18px;left:-18px;animation-delay:-2.5s"><span class="fb-ic">📈</span><div><div class="fb-num">8.2K</div><span class="fb-lbl">vol/mo · Easy KD</span></div></div>
-        <div class="mockup-frame">
-          <div class="mf-bar"><div class="mf-dots"><div class="mf-dot" style="background:#ff5f57"></div><div class="mf-dot" style="background:#febc2e"></div><div class="mf-dot" style="background:#28c840"></div></div><span class="mf-title">Keyword Explorer · zenarank.com</span></div>
-          <div class="mf-body">
-            <div class="kw-search"><span class="kw-search-inp">🔍 seo tools for small business</span><div class="kw-search-btn">Search</div></div>
-            <div class="kw-filters">
-              <div class="kw-filter-btn on">All intents</div>
-              <div class="kw-filter-btn">Commercial</div>
-              <div class="kw-filter-btn">Informational</div>
-              <div class="kw-filter-btn">KD &lt; 40</div>
-            </div>
-            <div class="kw-mockup-body">
-              <div class="kw-tbl-h"><span>Keyword</span><span>Volume</span><span>KD</span><span>Intent</span><span>CPC</span></div>
-              <div class="kw-tbl-r"><span class="kwr-nm">best seo tool small biz</span><span class="kwr-v">8.2K</span><span><span class="kwr-kd ke">32</span></span><span class="kwr-int int-c">commercial</span><span class="cpc-v">$4.20</span></div>
-              <div class="kw-tbl-r"><span class="kwr-nm">ahrefs alternative cheap</span><span class="kwr-v">5.5K</span><span><span class="kwr-kd ke">28</span></span><span class="kwr-int int-c">commercial</span><span class="cpc-v">$7.10</span></div>
-              <div class="kw-tbl-r"><span class="kwr-nm">how to rank on google</span><span class="kwr-v">22K</span><span><span class="kwr-kd km">55</span></span><span class="kwr-int int-i">informational</span><span class="cpc-v">$1.20</span></div>
-              <div class="kw-tbl-r"><span class="kwr-nm">site audit tool free</span><span class="kwr-v">4.4K</span><span><span class="kwr-kd ke">30</span></span><span class="kwr-int int-t">transactional</span><span class="cpc-v">$3.80</span></div>
-              <div class="kw-tbl-r"><span class="kwr-nm">keyword research free</span><span class="kwr-v">6.6K</span><span><span class="kwr-kd ke">38</span></span><span class="kwr-int int-t">transactional</span><span class="cpc-v">$3.10</span></div>
-            </div>
-            <div class="ai-suggest"><span style="font-size:16px">🤖</span><span><strong style="color:#2dd4bf">AI Insight:</strong> Group "seo tools", "seo software" & "ahrefs alternative" into one pillar page — 18,700 combined monthly searches with Easy difficulty.</span></div>
+    <!-- MAIN CONTENT -->
+    <div class="dash-main">
+
+      <!-- SETUP BANNER -->
+      <div class="setup-banner" id="setup-banner">
+        <span class="sb-ic2">🚀</span>
+        <div class="sb-text">
+          <div class="sb-title2">Complete your setup — 2 steps left</div>
+          <div class="sb-desc2">Add your domain and connect Google Search Console to unlock your full SEO dashboard.</div>
+          <div class="sb-progress">
+            <span class="sp-step sp-done">✓ Account created</span>
+            <span class="sp-step sp-done">✓ Email verified</span>
+            <span class="sp-step sp-todo" onclick="sT('🌐','Add domain — coming soon!')">Add domain →</span>
+            <span class="sp-step sp-todo" onclick="sT('🔗','GSC connect — coming soon!')">Connect GSC →</span>
           </div>
         </div>
+        <button class="sb-close" onclick="document.getElementById('setup-banner').style.display='none'">✕</button>
       </div>
-    </div>
 
-    <!-- SITE AUDIT -->
-    <div class="feat-row flip">
-      <div class="feat-text fr-r">
-        <div class="feat-chip">🕷️ Tool 2 of 6</div>
-        <div class="feat-title">Site Audit</div>
-        <div class="feat-desc">Crawl every page of your website and get a health score from 0–100. Our AI doesn't just list issues — it tells you which ones actually hurt rankings and what to fix first.</div>
-        <ul class="feat-list">
-          <li><div class="fl-ck">✓</div>Crawl up to unlimited pages (Pro/Agency)</li>
-          <li><div class="fl-ck">✓</div>Detect 40+ issue types including Core Web Vitals</li>
-          <li><div class="fl-ck">✓</div>AI prioritises fixes by ranking impact</li>
-          <li><div class="fl-ck">✓</div>Track issue resolution over time</li>
-          <li><div class="fl-ck">✓</div>Schedule weekly auto-crawls</li>
-        </ul>
-        <a href="#pricing" class="btn btn-teal btn-lg">Run your first audit →</a>
+      <!-- HEADER -->
+      <div class="dash-header">
+        <div>
+          <div class="dh-title" id="dash-greeting">Good morning, Magda 👋</div>
+          <div class="dh-sub">mybusiness.com · Last crawled 2 hours ago · <span style="color:#2dd4bf">All systems operational</span></div>
+        </div>
+        <div class="dh-actions">
+          <button class="dash-btn db-ghost" onclick="sT('🕷️','Running new crawl...')">🕷️ Run audit</button>
+          <button class="dash-btn db-primary" onclick="sT('🔍','Opening keyword tool...')">+ Add keywords</button>
+        </div>
       </div>
-      <div class="mockup fr">
-        <div class="fbadge dark-badge" style="top:-18px;right:-18px;animation-delay:-.8s"><span class="fb-ic">🏥</span><div><div class="fb-num">74/100</div><span class="fb-lbl">Health score</span></div></div>
-        <div class="fbadge dark-badge" style="bottom:-18px;left:-18px;animation-delay:-3s"><span class="fb-ic">✅</span><div><div class="fb-num">8 fixed</div><span class="fb-lbl">Issues resolved today</span></div></div>
-        <div class="mockup-frame">
-          <div class="mf-bar"><div class="mf-dots"><div class="mf-dot" style="background:#ff5f57"></div><div class="mf-dot" style="background:#febc2e"></div><div class="mf-dot" style="background:#28c840"></div></div><span class="mf-title">Site Audit · mybusiness.com · 342 pages</span></div>
-          <div class="mf-body">
-            <div class="audit-layout">
-              <div class="audit-score-side">
-                <div class="audit-ring">
-                  <svg viewBox="0 0 100 100" width="100" height="100">
-                    <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="8"/>
-                    <circle cx="50" cy="50" r="44" fill="none" stroke="#14b8a6" stroke-width="8" stroke-dasharray="276" stroke-dashoffset="69" stroke-linecap="round"/>
-                  </svg>
-                  <div class="audit-ring-num"><span class="arn">74</span><span class="arl">Health</span></div>
-                </div>
-                <div class="audit-pills">
-                  <div class="ap ap-r"><span>Critical</span><span class="ap-n">6</span></div>
-                  <div class="ap ap-a"><span>Warning</span><span class="ap-n">14</span></div>
-                  <div class="ap ap-b"><span>Info</span><span class="ap-n">11</span></div>
-                </div>
-              </div>
-              <div class="audit-issues">
-                <div class="iss"><div class="iss-dot isc"></div><span class="iss-txt">Missing meta descriptions (8 pages)</span><div class="iss-fix">Fix</div></div>
-                <div class="iss"><div class="iss-dot isc"></div><span class="iss-txt">Broken internal links (3 found)</span><div class="iss-fix">Fix</div></div>
-                <div class="iss"><div class="iss-dot isc"></div><span class="iss-txt">Page load &gt;4s · LCP fail</span><div class="iss-fix">Fix</div></div>
-                <div class="iss"><div class="iss-dot isw"></div><span class="iss-txt">Images missing alt text (12)</span><div class="iss-fix">Fix</div></div>
-                <div class="iss"><div class="iss-dot isw"></div><span class="iss-txt">Redirect chain detected</span><div class="iss-fix">Fix</div></div>
-                <div class="iss"><div class="iss-dot isi"></div><span class="iss-txt">No sitemap.xml found</span><div class="iss-fix">Fix</div></div>
-              </div>
-            </div>
+
+      <!-- KPI CARDS -->
+      <div class="kpi-grid rev">
+        <div class="kpi-card kc-teal">
+          <div class="kpi-label">Health Score</div>
+          <div class="kpi-value" style="color:#2dd4bf" id="kpi-health">74</div>
+          <div class="kpi-change kc-up">↑ +8 this week</div>
+          <svg class="kpi-sparkline" width="80" height="40" viewBox="0 0 80 40"><polyline points="0,35 15,30 30,25 45,18 60,12 75,6" fill="none" stroke="#2dd4bf" stroke-width="2"/></svg>
+        </div>
+        <div class="kpi-card kc-blue">
+          <div class="kpi-label">Keywords Tracked</div>
+          <div class="kpi-value" style="color:#60a5fa" id="kpi-kw">248</div>
+          <div class="kpi-change kc-up">↑ 12 added this week</div>
+          <svg class="kpi-sparkline" width="80" height="40" viewBox="0 0 80 40"><polyline points="0,32 15,28 30,24 45,20 60,15 75,10" fill="none" stroke="#60a5fa" stroke-width="2"/></svg>
+        </div>
+        <div class="kpi-card kc-orange">
+          <div class="kpi-label">Avg. Position</div>
+          <div class="kpi-value" style="color:#fb923c" id="kpi-pos">14.2</div>
+          <div class="kpi-change kc-up">↑ +2.1 positions</div>
+          <svg class="kpi-sparkline" width="80" height="40" viewBox="0 0 80 40"><polyline points="0,35 15,32 30,28 45,22 60,16 75,11" fill="none" stroke="#fb923c" stroke-width="2"/></svg>
+        </div>
+        <div class="kpi-card kc-red">
+          <div class="kpi-label">Open Issues</div>
+          <div class="kpi-value" style="color:#f87171" id="kpi-issues">31</div>
+          <div class="kpi-change kc-dn">↓ 8 critical</div>
+          <svg class="kpi-sparkline" width="80" height="40" viewBox="0 0 80 40"><polyline points="0,15 15,18 30,22 45,26 60,28 75,30" fill="none" stroke="#f87171" stroke-width="2"/></svg>
+        </div>
+      </div>
+
+      <!-- CHARTS -->
+      <div class="charts-row rev d1">
+        <div class="dash-card">
+          <div class="dc-title">
+            <span>Ranking Visibility · Last 30 days</span>
+            <span class="dc-badge dcb-green">↑ +34% vs last month</span>
+          </div>
+          <svg width="100%" height="120" viewBox="0 0 500 120" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="vg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#14b8a6" stop-opacity=".2"/>
+                <stop offset="100%" stop-color="#14b8a6" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,105 C40,100 80,88 130,75 C180,62 210,52 260,40 C310,28 360,18 410,10 C450,5 480,3 500,2 L500,120 L0,120Z" fill="url(#vg)"/>
+            <path d="M0,105 C40,100 80,88 130,75 C180,62 210,52 260,40 C310,28 360,18 410,10 C450,5 480,3 500,2" fill="none" stroke="#14b8a6" stroke-width="2.5"/>
+            <circle cx="500" cy="2" r="5" fill="#14b8a6"><animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/></circle>
+            <!-- grid lines -->
+            <line x1="0" y1="30" x2="500" y2="30" stroke="rgba(255,255,255,.03)" stroke-width="1"/>
+            <line x1="0" y1="60" x2="500" y2="60" stroke="rgba(255,255,255,.03)" stroke-width="1"/>
+            <line x1="0" y1="90" x2="500" y2="90" stroke="rgba(255,255,255,.03)" stroke-width="1"/>
+          </svg>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.2);margin-top:6px;font-family:'Instrument Sans',sans-serif">
+            <span>1 Oct</span><span>8 Oct</span><span>15 Oct</span><span>22 Oct</span><span>Today</span>
           </div>
         </div>
+        <div class="dash-card">
+          <div class="dc-title"><span>⚡ Quick Wins</span><span class="dc-badge dcb-red">8 critical</span></div>
+          <div class="qw-item"><div class="qw-dot" style="background:#f87171"></div><div class="qw-text">Fix broken redirect chain on /blog/old-post</div><span class="qw-impact qi-high">High</span></div>
+          <div class="qw-item"><div class="qw-dot" style="background:#f87171"></div><div class="qw-text">Add meta descriptions to 8 product pages</div><span class="qw-impact qi-high">High</span></div>
+          <div class="qw-item"><div class="qw-dot" style="background:#fbbf24"></div><div class="qw-text">Compress hero image — LCP is 4.2s</div><span class="qw-impact qi-med">Med</span></div>
+          <div class="qw-item"><div class="qw-dot" style="background:#fbbf24"></div><div class="qw-text">Add alt text to 12 product images</div><span class="qw-impact qi-med">Med</span></div>
+          <div class="qw-item"><div class="qw-dot" style="background:#2dd4bf"></div><div class="qw-text">Submit XML sitemap to Google Search Console</div><span class="qw-impact qi-low">Easy</span></div>
+        </div>
       </div>
-    </div>
 
-    <!-- RANK TRACKER -->
-    <div class="feat-row">
-      <div class="feat-text fr">
-        <div class="feat-chip">📈 Tool 3 of 6</div>
-        <div class="feat-title">Rank Tracker</div>
-        <div class="feat-desc">Watch your rankings climb every single day. Track every keyword daily on desktop and mobile. Get email alerts when you break into the top 10 — or when something drops.</div>
-        <ul class="feat-list">
-          <li><div class="fl-ck">✓</div>Daily position checks for all keywords</li>
-          <li><div class="fl-ck">✓</div>Desktop and mobile separately</li>
-          <li><div class="fl-ck">✓</div>Local rank tracking by city</li>
-          <li><div class="fl-ck">✓</div>Visibility score & historical trend charts</li>
-          <li><div class="fl-ck">✓</div>Email alerts for ranking changes</li>
-        </ul>
-        <a href="#pricing" class="btn btn-teal btn-lg">Track your rankings →</a>
-      </div>
-      <div class="mockup fr-r">
-        <div class="fbadge dark-badge" style="top:-18px;right:-18px;animation-delay:-1.2s"><span class="fb-ic">🚀</span><div><div class="fb-num">#1</div><span class="fb-lbl">New top ranking!</span></div></div>
-        <div class="fbadge dark-badge" style="bottom:-18px;left:-18px;animation-delay:-3.8s"><span class="fb-ic">📬</span><div><div class="fb-num">Alert</div><span class="fb-lbl">Top 10 reached</span></div></div>
-        <div class="mockup-frame">
-          <div class="mf-bar"><div class="mf-dots"><div class="mf-dot" style="background:#ff5f57"></div><div class="mf-dot" style="background:#febc2e"></div><div class="mf-dot" style="background:#28c840"></div></div><span class="mf-title">Rank Tracker · mybusiness.com</span></div>
-          <div class="mf-body">
-            <div class="rank-legend">
-              <div class="rl-item"><div class="rl-line" style="background:#14b8a6"></div>Your site</div>
-              <div class="rl-item"><div class="rl-line" style="background:#60a5fa;border-top:2px dashed #60a5fa;height:0"></div>Competitor avg</div>
-            </div>
-            <svg width="100%" height="80" viewBox="0 0 400 80" style="display:block;margin-bottom:12px" preserveAspectRatio="none">
-              <defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#14b8a6" stop-opacity=".15"/><stop offset="100%" stop-color="#14b8a6" stop-opacity="0"/></linearGradient></defs>
-              <path d="M0,62 C30,58 60,50 100,42 C140,34 170,26 210,18 C250,10 290,6 330,4 C360,2 385,1 400,1 L400,80 L0,80Z" fill="url(#rg)"/>
-              <path d="M0,62 C30,58 60,50 100,42 C140,34 170,26 210,18 C250,10 290,6 330,4 C360,2 385,1 400,1" fill="none" stroke="#14b8a6" stroke-width="2.5"/>
-              <path d="M0,70 C50,68 100,64 150,60 C200,56 250,54 300,52 C350,50 380,49 400,48" fill="none" stroke="#60a5fa" stroke-width="1.5" stroke-dasharray="5,3" opacity=".5"/>
-            </svg>
-            <div class="rank-rows">
-              <div class="rank-row"><span class="rr-pos">1</span><span class="rr-kw">best seo tool small biz</span><span class="rr-prev">4</span><span class="rr-ch ru">↑3</span><span class="rr-url">/homepage</span></div>
-              <div class="rank-row"><span class="rr-pos">4</span><span class="rr-kw">ahrefs alternative</span><span class="rr-prev">7</span><span class="rr-ch ru">↑3</span><span class="rr-url">/blog/alt</span></div>
-              <div class="rank-row"><span class="rr-pos">7</span><span class="rr-kw">rank tracking free</span><span class="rr-prev">8</span><span class="rr-ch ru">↑1</span><span class="rr-url">/features</span></div>
-              <div class="rank-row"><span class="rr-pos">12</span><span class="rr-kw">site audit tool</span><span class="rr-prev">12</span><span class="rr-ch req">—</span><span class="rr-url">/audit</span></div>
-            </div>
+      <!-- KEYWORD TABLE -->
+      <div class="kw-table-wrap rev d2">
+        <div class="kwt-header">
+          <div class="kwt-title">🔍 Top Keywords</div>
+          <div class="kwt-actions">
+            <button class="kwt-btn kwt-btn-ghost" onclick="sT('📥','Export CSV coming soon!')">Export CSV</button>
+            <button class="kwt-btn kwt-btn-primary" onclick="sT('🔍','Keyword Explorer opening...')">+ Add keywords</button>
           </div>
         </div>
+        <table class="kwt">
+          <thead>
+            <tr><th>Keyword</th><th>Volume</th><th>KD</th><th>Intent</th><th>Position</th><th>CPC</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-kw">best seo tool small business</td><td class="td-v">8,200</td><td><span class="td-kd kd-e">Easy 32</span></td><td><span class="td-int int-c">commercial</span></td><td><div class="td-pos">4 <span class="pos-up">↑3</span></div></td><td class="td-cpc">$4.20</td></tr>
+            <tr><td class="td-kw">ahrefs alternative cheap</td><td class="td-v">5,500</td><td><span class="td-kd kd-e">Easy 28</span></td><td><span class="td-int int-c">commercial</span></td><td><div class="td-pos">7 <span class="pos-up">↑2</span></div></td><td class="td-cpc">$7.10</td></tr>
+            <tr><td class="td-kw">how to rank on google fast</td><td class="td-v">22,000</td><td><span class="td-kd kd-m">Med 55</span></td><td><span class="td-int int-i">informational</span></td><td><div class="td-pos">14 <span class="pos-up">↑1</span></div></td><td class="td-cpc">$1.20</td></tr>
+            <tr><td class="td-kw">site audit tool free</td><td class="td-v">4,400</td><td><span class="td-kd kd-e">Easy 30</span></td><td><span class="td-int int-t">transactional</span></td><td><div class="td-pos">11 <span class="pos-up">↑4</span></div></td><td class="td-cpc">$3.80</td></tr>
+            <tr><td class="td-kw">keyword research free tool</td><td class="td-v">6,600</td><td><span class="td-kd kd-e">Easy 38</span></td><td><span class="td-int int-t">transactional</span></td><td><div class="td-pos">19 <span class="pos-dn">↓1</span></div></td><td class="td-cpc">$3.10</td></tr>
+            <tr><td class="td-kw">rank tracker software</td><td class="td-v">3,300</td><td><span class="td-kd kd-m">Med 42</span></td><td><span class="td-int int-c">commercial</span></td><td><div class="td-pos">23 <span class="pos-up">↑6</span></div></td><td class="td-cpc">$5.20</td></tr>
+          </tbody>
+        </table>
       </div>
-    </div>
 
-    <!-- AI BRIEF -->
-    <div class="feat-row flip">
-      <div class="feat-text fr-r">
-        <div class="feat-chip">🤖 Tool 4 of 6</div>
-        <div class="feat-title">AI Content Brief</div>
-        <div class="feat-desc">Enter a target keyword. Get a full content brief powered by Claude AI in 10 seconds — headings, questions, competitor gaps, target word count, and topical clusters. Export to Notion, Docs, or PDF.</div>
-        <ul class="feat-list">
-          <li><div class="fl-ck">✓</div>Recommended H2/H3 heading structure</li>
-          <li><div class="fl-ck">✓</div>People Also Ask questions from Google</li>
-          <li><div class="fl-ck">✓</div>Competitor content gap analysis</li>
-          <li><div class="fl-ck">✓</div>Target word count & readability score</li>
-          <li><div class="fl-ck">✓</div>Export to Notion, Google Docs, or PDF</li>
-        </ul>
-        <a href="#pricing" class="btn btn-teal btn-lg">Generate your first brief →</a>
-      </div>
-      <div class="mockup fr">
-        <div class="fbadge dark-badge" style="top:-18px;right:-18px;animation-delay:-.5s"><span class="fb-ic">⚡</span><div><div class="fb-num">8 sec</div><span class="fb-lbl">Brief generated</span></div></div>
-        <div class="fbadge dark-badge" style="bottom:-18px;left:-18px;animation-delay:-4s"><span class="fb-ic">📝</span><div><div class="fb-num">2,400</div><span class="fb-lbl">word target set</span></div></div>
-        <div class="mockup-frame">
-          <div class="mf-bar"><div class="mf-dots"><div class="mf-dot" style="background:#ff5f57"></div><div class="mf-dot" style="background:#febc2e"></div><div class="mf-dot" style="background:#28c840"></div></div><span class="mf-title">AI Content Brief · zenarank.com</span></div>
-          <div class="mf-body">
-            <div class="brief-layout">
-              <div class="brief-input-side">
-                <div class="brief-inp-row"><div class="bir-label">Target Keyword</div><div class="bir-val">best seo tools for small business</div></div>
-                <div class="brief-inp-row"><div class="bir-label">Content Type</div><div class="bir-val">Comprehensive guide</div></div>
-                <div class="brief-inp-row"><div class="bir-label">Target Audience</div><div class="bir-val">Small business owners</div></div>
-                <div class="brief-gen-btn">✦ Generating brief...</div>
-                <div class="brief-meta-row">
-                  <div class="bm"><div class="bm-v">2,400</div><div class="bm-l">Target words</div></div>
-                  <div class="bm"><div class="bm-v" style="color:#60a5fa">Commercial</div><div class="bm-l">Intent</div></div>
-                </div>
-              </div>
-              <div class="brief-output-side">
-                <div class="bo-section">
-                  <div class="bos-title">H2 Structure</div>
-                  <div class="bos-item">What to look for in an SEO tool</div>
-                  <div class="bos-item">Top 7 tools compared (with pricing)</div>
-                  <div class="bos-item">Best pick by budget</div>
-                  <div class="bos-item">Our verdict</div>
-                </div>
-                <div class="bo-section">
-                  <div class="bos-title">Semantic Topics</div>
-                  <span class="bos-tag">keyword research</span><span class="bos-tag">site audit</span><span class="bos-tag">rank tracking</span><span class="bos-tag">backlinks</span><span class="bos-tag">on-page SEO</span>
-                </div>
-              </div>
-            </div>
+      <!-- RECENT ISSUES -->
+      <div class="dash-card rev d3" style="padding:0;overflow:hidden">
+        <div class="kwt-header">
+          <div class="kwt-title">🕷️ Recent Audit Issues</div>
+          <div class="kwt-actions">
+            <button class="kwt-btn kwt-btn-ghost" onclick="sT('🕷️','Running new audit...')">Re-crawl site</button>
+            <button class="kwt-btn kwt-btn-primary" onclick="sT('📋','Full report coming soon!')">Full report</button>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- BACKLINKS -->
-    <div class="feat-row">
-      <div class="feat-text fr">
-        <div class="feat-chip">🔗 Tool 5 of 6</div>
-        <div class="feat-title">Backlink Analyser</div>
-        <div class="feat-desc">Understand your domain's authority at a glance. Track Domain Rating, referring domains, and total backlinks. Get alerts for new links gained and lost, and spot toxic links before they hurt you.</div>
-        <ul class="feat-list">
-          <li><div class="fl-ck">✓</div>Domain Rating & referring domains</li>
-          <li><div class="fl-ck">✓</div>New and lost link daily alerts</li>
-          <li><div class="fl-ck">✓</div>Anchor text distribution analysis</li>
-          <li><div class="fl-ck">✓</div>Toxic link detection & disavow export</li>
-          <li><div class="fl-ck">✓</div>Competitor backlink comparison</li>
-        </ul>
-        <a href="#pricing" class="btn btn-teal btn-lg">Analyse your backlinks →</a>
-      </div>
-      <div class="mockup fr-r">
-        <div class="fbadge dark-badge" style="top:-18px;right:-18px;animation-delay:-1.8s"><span class="fb-ic">🔗</span><div><div class="fb-num">DR 42</div><span class="fb-lbl">+6 this month</span></div></div>
-        <div class="fbadge dark-badge" style="bottom:-18px;left:-18px;animation-delay:-3.2s"><span class="fb-ic">🆕</span><div><div class="fb-num">+28</div><span class="fb-lbl">New links today</span></div></div>
-        <div class="mockup-frame">
-          <div class="mf-bar"><div class="mf-dots"><div class="mf-dot" style="background:#ff5f57"></div><div class="mf-dot" style="background:#febc2e"></div><div class="mf-dot" style="background:#28c840"></div></div><span class="mf-title">Backlinks · mybusiness.com</span></div>
-          <div class="mf-body">
-            <div class="bl-metrics">
-              <div class="blm"><div class="blm-n">42</div><div class="blm-l">Domain Rating</div><div class="blm-ch">↑ +6 mo</div></div>
-              <div class="blm"><div class="blm-n">1.2K</div><div class="blm-l">Ref Domains</div><div class="blm-ch">↑ +48</div></div>
-              <div class="blm"><div class="blm-n">8.4K</div><div class="blm-l">Total Links</div><div class="blm-ch">↑ +312</div></div>
-            </div>
-            <div class="bl-chart">
-              <div class="bl-chart-lbl">Link growth · Last 12 months</div>
-              <div class="bl-bars" id="blbars"></div>
-            </div>
-            <div class="anc-rows">
-              <div class="anc-row"><span class="anc-nm">brand name</span><span class="anc-pct">28%</span><div class="anc-bar-wrap"><div class="anc-bar-fill" style="width:90%"></div></div></div>
-              <div class="anc-row"><span class="anc-nm">seo tools</span><span class="anc-pct">18%</span><div class="anc-bar-wrap"><div class="anc-bar-fill" style="width:58%"></div></div></div>
-              <div class="anc-row"><span class="anc-nm">click here</span><span class="anc-pct">12%</span><div class="anc-bar-wrap"><div class="anc-bar-fill" style="width:38%"></div></div></div>
-              <div class="anc-row"><span class="anc-nm">zenarank.com</span><span class="anc-pct">9%</span><div class="anc-bar-wrap"><div class="anc-bar-fill" style="width:28%"></div></div></div>
-            </div>
-          </div>
+        <div id="issues-list">
+          <div class="iss-row"><div class="iss-sev is-c"></div><div class="iss-info"><div class="iss-title">Missing meta description</div><div class="iss-url">/products/checkout — affects 8 pages</div></div><button class="iss-fix-btn" onclick="fixIssue(this)">Mark Fixed</button></div>
+          <div class="iss-row"><div class="iss-sev is-c"></div><div class="iss-info"><div class="iss-title">Broken internal link (404)</div><div class="iss-url">/blog/old-post-2024</div></div><button class="iss-fix-btn" onclick="fixIssue(this)">Mark Fixed</button></div>
+          <div class="iss-row"><div class="iss-sev is-c"></div><div class="iss-info"><div class="iss-title">Page load speed &gt;4s (LCP fail)</div><div class="iss-url">/homepage — 4.2s load time</div></div><button class="iss-fix-btn" onclick="fixIssue(this)">Mark Fixed</button></div>
+          <div class="iss-row"><div class="iss-sev is-w"></div><div class="iss-info"><div class="iss-title">Images missing alt text</div><div class="iss-url">/gallery — 12 images affected</div></div><button class="iss-fix-btn" onclick="fixIssue(this)">Mark Fixed</button></div>
+          <div class="iss-row"><div class="iss-sev is-w"></div><div class="iss-info"><div class="iss-title">Redirect chain (3 hops)</div><div class="iss-url">/old-url → /newer → /newest</div></div><button class="iss-fix-btn" onclick="fixIssue(this)">Mark Fixed</button></div>
+          <div class="iss-row"><div class="iss-sev is-i"></div><div class="iss-info"><div class="iss-title">No sitemap.xml found</div><div class="iss-url">/ — root domain</div></div><button class="iss-fix-btn" onclick="fixIssue(this)">Mark Fixed</button></div>
         </div>
       </div>
-    </div>
 
-    <!-- COMPETITOR GAP -->
-    <div class="feat-row flip">
-      <div class="feat-text fr-r">
-        <div class="feat-chip">🏆 Tool 6 of 6</div>
-        <div class="feat-title">Competitor Gap</div>
-        <div class="feat-desc">See exactly where your competitors are beating you — and find the keywords they rank for that you don't. Turn their strengths into your next content plan.</div>
-        <ul class="feat-list">
-          <li><div class="fl-ck">✓</div>Side-by-side domain comparison</li>
-          <li><div class="fl-ck">✓</div>Keyword gap — what they rank for, you don't</li>
-          <li><div class="fl-ck">✓</div>Content gap analysis</li>
-          <li><div class="fl-ck">✓</div>Top pages by estimated traffic</li>
-          <li><div class="fl-ck">✓</div>One-click add gaps to keyword tracker</li>
-        </ul>
-        <a href="#pricing" class="btn btn-teal btn-lg">Find your gaps →</a>
-      </div>
-      <div class="mockup fr">
-        <div class="fbadge dark-badge" style="top:-18px;right:-18px;animation-delay:-2.2s"><span class="fb-ic">🎯</span><div><div class="fb-num">47</div><span class="fb-lbl">gaps found</span></div></div>
-        <div class="fbadge dark-badge" style="bottom:-18px;left:-18px;animation-delay:-.3s"><span class="fb-ic">💡</span><div><div class="fb-num">High opp</div><span class="fb-lbl">12 easy wins</span></div></div>
-        <div class="mockup-frame">
-          <div class="mf-bar"><div class="mf-dots"><div class="mf-dot" style="background:#ff5f57"></div><div class="mf-dot" style="background:#febc2e"></div><div class="mf-dot" style="background:#28c840"></div></div><span class="mf-title">Competitor Gap · mybusiness.com vs 2 competitors</span></div>
-          <div class="mf-body">
-            <div class="comp-grid">
-              <div class="comp-side">
-                <div class="comp-side-title">Domain Comparison</div>
-                <div class="comp-domain-row"><span class="comp-d-name">mybusiness.com</span><div class="comp-bar-w"><div class="comp-bar-f" style="width:62%;background:#14b8a6"></div></div><span class="comp-score">62</span></div>
-                <div class="comp-domain-row"><span class="comp-d-name">competitor1.com</span><div class="comp-bar-w"><div class="comp-bar-f" style="width:78%;background:#60a5fa"></div></div><span class="comp-score">78</span></div>
-                <div class="comp-domain-row"><span class="comp-d-name">competitor2.com</span><div class="comp-bar-w"><div class="comp-bar-f" style="width:55%;background:#a78bfa"></div></div><span class="comp-score">55</span></div>
-              </div>
-              <div class="comp-side">
-                <div class="comp-side-title">Keyword Gaps — They rank, you don't</div>
-                <div class="gap-kw-row"><span class="gap-kw-nm">seo tool comparison 2026</span><span class="gap-kw-opp gap-h">High</span></div>
-                <div class="gap-kw-row"><span class="gap-kw-nm">best keyword research free</span><span class="gap-kw-opp gap-h">High</span></div>
-                <div class="gap-kw-row"><span class="gap-kw-nm">site audit checklist</span><span class="gap-kw-opp gap-m">Med</span></div>
-                <div class="gap-kw-row"><span class="gap-kw-nm">rank tracker software review</span><span class="gap-kw-opp gap-h">High</span></div>
-                <div class="gap-kw-row"><span class="gap-kw-nm">seo for ecommerce</span><span class="gap-kw-opp gap-m">Med</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </div><!-- /dash-main -->
+  </div><!-- /dash-body -->
+</div><!-- /view-dashboard -->
 
-  </div>
-</section>
-
-<!-- PRICING -->
-<section class="pricing-sec" id="pricing">
-  <div style="max-width:1100px;margin:0 auto">
-    <div style="text-align:center" class="rev">
-      <div class="lbl" style="justify-content:center">Pricing</div>
-      <h2 class="sh" style="text-align:center">Simple, honest pricing</h2>
-      <p class="sp" style="margin:0 auto;text-align:center">No hidden fees. No features locked behind upsells. Cancel anytime.</p>
-      <div class="pricing-toggle">
-        <span class="tl2 act" id="mll">Monthly</span>
-        <div class="tt" onclick="tB()"><div class="tth" id="tth"></div></div>
-        <span class="tl2" id="yll">Annual <span class="sbg">SAVE 30%</span></span>
-      </div>
-    </div>
-    <div class="pg">
-      <!-- STARTER -->
-      <div class="pc rev d1">
-        <div class="pc-topbar"></div>
-        <div class="ph">
-          <div class="pn2">Starter</div>
-          <div class="pp"><sup>$</sup><span class="pn" data-mo="29" data-yr="20">29</span><sub>/mo</sub></div>
-          <div class="ptag">Perfect for one business. Get your SEO foundations right.</div>
-        </div>
-        <button class="pcta cta-out" onclick="sT('🎉','Free trial — checkout coming soon!')">Get started free</button>
-        <div class="pdiv"></div>
-        <ul class="pfs">
-          <li><div class="pck">✓</div><div class="pl-txt">1 project / website<span class="pl-tip">Track one domain end-to-end</span></div></li>
-          <li><div class="pck">✓</div><div class="pl-txt">100 keywords tracked<span class="pl-tip">Daily position checks</span></div></li>
-          <li><div class="pck">✓</div><div class="pl-txt">Site audit — 500 pages<span class="pl-tip">Full technical SEO crawl</span></div></li>
-          <li><div class="pck">✓</div><div class="pl-txt">5 AI content briefs / mo<span class="pl-tip">Claude-powered in 10 seconds</span></div></li>
-          <li><div class="pck">✓</div><div class="pl-txt">Backlink overview<span class="pl-tip">DR, referring domains, anchors</span></div></li>
-          <li><div class="pck">✓</div><div class="pl-txt">Weekly rank reports by email<span class="pl-tip">Summary of position changes</span></div></li>
-        </ul>
-        <div class="extra" id="ex1">
-          <ul class="pfs" style="padding-top:0">
-            <li><div class="pck">✓</div><div class="pl-txt">On-page optimizer<span class="pl-tip">Score any page vs target keyword</span></div></li>
-            <li><div class="pck">✓</div><div class="pl-txt">AI keyword clustering<span class="pl-tip">Groups related keywords automatically</span></div></li>
-            <li><div class="pck">✓</div><div class="pl-txt">14-day free trial<span class="pl-tip">No credit card needed</span></div></li>
-            <li><div class="pck">✓</div><div class="pl-txt">Email support<span class="pl-tip">Response within 24 hours</span></div></li>
-          </ul>
-        </div>
-        <button class="see-more" id="sm1" onclick="tEx('ex1','sm1','smt1')"><span id="smt1">See all features</span> <span class="arr">▼</span></button>
-        <div class="pfoot">14-day free trial · No credit card required</div>
-      </div>
-
-      <!-- PRO -->
-      <div class="pc pop rev d2">
-        <div class="pc-topbar"></div>
-        <div class="pop-pill">⭐ Most Popular</div>
-        <div class="ph" style="padding-top:36px">
-          <div class="pn2">Pro</div>
-          <div class="pp"><sup>$</sup><span class="pn" data-mo="79" data-yr="55">79</span><sub>/mo</sub></div>
-          <div class="ptag">For growing businesses that take SEO seriously.</div>
-        </div>
-        <button class="pcta cta-wh" onclick="sT('🚀','Pro trial — checkout coming soon!')">Start free trial</button>
-        <div class="pdiv"></div>
-        <ul class="pfs">
-          <li><div class="pck">✓</div><div class="pl-txt">5 projects<span class="pl-tip">Track 5 domains simultaneously</span></div></li>
-          <li><div class="pck">✓</div><div class="pl-txt">500 keywords tracked<span class="pl-tip">5× more than Starter</span></div></li>
-          <li><div class="pck">✓</div><div class="pl-txt">Unlimited audit pages<span class="pl-tip">No cap on crawling</span></div></li>
-          <li><div class="pck">✓</div><div class="pl-txt">25 AI content briefs / mo<span class="pl-tip">5× more than Starter</span></div></li>
-          <li><div class="pck">✓</div><div class="pl-txt">Competitor gap analysis<span class="pl-tip">Find their keywords, beat them</span></div></li>
-          <li><div class="pck">✓</div><div class="pl-txt">Local SEO rank tracking<span class="pl-tip">Track by city, not just country</span></div></li>
-        </ul>
-        <div class="extra" id="ex2">
-          <ul class="pfs" style="padding-top:0">
-            <li><div class="pck">✓</div><div class="pl-txt">Priority email support<span class="pl-tip">Response within 4 hours</span></div></li>
-            <li><div class="pck">✓</div><div class="pl-txt">GSC data integration<span class="pl-tip">Connect Google Search Console</span></div></li>
-            <li><div class="pck">✓</div><div class="pl-txt">Scheduled weekly crawls<span class="pl-tip">Auto-audit every Monday</span></div></li>
-            <li><div class="pck">✓</div><div class="pl-txt">CSV / PDF export<span class="pl-tip">Download all your data</span></div></li>
-            <li><div class="pck">✓</div><div class="pl-txt">Backlink monitoring alerts<span class="pl-tip">New + lost link notifications</span></div></li>
-          </ul>
-        </div>
-        <button class="see-more" id="sm2" onclick="tEx('ex2','sm2','smt2')"><span id="smt2">See all features</span> <span class="arr">▼</span></button>
-        <div class="pfoot">14-day free trial · No credit card required</div>
-      </div>
-
-      <!-- AGENCY -->
-      <div class="pc rev d3">
-        <div class="pc-topbar"></div>
-        <div class="ph">
-          <div class="pn2">Agency</div>
-          <div class="pp"><sup>$</sup><span class="pn" data-mo="149" data-yr="104">149</span><sub>/mo</sub></div>
-          <div class="ptag">For agencies managing multiple clients at scale.</div>
-        </div>
-        <button class="pcta cta-out" onclick="sT('💼','Agency — email hello@zenarank.com!')">Contact sales</button>
-        <div class="pdiv"></div>
-        <ul class="pfs">
-          <li><div class="pck">✓</div><div class="pl-txt">Unlimited projects<span class="pl-tip">Add as many clients as needed</span></div></li>
-          <li><div class="pck">✓</div><div class="pl-txt">Unlimited keywords<span class="pl-tip">No tracking cap ever</span></div></li>
-          <li><div class="pck">✓</div><div class="pl-txt">White-label PDF reports<span class="pl-tip">Your logo, your brand</span></div></li>
-          <li><div class="pck">✓</div><div class="pl-txt">Public API access<span class="pl-tip">Pull data into your own tools</span></div></li>
-          <li><div class="pck">✓</div><div class="pl-txt">5 team seats<span class="pl-tip">Invite your whole team</span></div></li>
-          <li><div class="pck">✓</div><div class="pl-txt">GSC + GA4 integration<span class="pl-tip">Full analytics connection</span></div></li>
-        </ul>
-        <div class="extra" id="ex3">
-          <ul class="pfs" style="padding-top:0">
-            <li><div class="pck">✓</div><div class="pl-txt">Dedicated account manager<span class="pl-tip">A real human, always available</span></div></li>
-            <li><div class="pck">✓</div><div class="pl-txt">Custom integrations<span class="pl-tip">Zapier, Make, webhooks</span></div></li>
-            <li><div class="pck">✓</div><div class="pl-txt">Bulk keyword import/export<span class="pl-tip">Manage thousands at once</span></div></li>
-            <li><div class="pck">✓</div><div class="pl-txt">Priority phone support<span class="pl-tip">Direct line to the team</span></div></li>
-            <li><div class="pck">✓</div><div class="pl-txt">Custom onboarding session<span class="pl-tip">1-hour call with our team</span></div></li>
-          </ul>
-        </div>
-        <button class="see-more" id="sm3" onclick="tEx('ex3','sm3','smt3')"><span id="smt3">See all features</span> <span class="arr">▼</span></button>
-        <div class="pfoot">14-day free trial · Cancel anytime</div>
-      </div>
-    </div>
-    <p style="text-align:center;margin-top:18px;font-size:13px;color:var(--mu)">All plans · 14-day free trial · No credit card required · 30-day money-back guarantee</p>
-  </div>
-</section>
-
-<!-- TESTIMONIALS -->
-<section class="testi" id="reviews">
-  <div style="max-width:1100px;margin:0 auto" class="rev">
-    <div class="lbl">Customer stories</div>
-    <h2 class="sh">Real businesses. <span class="hi">Real results.</span></h2>
-    <p class="sp">What founders say after their first 30 days with ZenaRank.</p>
-    <div class="tg">
-      <div class="tc rev d1"><div class="tc-q">"</div><div class="tc-stars">★★★★★</div><p class="tc-text">Went from page 4 to top 3 in 6 weeks. ZenaRank showed me exactly what was killing my rankings. The AI briefs cut my content writing time in half. Worth every cent.</p><div class="tc-author"><div class="tc-av" style="background:linear-gradient(135deg,var(--t),#0f766e)">S</div><div><div class="tc-name">Sarah Chen</div><div class="tc-role">Founder, Bloom Boutique · Helsinki</div></div></div></div>
-      <div class="tc rev d2"><div class="tc-q">"</div><div class="tc-stars">★★★★★</div><p class="tc-text">I've tried Ahrefs and Semrush. Both built for agencies. ZenaRank is built for people who have a business to run. Setup was 5 minutes. I was ranking in 3 weeks. Genuinely impressed.</p><div class="tc-author"><div class="tc-av" style="background:linear-gradient(135deg,#0ea5e9,#6366f1)">M</div><div><div class="tc-name">Marcus Webb</div><div class="tc-role">CEO, Stackable.io · London</div></div></div></div>
-      <div class="tc rev d3"><div class="tc-q">"</div><div class="tc-stars">★★★★★</div><p class="tc-text">The backlink analyser found 3 toxic links dragging my DR down for months. Disavowed them. DR went from 22 to 38 in 8 weeks. Best $79/mo I spend on my whole business.</p><div class="tc-author"><div class="tc-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">A</div><div><div class="tc-name">Aisha Patel</div><div class="tc-role">Marketing Lead, Craft Co. · Toronto</div></div></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- FAQ -->
-<section class="faq-sec" id="faq">
-  <div style="max-width:1100px;margin:0 auto">
-    <div style="text-align:center" class="rev">
-      <div class="lbl" style="justify-content:center">FAQ</div>
-      <h2 class="sh" style="text-align:center">Got questions? <span class="hi">We've got answers.</span></h2>
-    </div>
-    <div class="faq-g rev d1">
-      <div class="fi"><div class="fq" onclick="tF(this)"><span>Is there really no credit card required for the trial?</span><span class="fic">+</span></div><div class="fa"><div class="fa-in">None at all. Sign up with just your email, use every feature for 14 days, and we only ask for payment details when you decide to stay. No surprise charges, ever.</div></div></div>
-      <div class="fi"><div class="fq" onclick="tF(this)"><span>How is ZenaRank different from Ahrefs or Semrush?</span><span class="fic">+</span></div><div class="fa"><div class="fa-in">Ahrefs starts at $129/mo and Semrush at $139/mo — both designed for SEO agencies with a full team. ZenaRank starts at $29/mo and is built for founders who want clear, actionable insights without a steep learning curve. We focus on the 20% of features that drive 80% of results, and AI guides you on what to fix first.</div></div></div>
-      <div class="fi"><div class="fq" onclick="tF(this)"><span>What exactly is in each plan?</span><span class="fic">+</span></div><div class="fa"><div class="fa-in"><strong>Starter ($29/mo)</strong> — 1 project, 100 keywords, 500-page audit, 5 AI briefs/month, backlink overview. Perfect for one business.<br><br><strong>Pro ($79/mo)</strong> — 5 projects, 500 keywords, unlimited audit, 25 AI briefs, competitor gap, local SEO, GSC. Best for growing businesses.<br><br><strong>Agency ($149/mo)</strong> — Unlimited everything, white-label reports, API, 5 team seats, GA4 + GSC, dedicated manager. Built for agencies.</div></div></div>
-      <div class="fi"><div class="fq" onclick="tF(this)"><span>How does the AI Content Brief work?</span><span class="fic">+</span></div><div class="fa"><div class="fa-in">Enter a target keyword. Our AI (powered by Claude) analyses the top-ranking pages on Google, identifies content gaps, extracts PAA questions, and produces a structured brief with H2 structure, target word count, competitor insights, and topical clusters — in about 10 seconds. Export to Notion, Google Docs, or PDF.</div></div></div>
-      <div class="fi"><div class="fq" onclick="tF(this)"><span>How accurate is the rank tracking?</span><span class="fic">+</span></div><div class="fa"><div class="fa-in">We check rankings daily using real Google search results, not cached data. Results are accurate to within 1–2 positions of what you'd see manually. We track both desktop and mobile, and support local rank tracking by city.</div></div></div>
-      <div class="fi"><div class="fq" onclick="tF(this)"><span>Do you offer refunds?</span><span class="fic">+</span></div><div class="fa"><div class="fa-in">Yes — 30-day money-back guarantee. If you're not satisfied within the first 30 days of a paid plan, email hello@zenarank.com for a full refund, no questions asked.</div></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="cta-sec rev">
-  <div class="cta-blob"></div>
-  <div class="lbl" style="justify-content:center">Get started today</div>
-  <h2>Less chaos. <em>More rankings.</em></h2>
-  <p class="cta-p">Join 2,400+ small businesses who chose calm, clear SEO over overwhelming agency tools.</p>
-  <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap">
-    <a href="#pricing" class="btn btn-teal btn-xl">Start free — no card needed <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-    <a href="#features" class="btn btn-ghost btn-xl">See all features ↑</a>
-  </div>
-  <p style="font-size:13px;color:var(--sub);margin-top:18px">14-day free trial · 30-day money-back guarantee · Cancel anytime</p>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="ft-top">
-    <div>
-      <a class="logo" href="#"><div class="logo-ic">Z</div><span class="logo-nm" style="color:#fff">Zena<em>Rank</em></span></a>
-      <p class="ft-desc">Calm, powerful SEO for small businesses. No bloat, no confusion — just rankings. Built for founders who have a business to run.</p>
-      <a href="mailto:hello@zenarank.com" style="display:inline-block;margin-top:14px;font-size:12px;color:rgba(255,255,255,.22);text-decoration:none;padding:6px 12px;background:rgba(255,255,255,.05);border-radius:8px;transition:color .2s" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='rgba(255,255,255,.22)'">📧 hello@zenarank.com</a>
-    </div>
-    <div><div class="ft-ch">Product</div><ul class="ft-ls"><li><a href="#features">Features</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#" onclick="sT('📋','Changelog coming soon!')">Changelog</a></li><li><a href="#" onclick="sT('🗺️','Roadmap coming soon!')">Roadmap</a></li><li><a href="#" onclick="sT('📖','API docs coming soon!')">API Docs</a></li></ul></div>
-    <div><div class="ft-ch">Company</div><ul class="ft-ls"><li><a href="#">About</a></li><li><a href="#" onclick="sT('✍️','Blog launching soon!')">Blog</a></li><li><a href="#" onclick="sT('💼','We\'re hiring!')">Careers</a></li><li><a href="mailto:hello@zenarank.com">Contact</a></li></ul></div>
-    <div><div class="ft-ch">Legal</div><ul class="ft-ls"><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">GDPR</a></li><li><a href="#">Cookies</a></li></ul></div>
-  </div>
-  <div class="ft-bot">
-    <span class="ft-copy">© 2026 ZenaRank, Inc. All rights reserved. · zenarank.com</span>
-    <span class="ft-copy">🌱 Built for small businesses worldwide</span>
-  </div>
-</footer>
+<style>
+@keyframes loadProgress{from{width:0}to{width:100%}}
+</style>
 
 <script>
-/* CURSOR */
+/* ── CURSOR ── */
 const cur=document.getElementById('cur'),curR=document.getElementById('cur-r');
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
 (function loop(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(loop)})();
-document.querySelectorAll('a,button,.pc,.tc,.fi,.stat-c,.kpi,.kw-tbl-r,.kwt-r,.iss,.rank-row,.anc-row,.gap-kw-row,.comp-domain-row,.audit-ring').forEach(el=>{
+document.querySelectorAll('a,button,.sb-item,.dn-link,.kpi-card,.tc,.qw-item,.iss-row,.kwt tr,.dd-item,.sb-project').forEach(el=>{
   el.addEventListener('mouseenter',()=>{cur.style.width='15px';cur.style.height='15px';cur.style.background='#0f766e';curR.style.width='50px';curR.style.height='50px';curR.style.borderColor='#14b8a6';curR.style.opacity='.8'});
-  el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';cur.style.background='#14b8a6';curR.style.width='36px';curR.style.height='36px';curR.style.borderColor='#2dd4bf';curR.style.opacity='.45'});
+  el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';cur.style.background='#14b8a6';curR.style.width='36px';curR.style.height='36px';curR.style.borderColor='#2dd4bf';curR.style.opacity='.4'});
 });
 
-/* NAV */
-window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('solid',scrollY>10));
+/* ── NAV ── */
+window.addEventListener('scroll',()=>document.getElementById('nav')?.classList.toggle('solid',scrollY>10));
 
-/* REVEAL */
-const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');ro.unobserve(e.target)}}),{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+/* ── REVEAL ── */
+const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');ro.unobserve(e.target)}}),{threshold:.1});
 document.querySelectorAll('.rev').forEach(el=>ro.observe(el));
 
-/* FEATURE ROW REVEAL */
-const fro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('.fr,.fr-r').forEach(el=>el.classList.add('vis'));fro.unobserve(e.target)}}),{threshold:.12});
-document.querySelectorAll('.feat-row').forEach(el=>fro.observe(el));
-
-/* TOAST */
-let tt;function sT(ic,msg){document.getElementById('ti').textContent=ic;document.getElementById('tm').textContent=msg;const t=document.getElementById('toast');t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),3800)}
+/* ── TOAST ── */
+let tt;
+function sT(ic,msg){document.getElementById('ti').textContent=ic;document.getElementById('tm').textContent=msg;const t=document.getElementById('toast');t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),3800)}
 function hT(){document.getElementById('toast').classList.remove('show')}
 
-/* STATS */
-function aC(el,t,su,dc=0){const d=1600,s=performance.now();(function tk(n){const p=Math.min((n-s)/d,1),e=1-Math.pow(1-p,3),v=t*e;el.textContent=(dc?v.toFixed(dc):Math.floor(v).toLocaleString())+su;if(p<1)requestAnimationFrame(tk);else el.textContent=(dc?t.toFixed(dc):t.toLocaleString())+su})(s)}
-new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){aC(document.getElementById('s1'),2400,'+');aC(document.getElementById('s2'),11,'B+');aC(document.getElementById('s4'),62,'%')}}),{threshold:.5}).observe(document.querySelector('.stats'));
+/* ── AUTH STATE ── */
+let currentUser = JSON.parse(localStorage.getItem('zr_user')||'null');
 
-/* PRICING TOGGLE */
-let isA=false;
-function tB(){isA=!isA;document.getElementById('tth').classList.toggle('on',isA);document.getElementById('mll').classList.toggle('act',!isA);document.getElementById('yll').classList.toggle('act',isA);document.querySelectorAll('.pn').forEach(e=>e.textContent=isA?e.dataset.yr:e.dataset.mo);sT(isA?'💰':'📅',isA?'Annual billing — saving 30%!':'Monthly billing selected')}
+/* ── OPEN/CLOSE MODAL ── */
+function openAuth(tab='signin'){
+  document.getElementById('authModal').classList.add('open');
+  switchTab(tab);
+  document.body.style.overflow='hidden';
+}
+function closeAuth(){
+  document.getElementById('authModal').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.getElementById('authModal').addEventListener('click',function(e){
+  if(e.target===this)closeAuth();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAuth()});
 
-/* SEE MORE */
-function tEx(exId,btnId,txtId){const ex=document.getElementById(exId);const btn=document.getElementById(btnId);const txt=document.getElementById(txtId);const open=ex.classList.toggle('open');btn.classList.toggle('open',open);txt.textContent=open?'Show less':'See all features'}
+/* ── SWITCH TAB ── */
+function switchTab(tab){
+  ['signin','signup','forgot','success'].forEach(t=>{
+    document.getElementById('form-'+t).style.display='none';
+    document.getElementById('tab-signin')?.classList.remove('on');
+    document.getElementById('tab-signup')?.classList.remove('on');
+  });
+  document.getElementById('form-'+tab).style.display='block';
+  if(tab==='signin'){
+    document.getElementById('tab-signin').classList.add('on');
+    document.getElementById('modal-title').textContent='Welcome back';
+    document.getElementById('modal-sub').textContent='Sign in to your ZenaRank account';
+  }else if(tab==='signup'){
+    document.getElementById('tab-signup').classList.add('on');
+    document.getElementById('modal-title').textContent='Create your account';
+    document.getElementById('modal-sub').textContent='Start your free 14-day trial today';
+  }else if(tab==='forgot'){
+    document.getElementById('modal-title').textContent='Reset password';
+    document.getElementById('modal-sub').textContent='We\'ll send you a reset link';
+  }
+}
 
-/* FAQ */
-function tF(q){const item=q.parentElement;const ans=item.querySelector('.fa');const isOpen=item.classList.contains('open');document.querySelectorAll('.fi.open').forEach(i=>{i.classList.remove('open');i.querySelector('.fa').style.maxHeight='0'});if(!isOpen){item.classList.add('open');ans.style.maxHeight=ans.scrollHeight+'px'}}
+function showForgot(){switchTab('forgot')}
 
-/* BACKLINK BAR CHART */
-const bbd=document.getElementById('blbars');if(bbd){const vals=[20,28,35,42,48,55,62,72,80,90,95,100];vals.forEach((v,i)=>{const b=document.createElement('div');b.className='bl-bar';b.style.cssText=`height:${v/2}%;background:${i===vals.length-1?'#14b8a6':'rgba(20,184,166,'+(.2+i*.07)+')'};flex:1;border-radius:3px 3px 0 0`;bbd.appendChild(b)})}
+/* ── VALIDATION ── */
+function showErr(id,msg){const el=document.getElementById(id);el.textContent=msg;el.classList.add('show');const inp=el.previousElementSibling;if(inp&&inp.classList.contains('form-input'))inp.classList.add('error')}
+function clearErr(id){const el=document.getElementById(id);if(el){el.classList.remove('show');const inp=el.previousElementSibling;if(inp&&inp.classList.contains('form-input'))inp.classList.remove('error','success')}}
+function setLoading(btnId,spinId,txtId,loading){
+  document.getElementById(btnId).disabled=loading;
+  document.getElementById(spinId).style.display=loading?'block':'none';
+  document.getElementById(txtId).style.display=loading?'none':'block';
+}
 
-/* HERO COUNTER */
-let hc=0;const ht=2400;const hd=2000;const hs=Date.now();(function tick(){const e=(Date.now()-hs)/hd;if(e<1){document.getElementById('hc').textContent=Math.floor(ht*e).toLocaleString();requestAnimationFrame(tick)}else document.getElementById('hc').textContent=ht.toLocaleString()})();
+/* ── SIGN IN ── */
+function handleSignIn(){
+  const email=document.getElementById('si-email').value.trim();
+  const pass=document.getElementById('si-pass').value;
+  let valid=true;
+  if(!email||!email.includes('@')){showErr('si-email-err','Please enter a valid email address');valid=false}
+  if(!pass||pass.length<6){showErr('si-pass-err','Password must be at least 6 characters');valid=false}
+  if(!valid)return;
+  setLoading('si-btn','si-spin','si-txt',true);
+  // Simulate auth (replace with Supabase call)
+  setTimeout(()=>{
+    setLoading('si-btn','si-spin','si-txt',false);
+    const name=email.split('@')[0].charAt(0).toUpperCase()+email.split('@')[0].slice(1);
+    loginSuccess({name,email});
+  },1400);
+}
 
-/* AUDIT RING ANIMATE */
-new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.style.transition='stroke-dashoffset 1.5s ease-out';e.target.style.strokeDashoffset='69'}}),{threshold:.5}).observe(document.querySelector('circle[stroke="#14b8a6"]')||document.createElement('div'));
+/* ── SIGN UP ── */
+function handleSignUp(){
+  const name=document.getElementById('su-name').value.trim();
+  const email=document.getElementById('su-email').value.trim();
+  const pass=document.getElementById('su-pass').value;
+  let valid=true;
+  if(!name){showErr('su-name-err','Please enter your name');valid=false}
+  if(!email||!email.includes('@')){showErr('su-email-err','Please enter a valid email address');valid=false}
+  if(!pass||pass.length<8){showErr('su-pass-err','Password must be at least 8 characters');valid=false}
+  if(!valid)return;
+  setLoading('su-btn','su-spin','su-txt',true);
+  setTimeout(()=>{
+    setLoading('su-btn','su-spin','su-txt',false);
+    loginSuccess({name,email});
+  },1600);
+}
+
+/* ── FORGOT ── */
+function handleForgot(){
+  const email=document.getElementById('fp-email').value.trim();
+  if(!email||!email.includes('@')){sT('⚠️','Please enter a valid email address');return}
+  setLoading('fp-btn','fp-spin','fp-txt',true);
+  setTimeout(()=>{
+    setLoading('fp-btn','fp-spin','fp-txt',false);
+    document.getElementById('form-forgot').style.display='none';
+    document.getElementById('form-success').classList.add('show');
+    document.getElementById('success-title').textContent='Check your email!';
+    document.getElementById('success-msg').textContent=`We sent a reset link to ${email}`;
+    setTimeout(()=>{closeAuth();document.getElementById('form-success').classList.remove('show')},3000);
+  },1400);
+}
+
+/* ── GOOGLE ── */
+function handleGoogle(){
+  sT('🔗','Connecting Google Sign In...');
+  setLoading('si-btn','si-spin','si-txt',true);
+  setTimeout(()=>{
+    setLoading('si-btn','si-spin','si-txt',false);
+    loginSuccess({name:'Magda',email:'magdayaojennamae288@gmail.com'});
+  },1200);
+}
+
+/* ── LOGIN SUCCESS ── */
+function loginSuccess(user){
+  currentUser=user;
+  localStorage.setItem('zr_user',JSON.stringify(user));
+  // Show success state
+  switchTab('success');
+  document.getElementById('success-title').textContent=`Welcome, ${user.name}! 🎉`;
+  document.getElementById('success-msg').textContent='Setting up your dashboard...';
+  setTimeout(()=>{
+    closeAuth();
+    showDashboard(user);
+  },2200);
+}
+
+/* ── SHOW DASHBOARD ── */
+function showDashboard(user){
+  document.getElementById('view-landing').style.display='none';
+  document.getElementById('view-dashboard').style.display='block';
+  // Set user info
+  const initials=user.name.charAt(0).toUpperCase();
+  document.getElementById('user-avatar').textContent=initials;
+  document.getElementById('dd-name').textContent=user.name;
+  document.getElementById('dd-email').textContent=user.email;
+  // Greeting
+  const hr=new Date().getHours();
+  const greeting=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+  document.getElementById('dash-greeting').textContent=`${greeting}, ${user.name.split(' ')[0]} 👋`;
+  // Animate KPIs
+  animCount('kpi-health',0,74,'');
+  animCount('kpi-kw',0,248,'');
+  animCount('kpi-issues',0,31,'');
+  sT('🎉',`Welcome to ZenaRank, ${user.name.split(' ')[0]}!`);
+  window.scrollTo(0,0);
+  document.getElementById('view-dashboard').style.display='block';
+  // Re-observe reveal elements
+  document.querySelectorAll('.rev').forEach(el=>{el.classList.remove('vis');ro.observe(el)});
+}
+
+/* ── SIGN OUT ── */
+function handleSignOut(){
+  localStorage.removeItem('zr_user');
+  currentUser=null;
+  document.getElementById('view-dashboard').style.display='none';
+  document.getElementById('view-landing').style.display='block';
+  sT('👋','You\'ve been signed out. See you soon!');
+  window.scrollTo(0,0);
+}
+
+/* ── PASSWORD STRENGTH ── */
+function checkPwStrength(pw){
+  const str=document.getElementById('pw-str');
+  str.classList.add('show');
+  const bars=['pb1','pb2','pb3','pb4'];
+  let score=0;
+  if(pw.length>=8)score++;
+  if(/[A-Z]/.test(pw))score++;
+  if(/[0-9]/.test(pw))score++;
+  if(/[^A-Za-z0-9]/.test(pw))score++;
+  const colors=['#ef4444','#f59e0b','#14b8a6','#22c55e'];
+  const labels=['Too weak','Fair','Good','Strong 💪'];
+  bars.forEach((id,i)=>{
+    const b=document.getElementById(id);
+    b.style.background=i<score?colors[score-1]:'var(--bd)';
+  });
+  const lbl=document.getElementById('pw-lbl');
+  if(pw.length===0){lbl.textContent='Enter a password';lbl.style.color='var(--sub)';return}
+  lbl.textContent=labels[score-1]||'Too weak';
+  lbl.style.color=colors[score-1]||'#ef4444';
+}
+
+/* ── COUNTER ANIMATION ── */
+function animCount(elId,from,to,suffix){
+  const el=document.getElementById(elId);if(!el)return;
+  const dur=1200,s=performance.now();
+  (function tick(now){
+    const p=Math.min((now-s)/dur,1);
+    const e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(from+(to-from)*e)+suffix;
+    if(p<1)requestAnimationFrame(tick);
+    else el.textContent=to+suffix;
+  })(s);
+}
+
+/* ── FIX ISSUE ── */
+function fixIssue(btn){
+  btn.className='fixed-tag';btn.textContent='✓ Fixed';
+  btn.parentElement.style.opacity='.5';
+  const cur=parseInt(document.getElementById('kpi-issues').textContent)||31;
+  if(cur>0){document.getElementById('kpi-issues').textContent=cur-1;sT('✅','Issue marked as fixed! Score improving...')}
+}
+
+/* ── GREETING ── */
+const hr=new Date().getHours();
+if(document.getElementById('dash-greeting')){
+  const g=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+  document.getElementById('dash-greeting').textContent=`${g}, Magda 👋`;
+}
+
+/* ── CHECK IF ALREADY LOGGED IN ── */
+if(currentUser){
+  showDashboard(currentUser);
+}
 </script>
 </body>
 </html>
