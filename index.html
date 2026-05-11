@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ZenaRank — Sign In</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;700;800;900&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -647,6 +648,11 @@ table.kwt tr:hover td{background:rgba(255,255,255,.025);cursor:none}
 </style>
 
 <script>
+/* ── SUPABASE INIT ── */
+const SUPABASE_URL = 'https://gzdekxyqfxzvyyqibksz.supabase.co';
+const SUPABASE_KEY = 'sb_publishable__xRkw74bDu0atMTDFeNyag_NAaQcDkX';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 /* ── CURSOR ── */
 const cur=document.getElementById('cur'),curR=document.getElementById('cur-r');
 let mx=0,my=0,rx=0,ry=0;
@@ -721,7 +727,7 @@ function setLoading(btnId,spinId,txtId,loading){
 }
 
 /* ── SIGN IN ── */
-function handleSignIn(){
+async function handleSignIn(){
   const email=document.getElementById('si-email').value.trim();
   const pass=document.getElementById('si-pass').value;
   let valid=true;
@@ -729,16 +735,26 @@ function handleSignIn(){
   if(!pass||pass.length<6){showErr('si-pass-err','Password must be at least 6 characters');valid=false}
   if(!valid)return;
   setLoading('si-btn','si-spin','si-txt',true);
-  // Simulate auth (replace with Supabase call)
-  setTimeout(()=>{
+  try {
+    const {data,error} = await sb.auth.signInWithPassword({email,password:pass});
     setLoading('si-btn','si-spin','si-txt',false);
-    const name=email.split('@')[0].charAt(0).toUpperCase()+email.split('@')[0].slice(1);
-    loginSuccess({name,email});
-  },1400);
+    if(error){
+      if(error.message.includes('Invalid'))showErr('si-pass-err','Incorrect email or password');
+      else if(error.message.includes('Email'))showErr('si-email-err','Please verify your email first');
+      else showErr('si-pass-err',error.message);
+      return;
+    }
+    const user=data.user;
+    const name=(user.user_metadata?.full_name||user.email.split('@')[0]);
+    loginSuccess({name,email:user.email,id:user.id});
+  } catch(e){
+    setLoading('si-btn','si-spin','si-txt',false);
+    showErr('si-pass-err','Connection error. Please try again.');
+  }
 }
 
 /* ── SIGN UP ── */
-function handleSignUp(){
+async function handleSignUp(){
   const name=document.getElementById('su-name').value.trim();
   const email=document.getElementById('su-email').value.trim();
   const pass=document.getElementById('su-pass').value;
@@ -748,35 +764,68 @@ function handleSignUp(){
   if(!pass||pass.length<8){showErr('su-pass-err','Password must be at least 8 characters');valid=false}
   if(!valid)return;
   setLoading('su-btn','su-spin','su-txt',true);
-  setTimeout(()=>{
+  try {
+    const {data,error} = await sb.auth.signUp({
+      email, password:pass,
+      options:{data:{full_name:name},emailRedirectTo:'https://zenarank.com'}
+    });
     setLoading('su-btn','su-spin','su-txt',false);
-    loginSuccess({name,email});
-  },1600);
+    if(error){
+      if(error.message.includes('already'))showErr('su-email-err','This email is already registered. Sign in instead.');
+      else if(error.message.includes('Password'))showErr('su-pass-err',error.message);
+      else showErr('su-email-err',error.message);
+      return;
+    }
+    if(data.user && !data.session){
+      // Email confirmation required
+      switchTab('success');
+      document.getElementById('success-title').textContent='Check your email! 📬';
+      document.getElementById('success-msg').textContent='We sent a confirmation link to '+email+'. Click it to activate your account.';
+      document.getElementById('load-prog').style.animationDuration='8s';
+      setTimeout(()=>{closeAuth()},8000);
+      return;
+    }
+    loginSuccess({name,email:data.user.email,id:data.user.id});
+  } catch(e){
+    setLoading('su-btn','su-spin','su-txt',false);
+    showErr('su-email-err','Connection error. Please try again.');
+  }
 }
 
 /* ── FORGOT ── */
-function handleForgot(){
+async function handleForgot(){
   const email=document.getElementById('fp-email').value.trim();
   if(!email||!email.includes('@')){sT('⚠️','Please enter a valid email address');return}
   setLoading('fp-btn','fp-spin','fp-txt',true);
-  setTimeout(()=>{
+  try {
+    const {error} = await sb.auth.resetPasswordForEmail(email,{
+      redirectTo:'https://zenarank.com?reset=true'
+    });
     setLoading('fp-btn','fp-spin','fp-txt',false);
+    if(error){sT('⚠️',error.message);return}
     document.getElementById('form-forgot').style.display='none';
     document.getElementById('form-success').classList.add('show');
-    document.getElementById('success-title').textContent='Check your email!';
-    document.getElementById('success-msg').textContent=`We sent a reset link to ${email}`;
-    setTimeout(()=>{closeAuth();document.getElementById('form-success').classList.remove('show')},3000);
-  },1400);
+    document.getElementById('success-title').textContent='Reset email sent! 📬';
+    document.getElementById('success-msg').textContent='Check your inbox for the password reset link.';
+    setTimeout(()=>{closeAuth();document.getElementById('form-success').classList.remove('show')},4000);
+  } catch(e){
+    setLoading('fp-btn','fp-spin','fp-txt',false);
+    sT('⚠️','Connection error. Please try again.');
+  }
 }
 
 /* ── GOOGLE ── */
-function handleGoogle(){
-  sT('🔗','Connecting Google Sign In...');
-  setLoading('si-btn','si-spin','si-txt',true);
-  setTimeout(()=>{
-    setLoading('si-btn','si-spin','si-txt',false);
-    loginSuccess({name:'Magda',email:'magdayaojennamae288@gmail.com'});
-  },1200);
+async function handleGoogle(){
+  sT('🔗','Redirecting to Google...');
+  try {
+    const {error} = await sb.auth.signInWithOAuth({
+      provider:'google',
+      options:{redirectTo:'https://zenarank.com',queryParams:{access_type:'offline',prompt:'consent'}}
+    });
+    if(error)sT('⚠️',error.message);
+  } catch(e){
+    sT('⚠️','Could not connect to Google. Please try email/password.');
+  }
 }
 
 /* ── LOGIN SUCCESS ── */
@@ -877,10 +926,40 @@ if(document.getElementById('dash-greeting')){
   document.getElementById('dash-greeting').textContent=`${g}, Magda 👋`;
 }
 
-/* ── CHECK IF ALREADY LOGGED IN ── */
-if(currentUser){
-  showDashboard(currentUser);
-}
+/* ── SUPABASE AUTH STATE LISTENER ── */
+sb.auth.onAuthStateChange(async (event, session) => {
+  if(event === 'SIGNED_IN' && session) {
+    const user = session.user;
+    const name = user.user_metadata?.full_name || user.email.split('@')[0];
+    const capitalName = name.charAt(0).toUpperCase() + name.slice(1);
+    currentUser = {name: capitalName, email: user.email, id: user.id};
+    localStorage.setItem('zr_user', JSON.stringify(currentUser));
+    closeAuth();
+    showDashboard(currentUser);
+  } else if(event === 'SIGNED_OUT') {
+    currentUser = null;
+    localStorage.removeItem('zr_user');
+  } else if(event === 'PASSWORD_RECOVERY') {
+    openAuth('signin');
+    sT('🔑','Enter your new password below');
+  }
+});
+
+/* ── CHECK EXISTING SESSION ON LOAD ── */
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if(session) {
+    const user = session.user;
+    const name = user.user_metadata?.full_name || user.email.split('@')[0];
+    const capitalName = name.charAt(0).toUpperCase() + name.slice(1);
+    currentUser = {name: capitalName, email: user.email, id: user.id};
+    localStorage.setItem('zr_user', JSON.stringify(currentUser));
+    showDashboard(currentUser);
+  } else if(localStorage.getItem('zr_user')) {
+    // Fallback for demo mode only
+    showDashboard(JSON.parse(localStorage.getItem('zr_user')));
+  }
+})();
 </script>
 </body>
 </html>
