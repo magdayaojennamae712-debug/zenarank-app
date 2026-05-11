@@ -526,12 +526,12 @@ table.kwt tr:hover td{background:rgba(255,255,255,.025);cursor:none}
       </div>
       <div class="sb-section">
         <div class="sb-sec-label">Projects</div>
-        <div class="sb-project">
+        <div class="sb-project" onclick="switchView('project_main')" id="nav-project_main" style="cursor:none">
           <div class="sp-dot" style="background:#2dd4bf"></div>
-          <span class="sp-name">mybusiness.com</span>
+          <span class="sp-name" id="project-domain-name">mybusiness.com</span>
           <span class="sp-score">74</span>
         </div>
-        <div class="sb-project" style="opacity:.5">
+        <div class="sb-project" onclick="sT('➕','Add project — coming soon! Pro plan allows 5 projects.')" style="opacity:.5;cursor:none">
           <div class="sp-dot" style="background:rgba(255,255,255,.2)"></div>
           <span class="sp-name" style="color:rgba(255,255,255,.25);font-style:italic">+ Add project</span>
         </div>
@@ -1108,6 +1108,82 @@ const VIEWS = {
       </div>
     </div>
   </div>`,
+  project_main: `<div style="animation:fadeIn .35s both">
+    <div style="margin-bottom:24px"><h2 style="font-family:'Cabinet Grotesk',sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:4px">🌐 Project Settings</h2><p style="color:rgba(255,255,255,.3);font-size:13px">Manage your website project</p></div>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:20px">
+        <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px">Project Details</div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:5px">Domain</div>
+          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px 14px;font-size:14px;color:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:space-between">
+            <span id="proj-domain-display">mybusiness.com</span>
+            <button onclick="sT('✏️','Domain editing coming soon!')" style="font-size:11px;background:rgba(255,255,255,.06);border:none;color:rgba(255,255,255,.4);padding:3px 8px;border-radius:5px;cursor:none;font-family:inherit">Edit</button>
+          </div>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:5px">Project Name</div>
+          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px 14px;font-size:14px;color:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:space-between">
+            <span>My Business</span>
+            <button onclick="sT('✏️','Name editing coming soon!')" style="font-size:11px;background:rgba(255,255,255,.06);border:none;color:rgba(255,255,255,.4);padding:3px 8px;border-radius:5px;cursor:none;font-family:inherit">Edit</button>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:5px">Target Country</div>
+          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px 14px;font-size:14px;color:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:space-between">
+            <span>🇫🇮 Finland</span>
+            <button onclick="sT('✏️','Country selection coming soon!')" style="font-size:11px;background:rgba(255,255,255,.06);border:none;color:rgba(255,255,255,.4);padding:3px 8px;border-radius:5px;cursor:none;font-family:inherit">Edit</button>
+          </div>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:20px">
+        <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px">Health Overview</div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+          <div style="position:relative;width:80px;height:80px;flex-shrink:0">
+            <svg viewBox="0 0 80 80" width="80" height="80" style="transform:rotate(-90deg)">
+              <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="7"/>
+              <circle cx="40" cy="40" r="34" fill="none" stroke="#14b8a6" stroke-width="7" stroke-dasharray="213" stroke-dashoffset="55" stroke-linecap="round"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+              <span style="font-family:'Cabinet Grotesk',sans-serif;font-size:22px;font-weight:900;color:#fff">74</span>
+              <span style="font-size:8px;color:rgba(255,255,255,.3)">Health</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:8px">Your site is in good shape!</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <span style="background:rgba(248,113,113,.12);color:#f87171;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700">6 Critical</span>
+              <span style="background:rgba(251,191,36,.12);color:#fbbf24;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700">14 Warnings</span>
+              <span style="background:rgba(96,165,250,.12);color:#60a5fa;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700">11 Info</span>
+            </div>
+          </div>
+        </div>
+        <button onclick="switchView('audit')" style="width:100%;padding:10px;background:var(--t);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:none;font-family:inherit">View full audit report →</button>
+      </div>
+    </div>
+
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:20px;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px">Connected Integrations</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,.03);border-radius:9px">
+          <span style="font-size:20px">🔍</span>
+          <div style="flex:1"><div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.6)">Google Search Console</div><div style="font-size:11px;color:rgba(255,255,255,.25);margin-top:2px">Connect to see real traffic data</div></div>
+          <button onclick="sT('🔗','GSC integration launching Q3 2026!')" style="padding:6px 14px;background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.2);border-radius:7px;font-size:12px;font-weight:700;cursor:none;font-family:inherit">Connect</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,.03);border-radius:9px">
+          <span style="font-size:20px">📊</span>
+          <div style="flex:1"><div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.6)">Google Analytics 4</div><div style="font-size:11px;color:rgba(255,255,255,.25);margin-top:2px">Connect to see visitor behaviour</div></div>
+          <button onclick="sT('📊','GA4 integration launching Q4 2026!')" style="padding:6px 14px;background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.2);border-radius:7px;font-size:12px;font-weight:700;cursor:none;font-family:inherit">Connect</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.1);border-radius:14px;padding:18px;display:flex;align-items:center;gap:12px">
+      <span style="font-size:20px">⚠️</span>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.5)">Delete Project</div><div style="font-size:11px;color:rgba(255,255,255,.25)">Permanently delete this project and all its data</div></div>
+      <button onclick="sT('🗑️','Delete project — coming soon. This action cannot be undone.')" style="padding:7px 14px;background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2);border-radius:7px;font-size:12px;font-weight:700;cursor:none;font-family:inherit">Delete project</button>
+    </div>
+  </div>`,
   reports: `
     <div>
       <div style="margin-bottom:20px"><h2 style="font-family:'Cabinet Grotesk',sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:4px">📋 Reports</h2><p style="color:rgba(255,255,255,.3);font-size:13px">Generate and download SEO reports</p></div>
@@ -1127,7 +1203,7 @@ const VIEWS = {
       <div style="font-size:52px;margin-bottom:14px">🔍</div>
       <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:10px">Keyword Explorer — Coming Soon</div>
       <div style="font-size:14px;color:rgba(255,255,255,.4);max-width:480px;margin:0 auto 20px;line-height:1.65">Search any keyword and get monthly volume, difficulty score, CPC, and search intent data. AI auto-clusters related keywords into content silos for your site.</div>
-      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(20,184,166,.12);color:#2dd4bf;border:1px solid rgba(20,184,166,.2);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;margin-bottom:20px">🚀 Launching Q3 2026</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(20,184,166,.12);color:#2dd4bf;border:1px solid rgba(20,184,166,.2);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;margin-bottom:20px">🚀 Launching Summer 2026</div>
       <div><button onclick="sT('📬','You are on the waitlist! We will notify you when Keyword Explorer launches.')" style="padding:12px 28px;background:var(--t);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:none;font-family:inherit">🔔 Notify me when it launches</button></div>
     </div>
     <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:18px">
@@ -1141,7 +1217,7 @@ const VIEWS = {
       <div style="font-size:52px;margin-bottom:14px">🕷️</div>
       <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:10px">Site Audit — Coming Soon</div>
       <div style="font-size:14px;color:rgba(255,255,255,.4);max-width:480px;margin:0 auto 20px;line-height:1.65">Crawl your entire website and detect 40+ technical SEO issues. Get a health score from 0-100 and a prioritised fix list. AI tells you which issues actually impact your rankings.</div>
-      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(20,184,166,.12);color:#2dd4bf;border:1px solid rgba(20,184,166,.2);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;margin-bottom:20px">🚀 Launching Q3 2026</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(20,184,166,.12);color:#2dd4bf;border:1px solid rgba(20,184,166,.2);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;margin-bottom:20px">🚀 Launching Summer 2026</div>
       <div><button onclick="sT('📬','You are on the waitlist! We will notify you when Site Audit launches.')" style="padding:12px 28px;background:var(--t);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:none;font-family:inherit">🔔 Notify me when it launches</button></div>
     </div>
     <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:18px">
@@ -1155,7 +1231,7 @@ const VIEWS = {
       <div style="font-size:52px;margin-bottom:14px">📈</div>
       <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:10px">Rank Tracker — Coming Soon</div>
       <div style="font-size:14px;color:rgba(255,255,255,.4);max-width:480px;margin:0 auto 20px;line-height:1.65">Track daily keyword positions on Google. See how you move up or down the rankings and get instant email alerts when you break into the top 10 for any keyword.</div>
-      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(20,184,166,.12);color:#2dd4bf;border:1px solid rgba(20,184,166,.2);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;margin-bottom:20px">🚀 Launching Q3 2026</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(20,184,166,.12);color:#2dd4bf;border:1px solid rgba(20,184,166,.2);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;margin-bottom:20px">🚀 Launching Summer 2026</div>
       <div><button onclick="sT('📬','You are on the waitlist! We will notify you when Rank Tracker launches.')" style="padding:12px 28px;background:var(--t);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:none;font-family:inherit">🔔 Notify me when it launches</button></div>
     </div>
     <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:18px">
@@ -1169,7 +1245,7 @@ const VIEWS = {
       <div style="font-size:52px;margin-bottom:14px">🔗</div>
       <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:10px">Backlink Analyser — Coming Soon</div>
       <div style="font-size:14px;color:rgba(255,255,255,.4);max-width:480px;margin:0 auto 20px;line-height:1.65">See your Domain Rating, referring domains, anchor text distribution, and track new and lost links every day. Detect toxic links before they damage your rankings.</div>
-      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(20,184,166,.12);color:#2dd4bf;border:1px solid rgba(20,184,166,.2);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;margin-bottom:20px">🚀 Launching Q4 2026</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(20,184,166,.12);color:#2dd4bf;border:1px solid rgba(20,184,166,.2);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;margin-bottom:20px">🚀 Launching Autumn 2026</div>
       <div><button onclick="sT('📬','You are on the waitlist! We will notify you when Backlink Analyser launches.')" style="padding:12px 28px;background:var(--t);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:none;font-family:inherit">🔔 Notify me when it launches</button></div>
     </div>
     <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:18px">
@@ -1194,7 +1270,7 @@ function switchView(view){
   }
   
   // Update sidebar active state
-  document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.sb-item,.sb-project').forEach(el=>el.classList.remove('on'));
   const navEl = document.getElementById('nav-'+view);
   if(navEl) navEl.classList.add('on');
   
