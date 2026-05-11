@@ -284,6 +284,7 @@ table.kwt tr:hover td{background:rgba(255,255,255,.025);cursor:none}
 .rev.vis{opacity:1;transform:none}
 .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
 @media(max-width:768px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.charts-row{grid-template-columns:1fr}.dash-body{grid-template-columns:1fr}.dash-sb{display:none}.nav-links{display:none}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -469,18 +470,18 @@ table.kwt tr:hover td{background:rgba(255,255,255,.025);cursor:none}
     <div class="dash-sb">
       <div class="sb-section">
         <div class="sb-sec-label">Overview</div>
-        <div class="sb-item on"><span class="sb-ic">⊞</span>Dashboard</div>
-        <div class="sb-item" onclick="sT('📊','Analytics coming soon!')"><span class="sb-ic">📊</span>Analytics</div>
-        <div class="sb-item" onclick="sT('📋','Reports coming soon!')"><span class="sb-ic">📋</span>Reports</div>
+        <div class="sb-item on" id="nav-dashboard" onclick="switchView('dashboard')"><span class="sb-ic">⊞</span>Dashboard</div>
+        <div class="sb-item" id="nav-analytics" onclick="switchView('analytics')"><span class="sb-ic">📊</span>Analytics</div>
+        <div class="sb-item" id="nav-reports" onclick="switchView('reports')"><span class="sb-ic">📋</span>Reports</div>
       </div>
       <div class="sb-section">
         <div class="sb-sec-label">SEO Tools</div>
-        <div class="sb-item" onclick="sT('🔍','Keyword Explorer launching soon!')"><span class="sb-ic">🔍</span>Keywords<span class="sb-badge">248</span></div>
-        <div class="sb-item" onclick="sT('🕷️','Site Audit launching soon!')"><span class="sb-ic">🕷️</span>Site Audit<span class="sb-badge red">31</span></div>
-        <div class="sb-item" onclick="sT('📈','Rank Tracker launching soon!')"><span class="sb-ic">📈</span>Rank Tracker</div>
-        <div class="sb-item" onclick="sT('🔗','Backlinks launching soon!')"><span class="sb-ic">🔗</span>Backlinks</div>
-        <div class="sb-item" onclick="sT('🤖','AI Briefs launching soon!')"><span class="sb-ic">🤖</span>AI Briefs<span class="sb-badge">5 left</span></div>
-        <div class="sb-item" onclick="sT('🏆','Competitor Gap launching soon!')"><span class="sb-ic">🏆</span>Competitors</div>
+        <div class="sb-item" id="nav-keywords" onclick="switchView('keywords')"><span class="sb-ic">🔍</span>Keywords<span class="sb-badge">248</span></div>
+        <div class="sb-item" id="nav-audit" onclick="switchView('audit')"><span class="sb-ic">🕷️</span>Site Audit<span class="sb-badge red">31</span></div>
+        <div class="sb-item" id="nav-rankings" onclick="switchView('rankings')"><span class="sb-ic">📈</span>Rank Tracker</div>
+        <div class="sb-item" id="nav-backlinks" onclick="switchView('backlinks')"><span class="sb-ic">🔗</span>Backlinks</div>
+        <div class="sb-item" id="nav-briefs" onclick="switchView('briefs')"><span class="sb-ic">🤖</span>AI Briefs<span class="sb-badge">5 left</span></div>
+        <div class="sb-item" id="nav-competitors" onclick="switchView('competitors')"><span class="sb-ic">🏆</span>Competitors</div>
       </div>
       <div class="sb-section">
         <div class="sb-sec-label">Projects</div>
@@ -884,15 +885,15 @@ function showDashboard(user){
     upgradeBox.innerHTML = `<div class="sb-up-title">✅ Pro Plan</div><div class="sb-up-desc">You're on Pro. Upgrade to Agency for unlimited.</div><button class="sb-up-btn" onclick="sT('💳','Upgrade coming soon!')">Upgrade to Agency</button>`;
   } else if(plan === 'agency'){
     upgradeBox.innerHTML = `<div class="sb-up-title">✅ Agency Plan</div><div class="sb-up-desc" style="color:rgba(255,255,255,.4)">Unlimited everything. You're all set!</div>`;
-  } else if(trialExpired){
-    // TRIAL EXPIRED — show paywall
+  } else if(trialExpired && plan === 'trial'){
+    // TRIAL EXPIRED — show paywall (never for founder/paid)
     showPaywall();
     return;
   } else {
     // TRIAL ACTIVE
     upgradeBox.innerHTML = `<div class="sb-up-title">🕐 Trial — ${trialDaysLeft} days left</div><div class="sb-up-desc">Upgrade to keep access after your trial ends.</div><button class="sb-up-btn" onclick="sT('💳','Checkout coming soon!')">Upgrade — from $29/mo</button>`;
-    // Show trial warning if < 3 days left
-    if(trialDaysLeft <= 3){
+    // Show trial warning only for non-founder trial users < 3 days left
+    if(trialDaysLeft <= 3 && plan === 'trial'){
       showTrialWarning(trialDaysLeft);
     }
   }
@@ -912,6 +913,7 @@ function showDashboard(user){
 
 /* ── TRIAL WARNING ── */
 function showTrialWarning(days){
+  if(!currentUser || currentUser.plan === 'founder' || currentUser.plan === 'starter' || currentUser.plan === 'pro' || currentUser.plan === 'agency') return;
   const banner = document.getElementById('setup-banner');
   if(banner){
     banner.style.background='linear-gradient(135deg,rgba(239,68,68,.1),rgba(251,191,36,.06))';
@@ -1010,10 +1012,84 @@ function fixIssue(btn){
 }
 
 /* ── GREETING ── */
-const hr=new Date().getHours();
+const hr2=new Date().getHours();
 if(document.getElementById('dash-greeting')){
-  const g=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+  const g=hr2<12?'Good morning':hr2<17?'Good afternoon':'Good evening';
   document.getElementById('dash-greeting').textContent=`${g}, Magda 👋`;
+}
+
+/* ── VIEW SWITCHER ── */
+const VIEWS = {
+  dashboard: null, // main content stays
+  analytics: `
+    <div style="padding:0">
+      <div style="margin-bottom:20px"><h2 style="font-family:'Cabinet Grotesk',sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:4px">📊 Analytics</h2><p style="color:rgba(255,255,255,.3);font-size:13px">Traffic overview for mybusiness.com</p></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:18px;text-align:center"><div style="font-size:10px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Organic Traffic</div><div style="font-family:'Cabinet Grotesk',sans-serif;font-size:32px;font-weight:900;color:#2dd4bf">4,280</div><div style="font-size:11px;color:#2dd4bf;margin-top:4px">↑ +23% this month</div></div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:18px;text-align:center"><div style="font-size:10px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Impressions</div><div style="font-family:'Cabinet Grotesk',sans-serif;font-size:32px;font-weight:900;color:#60a5fa">42,100</div><div style="font-size:11px;color:#60a5fa;margin-top:4px">↑ +18% this month</div></div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:18px;text-align:center"><div style="font-size:10px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Avg CTR</div><div style="font-family:'Cabinet Grotesk',sans-serif;font-size:32px;font-weight:900;color:#fb923c">3.2%</div><div style="font-size:11px;color:#fb923c;margin-top:4px">↑ +0.4% this month</div></div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:20px;margin-bottom:14px">
+        <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:14px;display:flex;justify-content:space-between"><span>Traffic by Channel</span><span style="font-size:10px;background:rgba(45,212,191,.15);color:#2dd4bf;padding:2px 8px;border-radius:4px">Last 30 days</span></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:12px"><span style="min-width:120px;font-size:12px;color:rgba(255,255,255,.5)">Organic Search</span><div style="flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px"><div style="width:72%;height:100%;background:#2dd4bf;border-radius:4px"></div></div><span style="font-size:12px;color:rgba(255,255,255,.4);min-width:36px;text-align:right">72%</span></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="min-width:120px;font-size:12px;color:rgba(255,255,255,.5)">Direct</span><div style="flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px"><div style="width:15%;height:100%;background:#60a5fa;border-radius:4px"></div></div><span style="font-size:12px;color:rgba(255,255,255,.4);min-width:36px;text-align:right">15%</span></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="min-width:120px;font-size:12px;color:rgba(255,255,255,.5)">Referral</span><div style="flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px"><div style="width:8%;height:100%;background:#fb923c;border-radius:4px"></div></div><span style="font-size:12px;color:rgba(255,255,255,.4);min-width:36px;text-align:right">8%</span></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="min-width:120px;font-size:12px;color:rgba(255,255,255,.5)">Social</span><div style="flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px"><div style="width:5%;height:100%;background:#a78bfa;border-radius:4px"></div></div><span style="font-size:12px;color:rgba(255,255,255,.4);min-width:36px;text-align:right">5%</span></div>
+        </div>
+      </div>
+      <div style="background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:12px;padding:16px;display:flex;align-items:center;gap:12px"><span style="font-size:20px">🔗</span><div><div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:3px">Connect Google Search Console</div><div style="font-size:12px;color:rgba(255,255,255,.3)">Get real traffic data from your actual website. Takes 2 minutes.</div></div><button onclick="sT('🔗','GSC integration coming soon!')" style="margin-left:auto;padding:7px 14px;background:rgba(59,130,246,.2);color:#60a5fa;border:1px solid rgba(59,130,246,.25);border-radius:8px;font-size:12px;font-weight:700;cursor:none;font-family:inherit">Connect →</button></div>
+    </div>`,
+  reports: `
+    <div>
+      <div style="margin-bottom:20px"><h2 style="font-family:'Cabinet Grotesk',sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:4px">📋 Reports</h2><p style="color:rgba(255,255,255,.3);font-size:13px">Generate and download SEO reports</p></div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px">
+        ${['Weekly SEO Summary','Site Health Report','Keyword Rankings PDF','Backlink Analysis','Competitor Gap Report','Monthly Performance'].map((r,i)=>`<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:18px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='rgba(45,212,191,.25)'" onmouseout="this.style.borderColor='rgba(255,255,255,.06)'"><span style="font-size:24px">${['📊','🏥','📈','🔗','🏆','📅'][i]}</span><div style="flex:1"><div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.7)">${r}</div><div style="font-size:11px;color:rgba(255,255,255,.25);margin-top:2px">Last generated: Never</div></div><button onclick="sT('📄','Report generation coming soon!')" style="padding:6px 12px;background:rgba(45,212,191,.1);color:#2dd4bf;border:1px solid rgba(45,212,191,.2);border-radius:7px;font-size:11px;font-weight:700;cursor:none;font-family:inherit">Generate</button></div>`).join('')}
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:20px;text-align:center">
+        <div style="font-size:32px;margin-bottom:10px">📬</div>
+        <div style="font-size:14px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px">Scheduled Reports</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.3);margin-bottom:14px">Get weekly SEO reports delivered to hello@zenarank.com</div>
+        <button onclick="sT('📬','Email reports coming soon!')" style="padding:10px 24px;background:var(--t);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:none;font-family:inherit">Enable weekly reports</button>
+      </div>
+    </div>`,
+  keywords: `<div><div style="margin-bottom:20px"><h2 style="font-family:'Cabinet Grotesk',sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:4px">🔍 Keyword Explorer</h2><p style="color:rgba(255,255,255,.3);font-size:13px">Find and track keywords for mybusiness.com</p></div><div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:20px;margin-bottom:14px;display:flex;flex-direction:column;align-items:center;gap:12px;min-height:200px;justify-content:center"><div style="font-size:48px">🔍</div><div style="font-size:16px;font-weight:700;color:rgba(255,255,255,.6)">Keyword Explorer</div><div style="font-size:13px;color:rgba(255,255,255,.3);text-align:center;max-width:380px">Search for any keyword and get volume, difficulty, CPC, and intent data. Coming in the next release.</div><button onclick="sT('🔍','Keyword Explorer launching very soon!')" style="padding:11px 24px;background:var(--t);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:none;font-family:inherit">Join the waitlist</button></div></div>`,
+  audit: `<div><div style="margin-bottom:20px"><h2 style="font-family:'Cabinet Grotesk',sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:4px">🕷️ Site Audit</h2><p style="color:rgba(255,255,255,.3);font-size:13px">Technical SEO audit for mybusiness.com</p></div><div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px;min-height:200px;justify-content:center"><div style="font-size:48px">🕷️</div><div style="font-size:16px;font-weight:700;color:rgba(255,255,255,.6)">Site Audit Tool</div><div style="font-size:13px;color:rgba(255,255,255,.3);text-align:center;max-width:380px">Crawl your entire site and detect 40+ SEO issues. Launching very soon.</div><button onclick="sT('🕷️','Site Audit launching very soon!')" style="padding:11px 24px;background:var(--t);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:none;font-family:inherit">Get notified</button></div></div>`,
+  rankings: `<div><div style="margin-bottom:20px"><h2 style="font-family:'Cabinet Grotesk',sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:4px">📈 Rank Tracker</h2><p style="color:rgba(255,255,255,.3);font-size:13px">Daily ranking positions for mybusiness.com</p></div><div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px;min-height:200px;justify-content:center"><div style="font-size:48px">📈</div><div style="font-size:16px;font-weight:700;color:rgba(255,255,255,.6)">Rank Tracker</div><div style="font-size:13px;color:rgba(255,255,255,.3);text-align:center;max-width:380px">Track daily keyword positions on Google. Desktop and mobile. Local city tracking. Coming soon.</div><button onclick="sT('📈','Rank Tracker launching very soon!')" style="padding:11px 24px;background:var(--t);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:none;font-family:inherit">Get notified</button></div></div>`,
+  backlinks: `<div><div style="margin-bottom:20px"><h2 style="font-family:'Cabinet Grotesk',sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:4px">🔗 Backlink Analyser</h2><p style="color:rgba(255,255,255,.3);font-size:13px">Link profile for mybusiness.com</p></div><div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px;min-height:200px;justify-content:center"><div style="font-size:48px">🔗</div><div style="font-size:16px;font-weight:700;color:rgba(255,255,255,.6)">Backlink Analyser</div><div style="font-size:13px;color:rgba(255,255,255,.3);text-align:center;max-width:380px">See your Domain Rating, referring domains, anchor texts, and new/lost links. Coming soon.</div><button onclick="sT('🔗','Backlinks launching very soon!')" style="padding:11px 24px;background:var(--t);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:none;font-family:inherit">Get notified</button></div></div>`,
+  briefs: `<div><div style="margin-bottom:20px"><h2 style="font-family:'Cabinet Grotesk',sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:4px">🤖 AI Content Briefs</h2><p style="color:rgba(255,255,255,.3);font-size:13px">Generate content briefs powered by Claude AI</p></div><div style="background:linear-gradient(135deg,rgba(20,184,166,.08),rgba(139,92,246,.05));border:1px solid rgba(20,184,166,.15);border-radius:14px;padding:24px;margin-bottom:14px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><span style="font-size:28px">🤖</span><div><div style="font-size:15px;font-weight:700;color:rgba(255,255,255,.7)">AI Content Brief Generator</div><div style="font-size:12px;color:rgba(255,255,255,.3)">Powered by Claude · ~10 seconds per brief</div></div><div style="margin-left:auto;background:rgba(20,184,166,.15);color:#2dd4bf;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px">5 briefs left</div></div><div style="display:flex;flex-direction:column;gap:10px"><input style="padding:11px 14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:9px;font-size:14px;color:rgba(255,255,255,.7);font-family:inherit;outline:none" placeholder="Enter target keyword e.g. best seo tools for small business" id="brief-kw-dash"><button onclick="sT('🤖','AI Brief Generator launching very soon! You have 5 briefs/month on Starter.')" style="padding:12px;background:var(--t);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:none;font-family:inherit">✦ Generate AI Brief</button></div></div><div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:20px;text-align:center"><div style="font-size:13px;color:rgba(255,255,255,.3);margin-bottom:8px">Your generated briefs will appear here</div><div style="font-size:12px;color:rgba(255,255,255,.15)">No briefs generated yet</div></div></div>`,
+  competitors: `<div><div style="margin-bottom:20px"><h2 style="font-family:'Cabinet Grotesk',sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:4px">🏆 Competitor Gap</h2><p style="color:rgba(255,255,255,.3);font-size:13px">Find keywords your competitors rank for — you don't</p></div><div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px;min-height:200px;justify-content:center"><div style="font-size:48px">🏆</div><div style="font-size:16px;font-weight:700;color:rgba(255,255,255,.6)">Competitor Gap Analysis</div><div style="font-size:13px;color:rgba(255,255,255,.3);text-align:center;max-width:380px">Compare your domain against competitors. Find keyword gaps and content opportunities. Pro plan feature.</div><button onclick="sT('🏆','Competitor Gap — Pro plan feature, launching soon!')" style="padding:11px 24px;background:var(--t);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:none;font-family:inherit">Upgrade to Pro</button></div></div>`
+};
+
+let currentView = 'dashboard';
+let mainContentBackup = null;
+
+function switchView(view){
+  // Save dashboard content on first switch away
+  const mainEl = document.querySelector('.dash-main');
+  if(!mainEl) return;
+  
+  if(currentView === 'dashboard' && !mainContentBackup){
+    mainContentBackup = mainEl.innerHTML;
+  }
+  
+  // Update sidebar active state
+  document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('on'));
+  const navEl = document.getElementById('nav-'+view);
+  if(navEl) navEl.classList.add('on');
+  
+  currentView = view;
+  
+  if(view === 'dashboard'){
+    if(mainContentBackup) mainEl.innerHTML = mainContentBackup;
+    // Re-attach fix buttons
+    document.querySelectorAll('.iss-fix-btn').forEach(btn=>{
+      if(!btn.onclick) btn.onclick = function(){fixIssue(this)};
+    });
+  } else if(VIEWS[view]){
+    mainEl.innerHTML = `<div style="animation:fadeIn .3s both">${VIEWS[view]}</div>`;
+  }
+  window.scrollTo(0,0);
 }
 
 /* ── SUPABASE AUTH STATE LISTENER ── */
