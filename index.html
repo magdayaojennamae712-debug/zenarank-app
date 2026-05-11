@@ -283,7 +283,48 @@ table.kwt tr:hover td{background:rgba(255,255,255,.025);cursor:none}
 .rev{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
 .rev.vis{opacity:1;transform:none}
 .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
-@media(max-width:768px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.charts-row{grid-template-columns:1fr}.dash-body{grid-template-columns:1fr}.dash-sb{display:none}.nav-links{display:none}}
+@media(max-width:900px){
+  /* NAV */
+  .nav-links{display:none}
+  .nav-r .btn-ghost{display:none}
+  /* HERO */
+  h1.hh{font-size:clamp(36px,8vw,60px)}
+  .hero-p{font-size:16px}
+  .hero-meta{gap:14px}
+  .hm-div{display:none}
+  /* DASHBOARD */
+  .dash-body{grid-template-columns:1fr}
+  .dash-sb{display:none}
+  .dash-main{padding:14px}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .kpi-value{font-size:22px}
+  .charts-row{grid-template-columns:1fr}
+  .dash-header{flex-direction:column;gap:10px}
+  .dh-actions{width:100%;justify-content:flex-end}
+  /* DASH NAV */
+  .dash-nav{padding:0 14px;overflow-x:auto}
+  .dash-nav-links{gap:1px}
+  .dn-link{font-size:11px;padding:5px 9px;white-space:nowrap}
+  /* KEYWORD TABLE */
+  table.kwt th:nth-child(4),table.kwt td:nth-child(4),
+  table.kwt th:nth-child(6),table.kwt td:nth-child(6){display:none}
+  /* MODAL */
+  .modal{max-width:100%;border-radius:18px 18px 0 0;position:fixed;bottom:0;left:0;right:0}
+  .modal-overlay{align-items:flex-end;padding:0}
+  /* SETUP BANNER */
+  .setup-banner{flex-direction:column;gap:10px}
+  .sb-progress{flex-wrap:wrap}
+  /* ISSUES */
+  .iss-row{flex-wrap:wrap;gap:8px}
+}
+@media(max-width:480px){
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .kpi-card{padding:12px}
+  .kpi-value{font-size:20px}
+  .dash-nav-links .dn-link:nth-child(n+4){display:none}
+  .dash-header .dh-title{font-size:16px}
+  h1.hh{font-size:36px;letter-spacing:-.03em}
+}
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 </style>
 </head>
@@ -505,13 +546,13 @@ table.kwt tr:hover td{background:rgba(255,255,255,.025);cursor:none}
     <!-- MAIN CONTENT -->
     <div class="dash-main">
 
-      <!-- SETUP BANNER -->
-      <div class="setup-banner" id="setup-banner">
+      <!-- SETUP BANNER - hidden by default, shown by JS based on plan -->
+      <div class="setup-banner" id="setup-banner" style="display:none">
         <span class="sb-ic2">🚀</span>
         <div class="sb-text">
-          <div class="sb-title2">Complete your setup — 2 steps left</div>
-          <div class="sb-desc2">Add your domain and connect Google Search Console to unlock your full SEO dashboard.</div>
-          <div class="sb-progress">
+          <div class="sb-title2" id="banner-title">Complete your setup — 2 steps left</div>
+          <div class="sb-desc2" id="banner-desc">Add your domain and connect Google Search Console to unlock your full SEO dashboard.</div>
+          <div class="sb-progress" id="banner-actions">
             <span class="sp-step sp-done">✓ Account created</span>
             <span class="sp-step sp-done">✓ Email verified</span>
             <span class="sp-step sp-todo" onclick="sT('🌐','Add domain — coming soon!')">Add domain →</span>
@@ -898,6 +939,20 @@ function showDashboard(user){
     }
   }
 
+  // ── SHOW/HIDE SETUP BANNER based on plan ──
+  const banner = document.getElementById('setup-banner');
+  if(banner){
+    if(plan === 'founder' || plan === 'starter' || plan === 'pro' || plan === 'agency'){
+      banner.style.display = 'none'; // paid/founder users don't need setup banner
+    } else if(!trialExpired){
+      // Trial active — show setup banner
+      banner.style.display = 'flex';
+      document.getElementById('banner-title').textContent = `Complete your setup — 2 steps left`;
+      document.getElementById('banner-desc').textContent = `Add your domain and connect Google Search Console to unlock your full SEO dashboard.`;
+    }
+    // trial expired handled by paywall
+  }
+
   // Update dd plan badge
   const planLabels = {founder:'♾️ Free Forever',trial:`🕐 Trial (${trialDaysLeft}d)`,starter:'✅ Starter',pro:'✅ Pro',agency:'✅ Agency'};
   const planEl = document.createElement('div');
@@ -913,7 +968,7 @@ function showDashboard(user){
 
 /* ── TRIAL WARNING ── */
 function showTrialWarning(days){
-  if(!currentUser || currentUser.plan === 'founder' || currentUser.plan === 'starter' || currentUser.plan === 'pro' || currentUser.plan === 'agency') return;
+  if(!currentUser || !['trial'].includes(currentUser.plan)) return;
   const banner = document.getElementById('setup-banner');
   if(banner){
     banner.style.background='linear-gradient(135deg,rgba(239,68,68,.1),rgba(251,191,36,.06))';
