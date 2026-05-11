@@ -829,10 +829,19 @@ async function handleGoogle(){
 }
 
 /* ── LOGIN SUCCESS ── */
-function loginSuccess(user){
+async function loginSuccess(user){
+  // Fetch plan from Supabase profiles table
+  try {
+    const {data:profile} = await sb.from('profiles').select('*').eq('id',user.id).single();
+    if(profile){
+      user.plan = profile.plan;
+      user.trial_ends_at = profile.trial_ends_at;
+      user.full_name = profile.full_name || user.name;
+    }
+  } catch(e){ user.plan = 'trial'; }
+  
   currentUser=user;
   localStorage.setItem('zr_user',JSON.stringify(user));
-  // Show success state
   switchTab('success');
   document.getElementById('success-title').textContent=`Welcome, ${user.name}! 🎉`;
   document.getElementById('success-msg').textContent='Setting up your dashboard...';
@@ -846,24 +855,105 @@ function loginSuccess(user){
 function showDashboard(user){
   document.getElementById('view-landing').style.display='none';
   document.getElementById('view-dashboard').style.display='block';
-  // Set user info
-  const initials=user.name.charAt(0).toUpperCase();
+  const initials=(user.name||user.email).charAt(0).toUpperCase();
   document.getElementById('user-avatar').textContent=initials;
-  document.getElementById('dd-name').textContent=user.name;
+  document.getElementById('dd-name').textContent=user.name||user.email;
   document.getElementById('dd-email').textContent=user.email;
-  // Greeting
   const hr=new Date().getHours();
   const greeting=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
-  document.getElementById('dash-greeting').textContent=`${greeting}, ${user.name.split(' ')[0]} 👋`;
-  // Animate KPIs
+  const firstName=(user.name||user.email).split(' ')[0];
+  document.getElementById('dash-greeting').textContent=`${greeting}, ${firstName} 👋`;
   animCount('kpi-health',0,74,'');
   animCount('kpi-kw',0,248,'');
   animCount('kpi-issues',0,31,'');
-  sT('🎉',`Welcome to ZenaRank, ${user.name.split(' ')[0]}!`);
+  
+  // ── PLAN HANDLING ──
+  const plan = user.plan || 'trial';
+  const trialEnd = user.trial_ends_at ? new Date(user.trial_ends_at) : null;
+  const now = new Date();
+  const trialDaysLeft = trialEnd ? Math.ceil((trialEnd - now) / 86400000) : 0;
+  const trialExpired = trialEnd && trialEnd <= now;
+  
+  // Update upgrade button in sidebar
+  const upgradeBox = document.querySelector('.sb-upgrade');
+  if(plan === 'founder'){
+    upgradeBox.innerHTML = `<div class="sb-up-title">♾️ Founder Account</div><div class="sb-up-desc" style="color:rgba(255,255,255,.4)">Free forever. Thank you for building ZenaRank!</div>`;
+  } else if(plan === 'starter'){
+    upgradeBox.innerHTML = `<div class="sb-up-title">✅ Starter Plan</div><div class="sb-up-desc">Upgrade to Pro for 5 projects & more.</div><button class="sb-up-btn" onclick="sT('💳','Upgrade coming soon!')">Upgrade to Pro — $79/mo</button>`;
+  } else if(plan === 'pro'){
+    upgradeBox.innerHTML = `<div class="sb-up-title">✅ Pro Plan</div><div class="sb-up-desc">You're on Pro. Upgrade to Agency for unlimited.</div><button class="sb-up-btn" onclick="sT('💳','Upgrade coming soon!')">Upgrade to Agency</button>`;
+  } else if(plan === 'agency'){
+    upgradeBox.innerHTML = `<div class="sb-up-title">✅ Agency Plan</div><div class="sb-up-desc" style="color:rgba(255,255,255,.4)">Unlimited everything. You're all set!</div>`;
+  } else if(trialExpired){
+    // TRIAL EXPIRED — show paywall
+    showPaywall();
+    return;
+  } else {
+    // TRIAL ACTIVE
+    upgradeBox.innerHTML = `<div class="sb-up-title">🕐 Trial — ${trialDaysLeft} days left</div><div class="sb-up-desc">Upgrade to keep access after your trial ends.</div><button class="sb-up-btn" onclick="sT('💳','Checkout coming soon!')">Upgrade — from $29/mo</button>`;
+    // Show trial warning if < 3 days left
+    if(trialDaysLeft <= 3){
+      showTrialWarning(trialDaysLeft);
+    }
+  }
+
+  // Update dd plan badge
+  const planLabels = {founder:'♾️ Free Forever',trial:`🕐 Trial (${trialDaysLeft}d)`,starter:'✅ Starter',pro:'✅ Pro',agency:'✅ Agency'};
+  const planEl = document.createElement('div');
+  planEl.style.cssText='font-size:10px;padding:2px 7px;background:rgba(20,184,166,.15);color:#2dd4bf;border-radius:4px;margin-top:3px;font-weight:700;display:inline-block';
+  planEl.textContent = planLabels[plan] || '🕐 Trial';
+  const ddEmail = document.getElementById('dd-email');
+  if(ddEmail && !ddEmail.nextElementSibling) ddEmail.after(planEl);
+
+  sT('🎉',`Welcome back, ${firstName}!`);
   window.scrollTo(0,0);
-  document.getElementById('view-dashboard').style.display='block';
-  // Re-observe reveal elements
   document.querySelectorAll('.rev').forEach(el=>{el.classList.remove('vis');ro.observe(el)});
+}
+
+/* ── TRIAL WARNING ── */
+function showTrialWarning(days){
+  const banner = document.getElementById('setup-banner');
+  if(banner){
+    banner.style.background='linear-gradient(135deg,rgba(239,68,68,.1),rgba(251,191,36,.06))';
+    banner.style.borderColor='rgba(239,68,68,.2)';
+    banner.querySelector('.sb-title2').textContent = days <= 0 ? '⚠️ Trial expired!' : `⚠️ Trial ends in ${days} day${days===1?'':'s'}!`;
+    banner.querySelector('.sb-desc2').textContent = 'Upgrade now to keep access to all your data and tools.';
+    banner.querySelector('.sb-progress').innerHTML = `<button onclick="sT('💳','Checkout coming soon!')" style="padding:5px 14px;background:var(--re);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:none;font-family:inherit">Upgrade now — from $29/mo →</button>`;
+  }
+}
+
+/* ── PAYWALL ── */
+function showPaywall(){
+  document.getElementById('view-landing').style.display='none';
+  document.getElementById('view-dashboard').style.display='block';
+  const main = document.querySelector('.dash-main');
+  main.innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;padding:40px">
+      <div style="font-size:56px;margin-bottom:20px">⏰</div>
+      <h2 style="font-family:'Cabinet Grotesk',sans-serif;font-size:28px;font-weight:900;color:#fff;margin-bottom:10px;letter-spacing:-.02em">Your free trial has ended</h2>
+      <p style="font-size:16px;color:rgba(255,255,255,.4);max-width:440px;line-height:1.65;margin-bottom:32px">You've used your 14-day free trial. Upgrade to keep access to all your keywords, audit results, and rank data.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:680px;margin-bottom:32px;width:100%">
+        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px;text-align:center">
+          <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:28px;font-weight:900;color:#fff">$29<span style="font-size:14px;color:rgba(255,255,255,.4)">/mo</span></div>
+          <div style="font-size:11px;color:rgba(255,255,255,.3);margin:6px 0 14px;text-transform:uppercase;letter-spacing:.08em">Starter</div>
+          <button onclick="sT('💳','Starter checkout coming soon!')" style="width:100%;padding:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);border-radius:8px;font-size:13px;font-weight:700;cursor:none;font-family:inherit;transition:all .2s">Choose Starter</button>
+        </div>
+        <div style="background:rgba(20,184,166,.08);border:2px solid rgba(20,184,166,.3);border-radius:14px;padding:20px;text-align:center;position:relative">
+          <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--t);color:#fff;font-size:9px;font-weight:700;padding:3px 10px;border-radius:100px;white-space:nowrap">MOST POPULAR</div>
+          <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:28px;font-weight:900;color:#fff">$79<span style="font-size:14px;color:rgba(255,255,255,.4)">/mo</span></div>
+          <div style="font-size:11px;color:rgba(255,255,255,.3);margin:6px 0 14px;text-transform:uppercase;letter-spacing:.08em">Pro</div>
+          <button onclick="sT('💳','Pro checkout coming soon!')" style="width:100%;padding:10px;background:var(--t);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:none;font-family:inherit">Choose Pro</button>
+        </div>
+        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px;text-align:center">
+          <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:28px;font-weight:900;color:#fff">$149<span style="font-size:14px;color:rgba(255,255,255,.4)">/mo</span></div>
+          <div style="font-size:11px;color:rgba(255,255,255,.3);margin:6px 0 14px;text-transform:uppercase;letter-spacing:.08em">Agency</div>
+          <button onclick="sT('💳','Agency checkout coming soon!')" style="width:100%;padding:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);border-radius:8px;font-size:13px;font-weight:700;cursor:none;font-family:inherit;transition:all .2s">Choose Agency</button>
+        </div>
+      </div>
+      <p style="font-size:13px;color:rgba(255,255,255,.2)">All plans include 30-day money-back guarantee · Cancel anytime</p>
+      <button onclick="handleSignOut()" style="margin-top:16px;background:transparent;border:none;color:rgba(255,255,255,.2);font-size:12px;cursor:none;font-family:inherit;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.5)'" onmouseout="this.style.color='rgba(255,255,255,.2)'">Sign out</button>
+    </div>
+  `;
 }
 
 /* ── SIGN OUT ── */
@@ -952,12 +1042,15 @@ sb.auth.onAuthStateChange(async (event, session) => {
     const user = session.user;
     const name = user.user_metadata?.full_name || user.email.split('@')[0];
     const capitalName = name.charAt(0).toUpperCase() + name.slice(1);
-    currentUser = {name: capitalName, email: user.email, id: user.id};
+    let userData = {name: capitalName, email: user.email, id: user.id};
+    // Fetch plan
+    try {
+      const {data:profile} = await sb.from('profiles').select('*').eq('id',user.id).single();
+      if(profile){ userData.plan=profile.plan; userData.trial_ends_at=profile.trial_ends_at; }
+    } catch(e){}
+    currentUser = userData;
     localStorage.setItem('zr_user', JSON.stringify(currentUser));
     showDashboard(currentUser);
-  } else if(localStorage.getItem('zr_user')) {
-    // Fallback for demo mode only
-    showDashboard(JSON.parse(localStorage.getItem('zr_user')));
   }
 })();
 </script>
