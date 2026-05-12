@@ -376,6 +376,7 @@ table.kwt tr:hover td{background:rgba(255,255,255,.025);cursor:none}
           <span id="si-txt">Sign In →</span>
           <div class="btn-spinner" id="si-spin"></div>
         </button>
+        <div id="si-status" style="text-align:center;font-size:12px;color:var(--mu);margin-top:8px;display:none">Connecting to server... this may take 10-20 seconds on first sign in</div>
         <div class="modal-footer">Don't have an account? <a href="#" onclick="switchTab('signup')">Create one free →</a></div>
       </div>
 
@@ -699,7 +700,18 @@ table.kwt tr:hover td{background:rgba(255,255,255,.025);cursor:none}
 /* ── SUPABASE INIT ── */
 const SUPABASE_URL = 'https://gzdekxyqfxzvyyqibksz.supabase.co';
 const SUPABASE_KEY = 'sb_publishable__xRkw74bDu0atMTDFeNyag_NAaQcDkX';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true
+  },
+  global: {
+    fetch: (url, options={}) => {
+      return fetch(url, {...options, signal: AbortSignal.timeout ? AbortSignal.timeout(12000) : options.signal});
+    }
+  }
+});
 
 /* ── STRIPE CONFIG ── */
 // PASTE YOUR STRIPE PUBLISHABLE KEY BELOW (starts with pk_live_ or pk_test_)
@@ -835,14 +847,20 @@ async function startCheckout(planName, isAnnual=false){
     if(error) throw error;
     
     if(data?.url){
-      // Redirect to Stripe checkout
       window.location.href = data.url;
+    } else if(data?.error){
+      sT('⚠️','Stripe error: '+data.error+'. Check Supabase secrets.');
+      console.error('Stripe error:', data);
     } else {
-      throw new Error('No checkout URL returned');
+      sT('⚠️','No checkout URL. Check STRIPE_SECRET_KEY in Supabase secrets.');
     }
   } catch(err){
     console.error('Checkout error:', err);
-    sT('⚠️','Checkout error: '+err.message);
+    if(err.message && err.message.includes('non-2xx')){
+      sT('⚠️','Edge Function error — check STRIPE_SECRET_KEY in Supabase → Edge Functions → Secrets');
+    } else {
+      sT('⚠️','Checkout error: '+err.message);
+    }
   }
 }
 
@@ -887,18 +905,21 @@ async function handleSignIn(){
   if(!pass||pass.length<6){showErr('si-pass-err','Password must be at least 6 characters');valid=false}
   if(!valid)return;
   setLoading('si-btn','si-spin','si-txt',true);
+  // Show status after 3 seconds
+  const statusEl = document.getElementById('si-status');
+  const statusTimer = setTimeout(()=>{ if(statusEl) statusEl.style.display='block'; }, 3000);
   try {
-    // Set 10 second timeout on the auth call itself
-    const authPromise = sb.auth.signInWithPassword({email,password:pass});
-    const timeoutPromise = new Promise((_,reject) => setTimeout(()=>reject(new Error('timeout')),10000));
-    const {data,error} = await Promise.race([authPromise, timeoutPromise]);
+    // No timeout - let Supabase take as long as needed
+    const {data,error} = await sb.auth.signInWithPassword({email,password:pass});
+    clearTimeout(statusTimer);
+    if(statusEl) statusEl.style.display='none';
     setLoading('si-btn','si-spin','si-txt',false);
     if(error){
       const msg = error.message.toLowerCase();
-      if(msg.includes('invalid')||msg.includes('wrong')||msg.includes('credentials')||msg.includes('email')){
+      if(msg.includes('invalid')||msg.includes('wrong')||msg.includes('credentials')){
         showErr('si-pass-err','❌ Wrong email or password.');
       } else if(msg.includes('confirm')||msg.includes('not confirmed')){
-        showErr('si-email-err','📬 Please confirm your email first — check your inbox!');
+        showErr('si-email-err','📬 Please confirm your email first!');
       } else {
         showErr('si-pass-err','Error: '+error.message);
       }
@@ -907,34 +928,18 @@ async function handleSignIn(){
     const user=data.user;
     const name=(user.user_metadata?.full_name||user.email.split('@')[0]);
     const capitalName=name.charAt(0).toUpperCase()+name.slice(1);
-    // Show dashboard immediately with default trial plan - fetch profile in background
     const userData = {name:capitalName, email:user.email, id:user.id, plan:'trial'};
     currentUser = userData;
-    switchTab('success');
-    document.getElementById('success-title').textContent='Welcome, '+capitalName+'! 🎉';
-    document.getElementById('success-msg').textContent='Loading your dashboard...';
     closeAuth();
     showDashboard(userData);
-    // Fetch real plan in background silently
-    sb.from('profiles').select('*').eq('id',user.id).single().then(({data:profile})=>{
-      if(profile && currentUser){
-        currentUser.plan = profile.plan || 'trial';
-        currentUser.trial_ends_at = profile.trial_ends_at;
-        localStorage.setItem('zr_user', JSON.stringify(currentUser));
-        // Refresh plan display only
-        const upgradeBox = document.querySelector('.sb-upgrade');
-        if(upgradeBox && profile.plan === 'founder'){
-          upgradeBox.innerHTML = '<div class="sb-up-title">♾️ Founder Account</div><div class="sb-up-desc" style="color:rgba(255,255,255,.4)">Free forever. Thank you for building ZenaRank!</div>';
-        }
-      }
-    }).catch(()=>{});
+    // Fetch plan quietly in background
+    sb.from('profiles').select('plan,trial_ends_at').eq('id',user.id).single()
+      .then(({data:p})=>{ if(p&&currentUser){currentUser.plan=p.plan||'trial';currentUser.trial_ends_at=p.trial_ends_at;localStorage.setItem('zr_user',JSON.stringify(currentUser));const ub=document.querySelector('.sb-upgrade');if(ub&&p.plan==='founder')ub.innerHTML='<div class="sb-up-title">♾️ Founder Account</div><div class="sb-up-desc" style="color:rgba(255,255,255,.4)">Free forever!</div>';}}).catch(()=>{});
   } catch(e){
+    clearTimeout(statusTimer);
+    if(statusEl) statusEl.style.display='none';
     setLoading('si-btn','si-spin','si-txt',false);
-    if(e.message==='timeout'){
-      showErr('si-pass-err','⏱️ Timed out — please try again.');
-    } else {
-      showErr('si-pass-err','Error: '+e.message);
-    }
+    showErr('si-pass-err','Connection error: '+e.message+'. Please try again.');
   }
 }
 
