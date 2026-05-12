@@ -799,7 +799,7 @@ function setLoading(btnId,spinId,txtId,loading){
 /* ── STRIPE CHECKOUT ── */
 async function startCheckout(planName, isAnnual=false){
   // Check if Stripe is configured
-  if(STRIPE_KEY === 'pk_test_51THJxgJeWuOMWiImeZzBQgPxUI1GbtwoiXtQs0iQ0YqjEsFg1S8Ta1W6kUSbDQ8kQW1b8XVSVeH08qvJvVuN7hFp00gadbtm11'){
+  if(STRIPE_KEY === 'PASTE_YOUR_STRIPE_PUBLISHABLE_KEY_HERE'){
     sT('💳','Stripe not configured yet — see setup guide!');
     return;
   }
