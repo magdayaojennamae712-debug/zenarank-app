@@ -496,6 +496,8 @@ table.kwt tr:hover td{background:rgba(255,255,255,.025);cursor:none}
       <div class="dn-link" onclick="sT('📈','Rank Tracker')">📈 Rankings</div>
       <div class="dn-link" onclick="sT('🔗','Backlinks')">🔗 Backlinks</div>
       <div class="dn-link" onclick="sT('🤖','AI Brief Generator')">🤖 AI Briefs</div>
+      <div class="dn-link" onclick="showBlogGenerator()">✍️ Blog Generator</div>
+      <div class="dn-link" onclick="showReports()">📊 Reports</div>
     </div>
     <div class="dash-nav-right">
       <div class="dash-notif" onclick="sT('🔔','3 new notifications')">🔔<div class="notif-badge">3</div></div>
@@ -685,6 +687,120 @@ table.kwt tr:hover td{background:rgba(255,255,255,.025);cursor:none}
           <div class="iss-row"><div class="iss-sev is-w"></div><div class="iss-info"><div class="iss-title">Images missing alt text</div><div class="iss-url">/gallery — 12 images affected</div></div><button class="iss-fix-btn" onclick="fixIssue(this)">Mark Fixed</button></div>
           <div class="iss-row"><div class="iss-sev is-w"></div><div class="iss-info"><div class="iss-title">Redirect chain (3 hops)</div><div class="iss-url">/old-url → /newer → /newest</div></div><button class="iss-fix-btn" onclick="fixIssue(this)">Mark Fixed</button></div>
           <div class="iss-row"><div class="iss-sev is-i"></div><div class="iss-info"><div class="iss-title">No sitemap.xml found</div><div class="iss-url">/ — root domain</div></div><button class="iss-fix-btn" onclick="fixIssue(this)">Mark Fixed</button></div>
+        </div>
+      </div>
+
+      <!-- BLOG GENERATOR SECTION -->
+      <div class="dash-card rev" style="margin-top:20px;padding:0;overflow:hidden" id="blog-gen-section" style="display:none">
+        <div class="kwt-header">
+          <div class="kwt-title">✍️ AI Blog Generator</div>
+          <div class="kwt-actions">
+            <span style="font-size:11px;color:rgba(255,255,255,.3)">Publish-ready SEO content in one click</span>
+          </div>
+        </div>
+        <div style="padding:16px">
+          <div class="blog-form">
+            <input type="text" id="blog-kw-input" placeholder="Enter target keyword (e.g. best local SEO tools 2025)">
+            <button onclick="generateBlogPost()">✨ Generate Post</button>
+          </div>
+          <div id="blog-posts-list">
+            <div class="blog-post-card" onclick="sT('📄','Opening post preview...')">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+                <div class="blog-post-title">10 Local SEO Strategies That Actually Work in 2025</div>
+                <span class="blog-status published">Published</span>
+              </div>
+              <div class="blog-post-meta">
+                <span>📎 1,240 words</span>
+                <span class="blog-post-tag">local seo tips</span>
+                <span>12 May 2025</span>
+              </div>
+            </div>
+            <div class="blog-post-card" onclick="sT('📄','Opening post preview...')">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+                <div class="blog-post-title">How to Rank Your Google Business Profile in 2025</div>
+                <span class="blog-status draft">Draft</span>
+              </div>
+              <div class="blog-post-meta">
+                <span>📎 980 words</span>
+                <span class="blog-post-tag">google business profile</span>
+                <span>8 May 2025</span>
+              </div>
+            </div>
+            <div class="blog-post-card" onclick="sT('📄','Opening post preview...')">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+                <div class="blog-post-title">What is E-E-A-T and Why Local Businesses Need It</div>
+                <span class="blog-status published">Published</span>
+              </div>
+              <div class="blog-post-meta">
+                <span>📎 1,560 words</span>
+                <span class="blog-post-tag">e-e-a-t seo</span>
+                <span>1 May 2025</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MONTHLY REPORTS SECTION -->
+      <div class="dash-card rev" style="margin-top:20px;padding:0;overflow:hidden" id="reports-section" style="display:none">
+        <div class="kwt-header">
+          <div class="kwt-title">📊 Monthly SEO Reports</div>
+          <div class="kwt-actions">
+            <button class="kwt-btn kwt-btn-primary" onclick="generateReport()">+ Generate Report</button>
+          </div>
+        </div>
+        <div style="padding:16px">
+          <div class="report-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <div class="report-month">May 2025 Report</div>
+              <span class="blog-status published">✓ Ready</span>
+            </div>
+            <div class="report-stats">
+              <div class="report-stat">
+                <div class="report-stat-val" style="color:#4ade80">+12</div>
+                <div class="report-stat-lbl">Keywords Won</div>
+              </div>
+              <div class="report-stat">
+                <div class="report-stat-val" style="color:#f87171">-3</div>
+                <div class="report-stat-lbl">Keywords Lost</div>
+              </div>
+              <div class="report-stat">
+                <div class="report-stat-val" style="color:#2dd4bf">#14.2</div>
+                <div class="report-stat-lbl">Avg. Rank</div>
+              </div>
+            </div>
+            <div class="report-bar-wrap">
+              <div class="report-bar-label"><span>Ranking Visibility</span><span>+34% vs last month</span></div>
+              <div class="report-bar"><div class="report-bar-fill" style="width:74%;background:linear-gradient(90deg,#0d9488,#2dd4bf)"></div></div>
+            </div>
+            <div class="report-highlights" style="margin-top:12px">
+              <ul style="list-style:none;padding:0">
+                <li>🏆 Ranked #1 for "local seo tools" — up from #8</li>
+                <li>📈 3 new keywords entered top 10</li>
+                <li>⚡ Site speed improved to 92/100 (was 74)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="report-card" style="opacity:.7">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <div class="report-month">April 2025 Report</div>
+              <span class="blog-status published">✓ Ready</span>
+            </div>
+            <div class="report-stats">
+              <div class="report-stat">
+                <div class="report-stat-val" style="color:#4ade80">+8</div>
+                <div class="report-stat-lbl">Keywords Won</div>
+              </div>
+              <div class="report-stat">
+                <div class="report-stat-val" style="color:#f87171">-5</div>
+                <div class="report-stat-lbl">Keywords Lost</div>
+              </div>
+              <div class="report-stat">
+                <div class="report-stat-val" style="color:#2dd4bf">#17.8</div>
+                <div class="report-stat-lbl">Avg. Rank</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1202,6 +1318,37 @@ function handleSignOut(){
   window.scrollTo(0,0);
 }
 
+/* ── BLOG GENERATOR ── */
+function showBlogGenerator(){
+  document.getElementById('blog-gen-section').style.display='block';
+  document.getElementById('reports-section').style.display='none';
+  document.getElementById('blog-gen-section').scrollIntoView({behavior:'smooth',block:'start'});
+  // Update nav highlight
+  document.querySelectorAll('.dn-link').forEach(l=>l.classList.remove('on'));
+  event?.target?.classList.add('on');
+}
+function generateBlogPost(){
+  const kw=document.getElementById('blog-kw-input').value.trim();
+  if(!kw){sT('⚠️','Please enter a keyword first');return;}
+  sT('✍️',`Generating AI blog post for "${kw}"... (Coming in next update!)`);
+  document.getElementById('blog-kw-input').value='';
+}
+/* ── REPORTS ── */
+function showReports(){
+  document.getElementById('reports-section').style.display='block';
+  document.getElementById('blog-gen-section').style.display='none';
+  document.getElementById('reports-section').scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.dn-link').forEach(l=>l.classList.remove('on'));
+  event?.target?.classList.add('on');
+}
+function generateReport(){
+  sT('📊','Generating monthly report... (Coming in next update!)');
+}
+/* ── FIX ISSUE ── */
+function fixIssue(btn){
+  btn.closest('.iss-item')?.remove();
+  sT('✅','Issue marked as fixed!');
+}
 /* ── PASSWORD TOGGLE ── */
 function goToSignIn(){switchTab('signin');}
 function togglePw(inputId, btnId){
