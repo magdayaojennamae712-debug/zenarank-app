@@ -691,57 +691,118 @@ table.kwt tr:hover td{background:rgba(255,255,255,.025);cursor:none}
       </div>
 
       <!-- BLOG GENERATOR SECTION -->
-      <div class="dash-card rev" style="margin-top:20px;padding:0;overflow:hidden" id="blog-gen-section" style="display:none">
+      <div class="dash-card rev" style="margin-top:20px;padding:0;overflow:hidden;display:none" id="blog-gen-section">
         <div class="kwt-header">
           <div class="kwt-title">✍️ AI Blog Generator</div>
           <div class="kwt-actions">
-            <span style="font-size:11px;color:rgba(255,255,255,.3)">Publish-ready SEO content in one click</span>
+            <span style="font-size:11px;color:rgba(255,255,255,.35)">Powered by Claude AI · Real SEO-optimized posts</span>
           </div>
         </div>
-        <div style="padding:16px">
-          <div class="blog-form">
-            <input type="text" id="blog-kw-input" placeholder="Enter target keyword (e.g. best local SEO tools 2025)">
-            <button onclick="generateBlogPost()">✨ Generate Post</button>
+        <div style="padding:20px">
+
+          <!-- GENERATOR FORM -->
+          <div id="blog-form-area">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+              <div>
+                <label style="font-size:11px;color:rgba(255,255,255,.4);display:block;margin-bottom:6px">TARGET KEYWORD *</label>
+                <input id="blog-kw" type="text" placeholder="e.g. best local SEO tips 2025"
+                  style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;color:#fff;font-size:13px;font-family:inherit">
+              </div>
+              <div>
+                <label style="font-size:11px;color:rgba(255,255,255,.4);display:block;margin-bottom:6px">BUSINESS/LOCATION</label>
+                <input id="blog-location" type="text" placeholder="e.g. plumber in Helsinki"
+                  style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;color:#fff;font-size:13px;font-family:inherit">
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+              <div>
+                <label style="font-size:11px;color:rgba(255,255,255,.4);display:block;margin-bottom:6px">TONE</label>
+                <select id="blog-tone"
+                  style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;color:#fff;font-size:13px;font-family:inherit">
+                  <option value="professional">Professional</option>
+                  <option value="friendly">Friendly & Conversational</option>
+                  <option value="authoritative">Authoritative</option>
+                  <option value="educational">Educational</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;color:rgba(255,255,255,.4);display:block;margin-bottom:6px">WORD COUNT</label>
+                <select id="blog-length"
+                  style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;color:#fff;font-size:13px;font-family:inherit">
+                  <option value="800">~800 words (Quick)</option>
+                  <option value="1200" selected>~1200 words (Standard)</option>
+                  <option value="1800">~1800 words (In-depth)</option>
+                  <option value="2500">~2500 words (Pillar)</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;color:rgba(255,255,255,.4);display:block;margin-bottom:6px">FORMAT</label>
+                <select id="blog-format"
+                  style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;color:#fff;font-size:13px;font-family:inherit">
+                  <option value="howto">How-To Guide</option>
+                  <option value="listicle">Listicle (Top 10...)</option>
+                  <option value="ultimate">Ultimate Guide</option>
+                  <option value="comparison">Comparison Post</option>
+                  <option value="faq">FAQ Article</option>
+                </select>
+              </div>
+            </div>
+            <button onclick="runBlogGenerator()"
+              style="padding:11px 24px;background:linear-gradient(135deg,#0d9488,#0891b2);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px">
+              <span>✨</span> Generate SEO Blog Post
+            </button>
           </div>
-          <div id="blog-posts-list">
-            <div class="blog-post-card" onclick="sT('📄','Opening post preview...')">
-              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
-                <div class="blog-post-title">10 Local SEO Strategies That Actually Work in 2025</div>
-                <span class="blog-status published">Published</span>
+
+          <!-- LOADING STATE -->
+          <div id="blog-loading" style="display:none;text-align:center;padding:40px 20px">
+            <div style="width:40px;height:40px;border:3px solid rgba(20,184,166,.2);border-top-color:#0d9488;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px"></div>
+            <div style="font-size:14px;font-weight:600;color:rgba(255,255,255,.7)" id="blog-loading-msg">Generating your SEO post...</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:6px">Claude is writing a real, publish-ready article</div>
+          </div>
+
+          <!-- RESULT AREA -->
+          <div id="blog-result" style="display:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.08)">
+              <div>
+                <div style="font-size:16px;font-weight:700;color:#fff;font-family:'Cabinet Grotesk',sans-serif" id="blog-result-title"></div>
+                <div style="display:flex;gap:12px;margin-top:6px;font-size:11px;color:rgba(255,255,255,.35)" id="blog-result-meta"></div>
               </div>
-              <div class="blog-post-meta">
-                <span>📎 1,240 words</span>
-                <span class="blog-post-tag">local seo tips</span>
-                <span>12 May 2025</span>
+              <div style="display:flex;gap:8px">
+                <button onclick="copyBlogPost()"
+                  style="padding:8px 14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:6px;color:rgba(255,255,255,.7);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">
+                  📋 Copy
+                </button>
+                <button onclick="newBlogPost()"
+                  style="padding:8px 14px;background:rgba(20,184,166,.15);border:1px solid rgba(20,184,166,.25);border-radius:6px;color:#2dd4bf;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">
+                  ✨ New Post
+                </button>
               </div>
             </div>
-            <div class="blog-post-card" onclick="sT('📄','Opening post preview...')">
-              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
-                <div class="blog-post-title">How to Rank Your Google Business Profile in 2025</div>
-                <span class="blog-status draft">Draft</span>
+            <!-- SEO SCORE BAR -->
+            <div id="blog-seo-score" style="margin-bottom:16px;padding:12px 16px;background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.15);border-radius:8px;display:flex;align-items:center;gap:16px">
+              <div style="font-size:11px;color:rgba(255,255,255,.45);white-space:nowrap">SEO SCORE</div>
+              <div style="flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden">
+                <div id="seo-score-bar" style="height:100%;border-radius:3px;background:linear-gradient(90deg,#0d9488,#2dd4bf);transition:width 1s ease"></div>
               </div>
-              <div class="blog-post-meta">
-                <span>📎 980 words</span>
-                <span class="blog-post-tag">google business profile</span>
-                <span>8 May 2025</span>
-              </div>
+              <div id="seo-score-val" style="font-size:13px;font-weight:700;color:#2dd4bf;font-family:'Cabinet Grotesk',sans-serif;white-space:nowrap"></div>
             </div>
-            <div class="blog-post-card" onclick="sT('📄','Opening post preview...')">
-              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
-                <div class="blog-post-title">What is E-E-A-T and Why Local Businesses Need It</div>
-                <span class="blog-status published">Published</span>
-              </div>
-              <div class="blog-post-meta">
-                <span>📎 1,560 words</span>
-                <span class="blog-post-tag">e-e-a-t seo</span>
-                <span>1 May 2025</span>
-              </div>
+            <!-- POST CONTENT -->
+            <div id="blog-post-content"
+              style="font-size:13.5px;line-height:1.8;color:rgba(255,255,255,.75);max-height:600px;overflow-y:auto;padding-right:8px;white-space:pre-wrap;word-break:break-word">
             </div>
           </div>
+
+          <!-- SAVED POSTS -->
+          <div id="blog-saved-area" style="margin-top:24px">
+            <div style="font-size:11px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">Previously Generated</div>
+            <div id="blog-saved-list"></div>
+            <div id="blog-saved-empty" style="font-size:12px;color:rgba(255,255,255,.2);font-style:italic">No posts yet — generate your first one above!</div>
+          </div>
+
         </div>
       </div>
 
-      <!-- MONTHLY REPORTS SECTION -->
+<!-- MONTHLY REPORTS SECTION -->
       <div class="dash-card rev" style="margin-top:20px;padding:0;overflow:hidden" id="reports-section" style="display:none">
         <div class="kwt-header">
           <div class="kwt-title">📊 Monthly SEO Reports</div>
@@ -810,6 +871,7 @@ table.kwt tr:hover td{background:rgba(255,255,255,.025);cursor:none}
 
 <style>
 @keyframes loadProgress{from{width:0}to{width:100%}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 </style>
 
 <script>
@@ -1318,20 +1380,177 @@ function handleSignOut(){
   window.scrollTo(0,0);
 }
 
-/* ── BLOG GENERATOR ── */
+/* ── BLOG GENERATOR (REAL AI) ── */
+const SUPABASE_URL_BLOG = 'https://gzdekxyqfxzvyyqibksz.supabase.co';
+const ANON_KEY_BLOG = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6ZGVreHlxZnh6dnl5cWlia3N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5NzM3NjcsImV4cCI6MjA2MjU0OTc2N30.sb_publishable__xRkw74bDu0atMTDFeNyag_NAaQcDkX'.split('_')[0] + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6ZGVreHlxZnh6dnl5cWlia3N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5NzM3NjcsImV4cCI6MjA2MjU0OTc2N30.sb_publishable__xRkw74bDu0atMTDFeNyag_NAaQcDkX';
+
+// Saved posts in memory
+let savedBlogPosts = JSON.parse(localStorage.getItem('zr_blog_posts') || '[]');
+
 function showBlogGenerator(){
   document.getElementById('blog-gen-section').style.display='block';
   document.getElementById('reports-section').style.display='none';
   document.getElementById('blog-gen-section').scrollIntoView({behavior:'smooth',block:'start'});
-  // Update nav highlight
   document.querySelectorAll('.dn-link').forEach(l=>l.classList.remove('on'));
-  event?.target?.classList.add('on');
+  if(event?.target) event.target.classList.add('on');
+  renderSavedPosts();
 }
-function generateBlogPost(){
-  const kw=document.getElementById('blog-kw-input').value.trim();
-  if(!kw){sT('⚠️','Please enter a keyword first');return;}
-  sT('✍️',`Generating AI blog post for "${kw}"... (Coming in next update!)`);
-  document.getElementById('blog-kw-input').value='';
+
+function renderSavedPosts(){
+  const list = document.getElementById('blog-saved-list');
+  const empty = document.getElementById('blog-saved-empty');
+  if(!savedBlogPosts.length){ list.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  list.innerHTML = savedBlogPosts.slice().reverse().map((p,i)=>`
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px;margin-bottom:10px;cursor:pointer"
+         onclick="viewSavedPost(${savedBlogPosts.length-1-i})">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+        <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.85)">${p.title}</div>
+        <span style="background:rgba(74,222,128,.15);color:#4ade80;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:600;white-space:nowrap">Saved</span>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:6px;font-size:11px;color:rgba(255,255,255,.35)">
+        <span>📎 ${p.wordCount} words</span>
+        <span style="background:rgba(20,184,166,.15);color:#2dd4bf;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:600">${p.keyword}</span>
+        <span>${p.date}</span>
+        <span>SEO: ${p.seoScore}%</span>
+      </div>
+    </div>`).join('');
+}
+
+function viewSavedPost(idx){
+  const p = savedBlogPosts[idx];
+  showBlogResult(p.title, p.content, p.keyword, p.wordCount, p.seoScore);
+  document.getElementById('blog-form-area').style.display='none';
+}
+
+function showBlogResult(title, content, keyword, wordCount, seoScore){
+  document.getElementById('blog-loading').style.display='none';
+  document.getElementById('blog-result').style.display='block';
+  document.getElementById('blog-result-title').textContent = title;
+  document.getElementById('blog-result-meta').innerHTML = 
+    `<span>📎 ${wordCount} words</span><span>🔑 Keyword: ${keyword}</span><span>📅 ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</span>`;
+  document.getElementById('blog-post-content').textContent = content;
+  const score = seoScore || 85;
+  document.getElementById('seo-score-bar').style.width = score + '%';
+  document.getElementById('seo-score-val').textContent = score + '% SEO';
+}
+
+async function runBlogGenerator(){
+  const keyword = document.getElementById('blog-kw').value.trim();
+  const location = document.getElementById('blog-location').value.trim();
+  const tone = document.getElementById('blog-tone').value;
+  const length = document.getElementById('blog-length').value;
+  const format = document.getElementById('blog-format').value;
+
+  if(!keyword){ sT('⚠️','Please enter a target keyword'); return; }
+
+  // Show loading
+  document.getElementById('blog-form-area').style.display='none';
+  document.getElementById('blog-result').style.display='none';
+  document.getElementById('blog-loading').style.display='block';
+
+  const loadingMsgs = [
+    'Researching your keyword...',
+    'Crafting SEO-optimized structure...',
+    'Writing introduction...',
+    'Developing main sections...',
+    'Adding SEO elements...',
+    'Finalizing your post...'
+  ];
+  let msgIdx = 0;
+  const msgInterval = setInterval(()=>{
+    document.getElementById('blog-loading-msg').textContent = loadingMsgs[Math.min(msgIdx++, loadingMsgs.length-1)];
+  }, 3000);
+
+  const formatLabels = {howto:'How-To Guide',listicle:'Listicle',ultimate:'Ultimate Guide',comparison:'Comparison Post',faq:'FAQ Article'};
+  const toneLabels = {professional:'professional',friendly:'friendly and conversational',authoritative:'authoritative',educational:'educational'};
+
+  const locationContext = location ? ` targeting ${location}` : '';
+  const prompt = `Write a complete, publish-ready SEO blog post${locationContext}.
+
+FORMAT: ${formatLabels[format]}
+TONE: ${toneLabels[tone]}
+TARGET KEYWORD: "${keyword}"
+TARGET WORD COUNT: ${length} words
+
+Requirements:
+- Start with a compelling H1 title (include the keyword naturally)
+- Write a strong meta description (150-160 chars) on its own line starting with "META:"
+- Include proper H2 and H3 subheadings
+- Use the keyword naturally 4-6 times throughout (not stuffing)
+- Include an introduction that hooks the reader
+- Add a clear conclusion with a call-to-action
+- Write in ${toneLabels[tone]} tone
+- Make it genuinely useful and informative
+- Include practical tips, examples, or statistics where relevant
+- Format with clear paragraph breaks
+
+Write the full article now:`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    clearInterval(msgInterval);
+
+    if(!response.ok){
+      const err = await response.json().catch(()=>({}));
+      throw new Error(err.error?.message || 'API error ' + response.status);
+    }
+
+    const data = await response.json();
+    const fullText = data.content?.[0]?.text || '';
+
+    // Parse title (first line starting with # or just first line)
+    const lines = fullText.split('\n').filter(l=>l.trim());
+    let title = lines[0].replace(/^#+\s*/,'').replace(/\*\*/g,'').trim();
+    if(title.length > 100) title = title.substring(0,100) + '...';
+
+    // Count words
+    const wordCount = fullText.split(/\s+/).filter(w=>w).length;
+
+    // Calculate SEO score based on keyword presence
+    const keywordLower = keyword.toLowerCase();
+    const textLower = fullText.toLowerCase();
+    const kwCount = (textLower.split(keywordLower).length - 1);
+    const hasH2 = fullText.includes('##') || fullText.includes('\n## ');
+    const hasMeta = fullText.toLowerCase().includes('meta:');
+    const seoScore = Math.min(98, 60 + Math.min(kwCount*4,20) + (hasH2?8:0) + (hasMeta?5:0) + Math.min(wordCount/50,5));
+
+    // Save to local storage
+    const post = { title, content: fullText, keyword, wordCount, seoScore: Math.round(seoScore), date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) };
+    savedBlogPosts.push(post);
+    localStorage.setItem('zr_blog_posts', JSON.stringify(savedBlogPosts));
+
+    showBlogResult(title, fullText, keyword, wordCount, Math.round(seoScore));
+    renderSavedPosts();
+    sT('✅', `Blog post generated! ${wordCount} words · SEO score: ${Math.round(seoScore)}%`);
+
+  } catch(e) {
+    clearInterval(msgInterval);
+    document.getElementById('blog-loading').style.display='none';
+    document.getElementById('blog-form-area').style.display='block';
+    sT('❌', 'Error: ' + e.message);
+    console.error('Blog gen error:', e);
+  }
+}
+
+function copyBlogPost(){
+  const content = document.getElementById('blog-post-content').textContent;
+  navigator.clipboard.writeText(content).then(()=>sT('📋','Copied to clipboard!')).catch(()=>sT('⚠️','Copy failed'));
+}
+
+function newBlogPost(){
+  document.getElementById('blog-result').style.display='none';
+  document.getElementById('blog-form-area').style.display='block';
+  document.getElementById('blog-kw').focus();
 }
 /* ── REPORTS ── */
 function showReports(){
