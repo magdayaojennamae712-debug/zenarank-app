@@ -663,25 +663,71 @@ select.form-input option{background:var(--bg3);color:var(--text)}
 </div><!-- /homePage -->
 
 <!-- LOGIN MODAL (overlay) -->
+<!-- Google Sign-In SDK -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<style>
+/* Google button override */
+.g-btn-wrap{display:flex;justify-content:center;margin-bottom:4px}
+.g-btn-wrap iframe{border-radius:10px!important}
+.auth-spinner{display:none;width:18px;height:18px;border:2px solid var(--border2);border-top-color:#c9a84c;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+.auth-msg{font-size:13px;text-align:center;padding:10px;border-radius:8px;margin-bottom:12px;display:none}
+.auth-msg.error{background:rgba(224,92,92,.1);border:1px solid rgba(224,92,92,.25);color:var(--red)}
+.auth-msg.info{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);color:#c9a84c}
+.trial-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(76,168,201,.15);color:var(--blue);border:1px solid rgba(76,168,201,.25);margin-left:6px;vertical-align:middle}
+.owner-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(201,168,76,.2);color:#c9a84c;border:1px solid rgba(201,168,76,.35);margin-left:6px;vertical-align:middle}
+</style>
+
 <div class="login-modal-bg" id="loginModalBg" onclick="closeLoginIfOutside(event)">
   <div class="login-modal" id="loginModal">
     <button class="login-modal-close" onclick="closeLogin()">✕</button>
-    <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:9px"><div class="logo-icon" style="width:32px;height:32px;font-size:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center">🚀</div>ZenaRank</div>
-    <p style="font-size:14px;color:var(--muted);margin-bottom:24px">Sign in to your account</p>
-    <div class="auth-error" id="authError"></div>
+
+    <!-- Logo -->
+    <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:9px">
+      <div class="logo-icon" style="width:34px;height:34px;font-size:15px;background:linear-gradient(135deg,#c9a84c,#8b6fd4);border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(201,168,76,.2)">🚀</div>
+      ZenaRank
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:22px">Sign in with your Google account</p>
+
+    <!-- Status messages -->
+    <div class="auth-msg" id="authMsg"></div>
+
+    <!-- REAL Google One-Tap / Sign-In Button -->
+    <div class="g-btn-wrap">
+      <div id="g_id_onload"
+        data-client_id="696427827576-sbc6i2ej6tg115q5pnldkvsloqa4gfa.apps.googleusercontent.com"
+        data-callback="handleGoogleCredential"
+        data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"
+        data-type="standard"
+        data-shape="rectangular"
+        data-theme="filled_black"
+        data-text="signin_with"
+        data-size="large"
+        data-logo_alignment="left"
+        data-width="336">
+      </div>
+    </div>
+
+    <!-- Loading spinner shown while processing -->
+    <div class="auth-spinner" id="authSpinner" style="margin:14px auto"></div>
+
+    <div style="text-align:center;color:var(--dim);font-size:12px;margin:18px 0;position:relative">
+      <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)"></div>
+      <span style="background:var(--bg2);padding:0 12px;position:relative">or sign in manually</span>
+    </div>
+
+    <!-- Email fallback -->
     <div class="form-group">
       <label class="form-label">Email</label>
-      <input class="form-input" type="email" id="authEmail" placeholder="you@company.com">
+      <input class="form-input" type="email" id="authEmail" placeholder="your@gmail.com" style="font-family:'Inter',sans-serif">
     </div>
-    <div class="form-group">
-      <label class="form-label">Password</label>
-      <input class="form-input" type="password" id="authPass" placeholder="••••••••">
-    </div>
-    <button class="auth-btn primary" onclick="doLogin()" style="width:100%;padding:12px;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--accent);color:#0c0e14;margin-top:4px">Sign In</button>
-    <div class="auth-divider" style="text-align:center;color:var(--dim);font-size:12px;margin:14px 0;position:relative"><span style="background:var(--bg2);padding:0 10px;position:relative">or</span><div style="position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)"></div></div>
-    <button class="auth-btn google" onclick="doLogin()" style="width:100%;padding:11px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🔵 Continue with Google</button>
-    <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted)">No account? <span class="auth-link" onclick="openLogin()" style="color:var(--accent);cursor:pointer">Start free 14-day trial →</span></p>
-    <p style="text-align:center;margin-top:8px;font-size:12px;color:var(--dim)">Demo: any email + any password</p>
+    <button onclick="doEmailLogin()" style="width:100%;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;background:linear-gradient(135deg,#c9a84c,#a8883a);color:#0c0e14;margin-top:2px;transition:all .2s;box-shadow:0 3px 14px rgba(201,168,76,.28)">Sign In</button>
+
+    <p style="text-align:center;margin-top:18px;font-size:12px;color:var(--dim)">
+      Only Google accounts are accepted.<br>Owner account gets unlimited access.
+    </p>
   </div>
 </div>
 
@@ -699,7 +745,7 @@ select.form-input option{background:var(--bg3);color:var(--text)}
         <span>ZenaRank</span>
       </div>
       <div style="margin-top:8px;display:flex;align-items:center;justify-content:space-between">
-        <div class="logo-badge">PRO</div>
+        <div class="logo-badge" id="sb-plan-badge">PRO</div>
         <div style="font-size:11px;color:var(--muted)" id="sb-user-name">Loading...</div>
       </div>
     </div>
@@ -769,10 +815,10 @@ select.form-input option{background:var(--bg3);color:var(--text)}
     </div>
 
     <div class="sb-footer">
-      <div class="plan-card">
-        <div class="plan-name">PRO PLAN</div>
-        <p style="font-size:11px;color:var(--muted);margin-bottom:0">14 days remaining</p>
-        <button class="plan-upgrade">⚡ Upgrade to Agency</button>
+      <div class="plan-card" id="sb-plan-card">
+        <div class="plan-name" id="sb-plan-name">PRO PLAN</div>
+        <p style="font-size:11px;color:var(--muted);margin-bottom:0" id="sb-plan-sub">14 days remaining</p>
+        <button class="plan-upgrade" id="sb-plan-upgrade-btn">⚡ Upgrade to Agency</button>
       </div>
       <div style="margin-top:10px;display:flex;gap:8px">
         <button class="topbar-btn btn-secondary" style="flex:1;font-size:12px;padding:7px" onclick="showView('settings',null)">⚙️ Settings</button>
@@ -1821,41 +1867,239 @@ var AUDIT_DATA = [
   {type:'info',icon:'🔵',title:'Schema markup: LocalBusiness detected',desc:'Basic LocalBusiness schema found. Consider adding FAQ and Review schema for richer search results.',fix:'Add Schema',fixFn:"showView('schema',document.getElementById('nav-schema'))"},
 ];
 
+// ═══════════════════════════════════════════════
+// ZENARANK AUTH SYSTEM
+// Owner: magdayaojennamae712@gmail.com → unlimited
+// Others: 14-day trial → paid plan required
+// ═══════════════════════════════════════════════
+
+var OWNER_EMAIL = 'magdayaojennamae712@gmail.com';
+var _user = null;
+var _isOwner = false;
+
+// ── Trial management ──
+function getTrialDaysLeft(email) {
+  var key = 'zr_trial_' + email;
+  var stored = localStorage.getItem(key);
+  if (!stored) {
+    var start = Date.now();
+    localStorage.setItem(key, JSON.stringify({ start: start }));
+    return 14;
+  }
+  var data = JSON.parse(stored);
+  var daysUsed = Math.floor((Date.now() - data.start) / (1000 * 60 * 60 * 24));
+  return Math.max(0, 14 - daysUsed);
+}
+
+function isPaid(email) {
+  return localStorage.getItem('zr_paid_' + email) === 'true';
+}
+
+// ── Show auth message in modal ──
+function showAuthMsg(msg, type) {
+  var el = document.getElementById('authMsg');
+  el.textContent = msg;
+  el.className = 'auth-msg ' + (type || 'info');
+  el.style.display = 'block';
+}
+
+// ── Google OAuth credential handler (called by Google SDK) ──
+function handleGoogleCredential(response) {
+  document.getElementById('authSpinner').style.display = 'block';
+  try {
+    // Decode JWT payload (Google ID token)
+    var base64 = response.credential.split('.')[1];
+    var pad = base64.length % 4;
+    if (pad) base64 += '==='.slice(0, 4 - pad);
+    var payload = JSON.parse(atob(base64.replace(/-/g,'+').replace(/_/g,'/')));
+    var email = payload.email;
+    var name = payload.name || email.split('@')[0];
+    var picture = payload.picture || '';
+
+    // Only allow Gmail accounts
+    if (!email.endsWith('@gmail.com')) {
+      document.getElementById('authSpinner').style.display = 'none';
+      showAuthMsg('Only Gmail accounts are accepted.', 'error');
+      return;
+    }
+
+    finishLogin(email, name, picture);
+  } catch(e) {
+    document.getElementById('authSpinner').style.display = 'none';
+    showAuthMsg('Google sign-in failed. Please try email below.', 'error');
+  }
+}
+
+// ── Email fallback login ──
+function doEmailLogin() {
+  var email = document.getElementById('authEmail').value.trim();
+  if (!email) { showAuthMsg('Please enter your Gmail address.', 'error'); return; }
+  if (!email.endsWith('@gmail.com') && email !== OWNER_EMAIL) {
+    showAuthMsg('Only Gmail accounts are accepted.', 'error'); return;
+  }
+  var name = email.split('@')[0];
+  finishLogin(email, name, '');
+}
+
+// ── Core login logic ──
+function finishLogin(email, name, picture) {
+  _isOwner = (email === OWNER_EMAIL);
+  var daysLeft = _isOwner ? 999 : getTrialDaysLeft(email);
+  var paid = _isOwner ? true : isPaid(email);
+
+  // Block expired non-owner free users
+  if (!_isOwner && !paid && daysLeft <= 0) {
+    document.getElementById('authSpinner').style.display = 'none';
+    showAuthMsg('Your 14-day free trial has ended. Please upgrade to continue.', 'error');
+    return;
+  }
+
+  _user = { email: email, name: name, picture: picture, isOwner: _isOwner, daysLeft: daysLeft, paid: paid };
+
+  // Persist session
+  localStorage.setItem('zr_session', JSON.stringify(_user));
+
+  // Update sidebar
+  updateSidebarForUser();
+
+  // Hide modal, show app
+  closeLogin();
+  document.getElementById('homePage').style.display = 'none';
+  document.getElementById('appShell').style.display = 'flex';
+
+  var greeting = _isOwner ? '👑 Welcome back, Owner!' : '🚀 Welcome to ZenaRank!';
+  toast(greeting, 'success');
+}
+
+// ── Update sidebar based on account type ──
+function updateSidebarForUser() {
+  if (!_user) return;
+  var badge = document.getElementById('sb-plan-badge');
+  var planName = document.getElementById('sb-plan-name');
+  var planSub = document.getElementById('sb-plan-sub');
+  var upgradeBtn = document.getElementById('sb-plan-upgrade-btn');
+  var userName = document.getElementById('sb-user-name');
+
+  // Display name — truncate if long
+  var displayName = _user.name.length > 14 ? _user.name.substring(0,12) + '…' : _user.name;
+  userName.textContent = displayName;
+
+  if (_user.isOwner) {
+    badge.textContent = '👑 OWNER';
+    badge.style.background = 'rgba(201,168,76,.25)';
+    badge.style.color = '#c9a84c';
+    badge.style.border = '1px solid rgba(201,168,76,.4)';
+    planName.textContent = '👑 OWNER ACCOUNT';
+    planName.style.color = '#c9a84c';
+    planSub.textContent = 'Unlimited access · All features';
+    upgradeBtn.style.display = 'none';
+  } else if (_user.paid) {
+    badge.textContent = 'PRO';
+    planName.textContent = 'PRO PLAN';
+    planSub.textContent = 'Active subscription';
+    upgradeBtn.textContent = '⚡ Upgrade to Agency';
+    upgradeBtn.style.display = 'block';
+  } else {
+    var d = _user.daysLeft;
+    badge.textContent = 'TRIAL';
+    badge.style.background = 'rgba(76,168,201,.15)';
+    badge.style.color = '#4ca8c9';
+    planName.textContent = 'FREE TRIAL';
+    planName.style.color = '#4ca8c9';
+    planSub.textContent = d + ' day' + (d !== 1 ? 's' : '') + ' remaining';
+    upgradeBtn.textContent = '💳 Upgrade Now';
+    upgradeBtn.style.display = 'block';
+    upgradeBtn.onclick = function() { showUpgradePrompt(); };
+  }
+}
+
+// ── Show upgrade prompt ──
+function showUpgradePrompt() {
+  toast('Upgrade at zenarank.com/pricing — €19/mo Starter · €39/mo Pro', 'success');
+}
+
+// ── Restore session on page load ──
+function restoreSession() {
+  var stored = localStorage.getItem('zr_session');
+  if (stored) {
+    try {
+      var s = JSON.parse(stored);
+      // Re-validate trial days in case time passed
+      if (s.email !== OWNER_EMAIL && !s.paid) {
+        s.daysLeft = getTrialDaysLeft(s.email);
+        if (s.daysLeft <= 0) {
+          localStorage.removeItem('zr_session');
+          return; // expired, show homepage
+        }
+      }
+      _user = s;
+      _isOwner = (s.email === OWNER_EMAIL);
+      updateSidebarForUser();
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('appShell').style.display = 'flex';
+    } catch(e) {
+      localStorage.removeItem('zr_session');
+    }
+  }
+}
+
+// ── Modal controls ──
 function openLogin() {
   document.getElementById('loginModalBg').classList.add('open');
-  setTimeout(function(){ document.getElementById('authEmail').focus(); }, 100);
+  document.getElementById('authMsg').style.display = 'none';
+  document.getElementById('authSpinner').style.display = 'none';
+  setTimeout(function(){ document.getElementById('authEmail').focus(); }, 120);
 }
+
 function closeLogin() {
   document.getElementById('loginModalBg').classList.remove('open');
 }
+
 function closeLoginIfOutside(e) {
   if (e.target === document.getElementById('loginModalBg')) closeLogin();
 }
+
 function scrollTo(id) {
   var el = document.getElementById(id);
   if (el) el.scrollIntoView({ behavior: 'smooth' });
 }
+
 function toggleFaq(el) {
-  var item = el.closest('.hp-faq-item');
-  item.classList.toggle('open');
+  el.closest('.hp-faq-item').classList.toggle('open');
 }
 
-function doLogin() {
-  var email = document.getElementById('authEmail').value || 'demo@zenarank.com';
-  _user = { email: email, name: email.split('@')[0] };
-  document.getElementById('sb-user-name').textContent = _user.name;
-  closeLogin();
-  document.getElementById('homePage').style.display = 'none';
-  document.getElementById('appShell').style.display = 'flex';
-  toast('Welcome to ZenaRank! 🚀', 'success');
-}
-
+// ── Logout ──
 function doLogout() {
+  localStorage.removeItem('zr_session');
   _user = null;
+  _isOwner = false;
+  // Also sign out Google session if available
+  if (window.google && google.accounts) {
+    try { google.accounts.id.disableAutoSelect(); } catch(e) {}
+  }
   document.getElementById('appShell').style.display = 'none';
   document.getElementById('homePage').style.display = 'block';
   window.scrollTo(0, 0);
+  toast('Signed out successfully', 'success');
 }
+
+// ── Admin: grant paid access (owner can call from console) ──
+function grantPaidAccess(email) {
+  localStorage.setItem('zr_paid_' + email, 'true');
+  console.log('✅ Paid access granted to: ' + email);
+}
+
+// ── Restore on load ──
+document.addEventListener('DOMContentLoaded', function() {
+  restoreSession();
+});
+
+// ── Enter key on email input ──
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.getElementById('loginModalBg').classList.contains('open')) {
+    doEmailLogin();
+  }
+});
 
 function showView(viewId, navEl) {
   document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
