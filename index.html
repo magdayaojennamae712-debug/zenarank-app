@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="hcipAx7q7YK1-o2Z5Sm9xyn1TXuXQ-oUkQFt6lJSlUg" />
 <title>ZenaRank — AI SEO Platform</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -821,9 +822,19 @@ select.form-input option{background:var(--bg3);color:var(--text)}
         <p style="font-size:11px;color:var(--muted);margin-bottom:0" id="sb-plan-sub">14 days remaining</p>
         <button class="plan-upgrade" id="sb-plan-upgrade-btn">⚡ Upgrade to Agency</button>
       </div>
-      <div style="margin-top:10px;display:flex;gap:8px">
-        <button class="topbar-btn btn-secondary" style="flex:1;font-size:12px;padding:7px" onclick="showView('settings',null)">⚙️ Settings</button>
-        <button class="topbar-btn btn-secondary" style="font-size:12px;padding:7px 10px" onclick="doLogout()">↩</button>
+      <!-- USER + SIGNOUT -->
+      <div style="margin-top:10px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 12px">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+          <div id="sb-avatar" style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#8b6fd4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#0c0e14;flex-shrink:0">J</div>
+          <div style="min-width:0">
+            <div id="sb-user-name" style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Loading...</div>
+            <div id="sb-user-email" style="font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button onclick="showView('settings',null)" style="flex:1;padding:6px 8px;background:var(--bg2);border:1px solid var(--border2);border-radius:7px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">⚙️ Settings</button>
+          <button onclick="confirmSignOut()" style="padding:6px 10px;background:rgba(224,92,92,.1);border:1px solid rgba(224,92,92,.2);border-radius:7px;font-size:11px;font-weight:600;color:var(--red);cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.background='rgba(224,92,92,.2)'" onmouseout="this.style.background='rgba(224,92,92,.1)'" title="Sign Out">↩ Out</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1456,8 +1467,21 @@ select.form-input option{background:var(--bg3);color:var(--text)}
 
       <!-- SETTINGS VIEW -->
       <div class="view" id="view-settings">
+
+        <!-- ACCOUNT CARD -->
         <div class="card" style="margin-bottom:18px">
-          <div class="card-header"><div class="card-title">⚙️ Settings</div></div>
+          <div class="card-header">
+            <div class="card-title">👤 My Account</div>
+            <div id="settings-plan-badge" style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:rgba(201,168,76,.15);color:#c9a84c;border:1px solid rgba(201,168,76,.25)">OWNER</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;padding:14px;background:var(--bg3);border-radius:12px;margin-bottom:16px">
+            <div id="settings-avatar" style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#8b6fd4);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#0c0e14;flex-shrink:0">J</div>
+            <div>
+              <div id="settings-name" style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:3px">Loading...</div>
+              <div id="settings-email-display" style="font-size:13px;color:var(--muted)">Loading...</div>
+              <div id="settings-access" style="font-size:11px;color:#c9a84c;margin-top:4px;font-weight:600">👑 Unlimited Owner Access</div>
+            </div>
+          </div>
           <div class="form-group">
             <label class="form-label">Default Website</label>
             <input class="form-input" id="settings-site" placeholder="yoursite.com" value="zenarank.com">
@@ -1472,29 +1496,92 @@ select.form-input option{background:var(--bg3);color:var(--text)}
               <option>English</option><option>Finnish</option><option>Swedish</option>
             </select>
           </div>
-          <button class="topbar-btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="topbar-btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+            <button onclick="confirmSignOut()" style="padding:9px 18px;background:rgba(224,92,92,.1);border:1px solid rgba(224,92,92,.25);border-radius:8px;font-size:13px;font-weight:600;color:var(--red);cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.background='rgba(224,92,92,.2)'" onmouseout="this.style.background='rgba(224,92,92,.1)'">↩ Sign Out</button>
+          </div>
         </div>
-        <div class="card">
+
+        <!-- GSC CONNECTION — REAL -->
+        <div class="card" style="margin-bottom:18px">
+          <div class="card-header">
+            <div class="card-title">🔗 Google Search Console — Real Data</div>
+            <div id="gsc-status-badge" style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:rgba(224,92,92,.12);color:var(--red);border:1px solid rgba(224,92,92,.2)">Not Connected</div>
+          </div>
+          <p style="font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:18px">Connect Google Search Console to pull your real keyword rankings, click data, impressions, and page performance directly into your dashboard.</p>
+
+          <!-- Step 1: Enter site -->
+          <div id="gsc-setup" style="display:block">
+            <div class="form-row" style="margin-bottom:14px">
+              <div>
+                <label class="form-label">Your Website URL</label>
+                <input class="form-input" id="gsc-site-input" placeholder="https://zenarank.com" value="https://zenarank.com">
+              </div>
+              <div>
+                <label class="form-label">Date Range</label>
+                <select class="form-input" id="gsc-range">
+                  <option value="7">Last 7 days</option>
+                  <option value="28" selected>Last 28 days</option>
+                  <option value="90">Last 3 months</option>
+                </select>
+              </div>
+            </div>
+            <button class="topbar-btn btn-primary" onclick="connectGSC()" id="gsc-connect-btn">🔗 Connect Google Search Console</button>
+            <p style="font-size:12px;color:var(--dim);margin-top:10px">This opens Google OAuth — sign in with the same Google account that owns your Search Console property.</p>
+          </div>
+
+          <!-- GSC Data (shown after connect) -->
+          <div id="gsc-data-section" style="display:none">
+            <div class="kpi-grid" style="margin-bottom:18px">
+              <div class="kpi"><div class="kpi-label">Total Clicks</div><div class="kpi-val" id="gsc-clicks" style="color:#c9a84c">—</div></div>
+              <div class="kpi"><div class="kpi-label">Impressions</div><div class="kpi-val" id="gsc-impressions">—</div></div>
+              <div class="kpi"><div class="kpi-label">Avg CTR</div><div class="kpi-val" id="gsc-ctr" style="color:var(--green)">—</div></div>
+              <div class="kpi"><div class="kpi-label">Avg Position</div><div class="kpi-val" id="gsc-position" style="color:var(--amber)">—</div></div>
+            </div>
+            <div class="card-header" style="margin-bottom:12px">
+              <div class="card-title" style="font-size:13px">🏆 Top Keywords from Google</div>
+              <button class="audit-fix" onclick="refreshGSC()">🔄 Refresh</button>
+            </div>
+            <table class="data-table" id="gsc-keywords-table">
+              <thead><tr><th>Keyword</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>Position</th></tr></thead>
+              <tbody id="gsc-keywords-body"><tr><td colspan="5" style="color:var(--muted);text-align:center;padding:20px">Loading...</td></tr></tbody>
+            </table>
+            <button onclick="disconnectGSC()" style="margin-top:14px;padding:7px 14px;background:rgba(224,92,92,.1);border:1px solid rgba(224,92,92,.2);border-radius:7px;font-size:12px;font-weight:600;color:var(--red);cursor:pointer;font-family:inherit">Disconnect GSC</button>
+          </div>
+        </div>
+
+        <!-- API CONNECTIONS -->
+        <div class="card" style="margin-bottom:18px">
           <div class="card-header"><div class="card-title">🔑 API Connections</div></div>
           <div class="audit-item">
             <div class="audit-icon good">✅</div>
-            <div><div class="audit-title">Claude AI (Anthropic)</div><div class="audit-desc">Connected · Powering all AI features</div></div>
+            <div><div class="audit-title">Claude AI (Anthropic)</div><div class="audit-desc">Connected · Powering all AI tools — Blog Generator, Meta Optimizer, Schema Builder, Rank Recovery, E-E-A-T Scorer</div></div>
           </div>
-          <div class="audit-item">
-            <div class="audit-icon warn">⚠️</div>
+          <div class="audit-item" id="gsc-api-item">
+            <div class="audit-icon warn" id="gsc-api-icon">⚠️</div>
             <div style="flex:1">
-              <div class="audit-title">Google Search Console</div>
-              <div class="audit-desc">Not connected · Connect to get real ranking data from Google</div>
-              <button class="audit-fix">Connect GSC →</button>
+              <div class="audit-title" id="gsc-api-title">Google Search Console</div>
+              <div class="audit-desc" id="gsc-api-desc">Not connected · Click "Connect" above to import real keyword rankings</div>
             </div>
           </div>
           <div class="audit-item">
-            <div class="audit-icon warn">⚠️</div>
+            <div class="audit-icon info">ℹ️</div>
             <div style="flex:1">
               <div class="audit-title">Google Analytics 4</div>
-              <div class="audit-desc">Not connected · Connect for traffic & conversion data</div>
-              <button class="audit-fix">Connect GA4 →</button>
+              <div class="audit-desc">Coming soon · Will show real traffic, sessions, and conversion data</div>
             </div>
+          </div>
+        </div>
+
+        <!-- SIGN OUT CARD -->
+        <div class="card" style="border-color:rgba(224,92,92,.15)">
+          <div class="card-header">
+            <div class="card-title" style="color:var(--red)">↩ Sign Out</div>
+          </div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.65">You are currently signed in as <strong id="signout-email" style="color:var(--text)">your account</strong>. Signing out will return you to the homepage. Your data and settings are saved.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button onclick="confirmSignOut()" style="padding:11px 24px;background:rgba(224,92,92,.1);border:1px solid rgba(224,92,92,.3);border-radius:9px;font-size:14px;font-weight:600;color:var(--red);cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.background='rgba(224,92,92,.2)'" onmouseout="this.style.background='rgba(224,92,92,.1)'">↩ Sign Out of ZenaRank</button>
+            <button onclick="showView('dashboard',document.getElementById('nav-dashboard'))" class="topbar-btn btn-secondary">← Back to Dashboard</button>
           </div>
         </div>
       </div>
@@ -1960,6 +2047,9 @@ function finishLogin(email, name, picture) {
   // Persist session
   localStorage.setItem('zr_session', JSON.stringify(_user));
 
+  // Restore GSC if previously connected
+  setTimeout(restoreGSCSession, 800);
+
   // Update sidebar
   updateSidebarForUser();
 
@@ -1972,51 +2062,265 @@ function finishLogin(email, name, picture) {
   toast(greeting, 'success');
 }
 
-// ── Update sidebar based on account type ──
+// ── Update sidebar to show real user info ──
 function updateSidebarForUser() {
   if (!_user) return;
-  var badge = document.getElementById('sb-plan-badge');
+  var planBadge = document.getElementById('sb-plan-badge');
   var planName = document.getElementById('sb-plan-name');
   var planSub = document.getElementById('sb-plan-sub');
   var upgradeBtn = document.getElementById('sb-plan-upgrade-btn');
   var userName = document.getElementById('sb-user-name');
+  var userEmail = document.getElementById('sb-user-email');
+  var avatar = document.getElementById('sb-avatar');
+  var settingsAvatar = document.getElementById('settings-avatar');
+  var settingsName = document.getElementById('settings-name');
+  var settingsEmailDisp = document.getElementById('settings-email-display');
+  var settingsAccess = document.getElementById('settings-access');
+  var signoutEmail = document.getElementById('signout-email');
 
-  // Display name — truncate if long
-  var displayName = _user.name.length > 14 ? _user.name.substring(0,12) + '…' : _user.name;
-  userName.textContent = displayName;
+  // Initials for avatar
+  var initials = (_user.name || 'U').charAt(0).toUpperCase();
+  if (avatar) avatar.textContent = initials;
+  if (settingsAvatar) settingsAvatar.textContent = initials;
+
+  // Name display
+  var displayName = (_user.name || '').length > 14 ? (_user.name).substring(0,12) + '…' : (_user.name || '');
+  if (userName) userName.textContent = displayName;
+  if (userEmail) { userEmail.textContent = _user.email; userEmail.title = _user.email; }
+  if (settingsName) settingsName.textContent = _user.name || _user.email;
+  if (settingsEmailDisp) settingsEmailDisp.textContent = _user.email;
+  if (signoutEmail) signoutEmail.textContent = _user.email;
+
+  // Pre-fill notification email
+  var notifEmail = document.getElementById('settings-email');
+  if (notifEmail && !notifEmail.value) notifEmail.value = _user.email;
+
+  var settingsBadge = document.getElementById('settings-plan-badge');
 
   if (_user.isOwner) {
-    badge.textContent = '👑 OWNER';
-    badge.style.background = 'rgba(201,168,76,.25)';
-    badge.style.color = '#c9a84c';
-    badge.style.border = '1px solid rgba(201,168,76,.4)';
-    planName.textContent = '👑 OWNER ACCOUNT';
-    planName.style.color = '#c9a84c';
-    planSub.textContent = 'Unlimited access · All features';
-    upgradeBtn.style.display = 'none';
+    if (planBadge) { planBadge.textContent = '👑 OWNER'; planBadge.style.cssText = 'font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;background:rgba(201,168,76,.2);color:#c9a84c;border:1px solid rgba(201,168,76,.35)'; }
+    if (planName) { planName.textContent = '👑 OWNER'; planName.style.color = '#c9a84c'; }
+    if (planSub) planSub.textContent = 'Unlimited · All features';
+    if (upgradeBtn) upgradeBtn.style.display = 'none';
+    if (settingsBadge) { settingsBadge.textContent = '👑 OWNER'; }
+    if (settingsAccess) settingsAccess.textContent = '👑 Unlimited Owner Access — All features forever';
   } else if (_user.paid) {
-    badge.textContent = 'PRO';
-    planName.textContent = 'PRO PLAN';
-    planSub.textContent = 'Active subscription';
-    upgradeBtn.textContent = '⚡ Upgrade to Agency';
-    upgradeBtn.style.display = 'block';
+    if (planBadge) planBadge.textContent = 'PRO';
+    if (planName) planName.textContent = 'PRO PLAN';
+    if (planSub) planSub.textContent = 'Active subscription';
+    if (upgradeBtn) { upgradeBtn.textContent = '⚡ Upgrade to Agency'; upgradeBtn.style.display = 'block'; }
+    if (settingsBadge) settingsBadge.textContent = 'PRO';
+    if (settingsAccess) { settingsAccess.textContent = '✅ Pro Plan — Active'; settingsAccess.style.color = 'var(--green)'; }
   } else {
     var d = _user.daysLeft;
-    badge.textContent = 'TRIAL';
-    badge.style.background = 'rgba(76,168,201,.15)';
-    badge.style.color = '#4ca8c9';
-    planName.textContent = 'FREE TRIAL';
-    planName.style.color = '#4ca8c9';
-    planSub.textContent = d + ' day' + (d !== 1 ? 's' : '') + ' remaining';
-    upgradeBtn.textContent = '💳 Upgrade Now';
-    upgradeBtn.style.display = 'block';
-    upgradeBtn.onclick = function() { showUpgradePrompt(); };
+    if (planBadge) { planBadge.textContent = 'TRIAL'; planBadge.style.cssText = 'font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;background:rgba(76,168,201,.15);color:#4ca8c9;border:1px solid rgba(76,168,201,.25)'; }
+    if (planName) { planName.textContent = 'FREE TRIAL'; planName.style.color = '#4ca8c9'; }
+    if (planSub) planSub.textContent = d + ' day' + (d !== 1 ? 's' : '') + ' remaining';
+    if (upgradeBtn) { upgradeBtn.textContent = '💳 Upgrade Now'; upgradeBtn.style.display = 'block'; upgradeBtn.onclick = showUpgradePrompt; }
+    if (settingsBadge) { settingsBadge.textContent = 'TRIAL'; settingsBadge.style.cssText = 'font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:rgba(76,168,201,.12);color:#4ca8c9;border:1px solid rgba(76,168,201,.2)'; }
+    if (settingsAccess) { settingsAccess.textContent = '⏳ ' + d + ' trial days remaining'; settingsAccess.style.color = '#4ca8c9'; }
   }
 }
 
-// ── Show upgrade prompt ──
-function showUpgradePrompt() {
-  toast('Upgrade at zenarank.com/pricing — €19/mo Starter · €39/mo Pro', 'success');
+// ── Sign out confirm ──
+function confirmSignOut() {
+  var confirmed = confirm('Sign out of ZenaRank?\n\nYou will be returned to the homepage. Your settings are saved.');
+  if (confirmed) doLogout();
+}
+
+// ── Save settings ──
+function saveSettings() {
+  var site = document.getElementById('settings-site').value;
+  if (site) {
+    document.getElementById('site-url').value = site.replace('https://','').replace('http://','');
+    localStorage.setItem('zr_default_site', site);
+  }
+  toast('Settings saved ✓', 'success');
+}
+
+// ════════════════════════════════════════════
+// REAL GOOGLE SEARCH CONSOLE CONNECTION
+// ════════════════════════════════════════════
+var GSC_CLIENT_ID = '696427827576-sbvc6i2ej6tg115q5pnldkvsloqa4gfa.apps.googleusercontent.com';
+var GSC_SCOPE = 'https://www.googleapis.com/auth/webmasters.readonly';
+var _gscToken = null;
+var _gscSite = null;
+
+function connectGSC() {
+  var site = document.getElementById('gsc-site-input').value || 'https://zenarank.com';
+  _gscSite = site;
+  var btn = document.getElementById('gsc-connect-btn');
+  btn.textContent = '⏳ Connecting...';
+  btn.disabled = true;
+
+  // Build Google OAuth URL
+  var params = new URLSearchParams({
+    client_id: GSC_CLIENT_ID,
+    redirect_uri: window.location.origin + window.location.pathname,
+    response_type: 'token',
+    scope: GSC_SCOPE,
+    state: 'gsc_connect',
+    include_granted_scopes: 'true',
+    prompt: 'select_account'
+  });
+
+  // Store intent
+  localStorage.setItem('zr_gsc_pending', site);
+  localStorage.setItem('zr_gsc_range', document.getElementById('gsc-range').value);
+
+  // Open OAuth popup
+  var popup = window.open(
+    'https://accounts.google.com/o/oauth2/v2/auth?' + params.toString(),
+    'gsc_auth',
+    'width=500,height=600,scrollbars=yes,resizable=yes'
+  );
+
+  // Listen for redirect with token
+  var interval = setInterval(function() {
+    try {
+      if (popup.closed) {
+        clearInterval(interval);
+        btn.textContent = '🔗 Connect Google Search Console';
+        btn.disabled = false;
+        // Check if token landed in localStorage from redirect
+        var token = localStorage.getItem('zr_gsc_token');
+        if (token) { _gscToken = token; onGSCConnected(); }
+        return;
+      }
+      var hash = popup.location.hash;
+      if (hash && hash.includes('access_token')) {
+        clearInterval(interval);
+        popup.close();
+        var tokenMatch = hash.match(/access_token=([^&]+)/);
+        if (tokenMatch) {
+          _gscToken = tokenMatch[1];
+          localStorage.setItem('zr_gsc_token', _gscToken);
+          localStorage.setItem('zr_gsc_site', _gscSite);
+          onGSCConnected();
+        }
+      }
+    } catch(e) { /* cross-origin, keep waiting */ }
+  }, 500);
+
+  // Timeout after 3 minutes
+  setTimeout(function(){
+    clearInterval(interval);
+    if (!_gscToken) {
+      btn.textContent = '🔗 Connect Google Search Console';
+      btn.disabled = false;
+    }
+  }, 180000);
+}
+
+function onGSCConnected() {
+  document.getElementById('gsc-status-badge').textContent = '✅ Connected';
+  document.getElementById('gsc-status-badge').style.cssText = 'font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:rgba(91,191,138,.15);color:var(--green);border:1px solid rgba(91,191,138,.25)';
+  document.getElementById('gsc-setup').style.display = 'none';
+  document.getElementById('gsc-data-section').style.display = 'block';
+  document.getElementById('gsc-api-icon').textContent = '✅';
+  document.getElementById('gsc-api-icon').className = 'audit-icon good';
+  document.getElementById('gsc-api-title').textContent = 'Google Search Console — Connected';
+  document.getElementById('gsc-api-desc').textContent = 'Live data syncing from your GSC property';
+  document.getElementById('gsc-connect-btn').textContent = '🔗 Connect Google Search Console';
+  document.getElementById('gsc-connect-btn').disabled = false;
+  fetchGSCData();
+  toast('Google Search Console connected! Loading real data...', 'success');
+}
+
+async function fetchGSCData() {
+  if (!_gscToken) return;
+  var site = _gscSite || localStorage.getItem('zr_gsc_site') || 'https://zenarank.com';
+  var days = document.getElementById('gsc-range') ? document.getElementById('gsc-range').value : '28';
+  var endDate = new Date(); var startDate = new Date();
+  startDate.setDate(endDate.getDate() - parseInt(days));
+  var fmt = function(d){ return d.toISOString().split('T')[0]; };
+
+  try {
+    // Fetch summary
+    var summaryRes = await fetch(
+      'https://searchconsole.googleapis.com/webmasters/v3/sites/' + encodeURIComponent(site) + '/searchAnalytics/query',
+      {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + _gscToken, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ startDate: fmt(startDate), endDate: fmt(endDate), dimensions: [] })
+      }
+    );
+    var summaryData = await summaryRes.json();
+    if (summaryData.rows && summaryData.rows[0]) {
+      var r = summaryData.rows[0];
+      document.getElementById('gsc-clicks').textContent = Math.round(r.clicks).toLocaleString();
+      document.getElementById('gsc-impressions').textContent = Math.round(r.impressions).toLocaleString();
+      document.getElementById('gsc-ctr').textContent = (r.ctr * 100).toFixed(1) + '%';
+      document.getElementById('gsc-position').textContent = r.position.toFixed(1);
+      // Update main dashboard KPIs
+      document.getElementById('kpi-rank').textContent = r.position.toFixed(1);
+      document.getElementById('kpi-keywords').textContent = '—';
+    }
+
+    // Fetch top keywords
+    var kwRes = await fetch(
+      'https://searchconsole.googleapis.com/webmasters/v3/sites/' + encodeURIComponent(site) + '/searchAnalytics/query',
+      {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + _gscToken, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ startDate: fmt(startDate), endDate: fmt(endDate), dimensions: ['query'], rowLimit: 20 })
+      }
+    );
+    var kwData = await kwRes.json();
+    if (kwData.rows && kwData.rows.length > 0) {
+      document.getElementById('gsc-keywords-body').innerHTML = kwData.rows.map(function(row){
+        var posColor = row.position <= 3 ? 'var(--green)' : row.position <= 10 ? 'var(--amber)' : 'var(--muted)';
+        return '<tr><td style="font-weight:500">' + row.keys[0] + '</td><td>' + Math.round(row.clicks) + '</td><td>' + Math.round(row.impressions).toLocaleString() + '</td><td>' + (row.ctr*100).toFixed(1) + '%</td><td style="color:' + posColor + ';font-weight:700">#' + row.position.toFixed(1) + '</td></tr>';
+      }).join('');
+      document.getElementById('kpi-keywords').textContent = kwData.rows.length + '+';
+      // Update top keywords table in dashboard
+      var dashBody = document.querySelector('#view-dashboard .data-table tbody');
+      if (dashBody) {
+        dashBody.innerHTML = kwData.rows.slice(0,5).map(function(row){
+          var posColor = row.position <= 3 ? 'var(--green)' : row.position <= 10 ? 'var(--amber)' : 'var(--muted)';
+          return '<tr><td>' + row.keys[0] + '</td><td style="color:' + posColor + ';font-weight:700">#' + Math.round(row.position) + '</td><td><span class="rank-change rank-same">— live</span></td><td>' + Math.round(row.impressions).toLocaleString() + '</td><td>—</td></tr>';
+        }).join('');
+      }
+      toast('Real GSC data loaded — ' + kwData.rows.length + ' keywords found!', 'success');
+    } else {
+      document.getElementById('gsc-keywords-body').innerHTML = '<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:20px">No keyword data found for this property in the selected date range. Make sure this exact URL is verified in your Search Console.</td></tr>';
+    }
+  } catch(err) {
+    if (err.message && err.message.includes('401')) {
+      document.getElementById('gsc-keywords-body').innerHTML = '<tr><td colspan="5" style="color:var(--red);text-align:center;padding:20px">Token expired — please reconnect GSC.</td></tr>';
+      disconnectGSC();
+    } else {
+      document.getElementById('gsc-keywords-body').innerHTML = '<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:20px">Error loading data. Check that ' + site + ' is verified in your Search Console and try again.</td></tr>';
+    }
+  }
+}
+
+function refreshGSC() { fetchGSCData(); toast('Refreshing GSC data...', 'success'); }
+
+function disconnectGSC() {
+  _gscToken = null; _gscSite = null;
+  localStorage.removeItem('zr_gsc_token');
+  localStorage.removeItem('zr_gsc_site');
+  document.getElementById('gsc-status-badge').textContent = 'Not Connected';
+  document.getElementById('gsc-status-badge').style.cssText = 'font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:rgba(224,92,92,.12);color:var(--red);border:1px solid rgba(224,92,92,.2)';
+  document.getElementById('gsc-setup').style.display = 'block';
+  document.getElementById('gsc-data-section').style.display = 'none';
+  document.getElementById('gsc-api-icon').textContent = '⚠️';
+  document.getElementById('gsc-api-icon').className = 'audit-icon warn';
+  document.getElementById('gsc-api-title').textContent = 'Google Search Console';
+  document.getElementById('gsc-api-desc').textContent = 'Disconnected';
+  toast('GSC disconnected', 'success');
+}
+
+// Restore GSC session on login
+function restoreGSCSession() {
+  var token = localStorage.getItem('zr_gsc_token');
+  var site = localStorage.getItem('zr_gsc_site');
+  if (token && site) {
+    _gscToken = token; _gscSite = site;
+    if (document.getElementById('gsc-site-input')) document.getElementById('gsc-site-input').value = site;
+    onGSCConnected();
+  }
 }
 
 // ── Restore session on page load ──
@@ -2703,7 +3007,9 @@ function refreshData() {
     setTimeout(function(){ bar.style.width = w; }, 100);
   });
 }
-function saveSettings() { toast('Settings saved!','success'); }
+function showUpgradePrompt() {
+  toast('Upgrade at zenarank.com/pricing — €19/mo Starter · €39/mo Pro', 'success');
+}
 function addClientModal() { toast('Client management coming soon!','success'); }
 
 function downloadText(text, filename) {
