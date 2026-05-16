@@ -695,7 +695,7 @@ select.form-input option{background:var(--bg3);color:var(--text)}
     <!-- REAL Google One-Tap / Sign-In Button -->
     <div class="g-btn-wrap">
       <div id="g_id_onload"
-        data-client_id="696427827576-sbc6i2ej6tg115q5pnldkvsloqa4gfa.apps.googleusercontent.com"
+        data-client_id="696427827576-sbvc6i2ej6tg115q5pnldkvsloqa4gfa.apps.googleusercontent.com"
         data-callback="handleGoogleCredential"
         data-auto_prompt="false">
       </div>
@@ -723,10 +723,11 @@ select.form-input option{background:var(--bg3);color:var(--text)}
       <label class="form-label">Email</label>
       <input class="form-input" type="email" id="authEmail" placeholder="your@gmail.com" style="font-family:'Inter',sans-serif">
     </div>
-    <button onclick="doEmailLogin()" style="width:100%;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;background:linear-gradient(135deg,#c9a84c,#a8883a);color:#0c0e14;margin-top:2px;transition:all .2s;box-shadow:0 3px 14px rgba(201,168,76,.28)">Sign In</button>
+    <button onclick="doEmailLogin()" style="width:100%;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;background:linear-gradient(135deg,#c9a84c,#a8883a);color:#0c0e14;margin-top:2px;transition:all .2s;box-shadow:0 3px 14px rgba(201,168,76,.28)">Sign In →</button>
 
     <p style="text-align:center;margin-top:18px;font-size:12px;color:var(--dim)">
-      Only Google accounts are accepted.<br>Owner account gets unlimited access.
+      Enter your Gmail address to sign in.<br>
+      <span style="color:#c9a84c">Owner account gets unlimited access.</span>
     </p>
   </div>
 </div>
@@ -1932,12 +1933,12 @@ function handleGoogleCredential(response) {
 
 // ── Email fallback login ──
 function doEmailLogin() {
-  var email = document.getElementById('authEmail').value.trim();
-  if (!email) { showAuthMsg('Please enter your Gmail address.', 'error'); return; }
-  if (!email.endsWith('@gmail.com') && email !== OWNER_EMAIL) {
-    showAuthMsg('Only Gmail accounts are accepted.', 'error'); return;
-  }
+  var email = document.getElementById('authEmail').value.trim().toLowerCase();
+  if (!email) { showAuthMsg('Please enter your email address.', 'error'); return; }
+  if (!email.includes('@')) { showAuthMsg('Please enter a valid email address.', 'error'); return; }
   var name = email.split('@')[0];
+  // Capitalize first letter
+  name = name.charAt(0).toUpperCase() + name.slice(1);
   finishLogin(email, name, '');
 }
 
