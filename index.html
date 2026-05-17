@@ -861,27 +861,27 @@ select.form-input option{background:var(--bg3);color:var(--text)}
         <div class="kpi-grid">
           <div class="kpi">
             <div class="kpi-label">SEO Health</div>
-            <div class="kpi-val" style="color:var(--accent)" id="kpi-health">74</div>
-            <div class="kpi-change up">▲ +6 this month</div>
-            <div class="kpi-bar"><div class="kpi-bar-fill" style="width:74%;background:var(--accent)"></div></div>
+            <div class="kpi-val" style="color:var(--accent)" id="kpi-health">—</div>
+            <div class="kpi-change" id="kpi-health-change" style="color:var(--muted)">Run audit to get score</div>
+            <div class="kpi-bar"><div class="kpi-bar-fill" id="kpi-health-bar" style="width:0%;background:var(--accent)"></div></div>
           </div>
           <div class="kpi">
             <div class="kpi-label">Keywords Ranked</div>
-            <div class="kpi-val" id="kpi-keywords">248</div>
-            <div class="kpi-change up">▲ +31 new this week</div>
-            <div class="kpi-bar"><div class="kpi-bar-fill" style="width:62%;background:var(--blue)"></div></div>
+            <div class="kpi-val" id="kpi-keywords">—</div>
+            <div class="kpi-change" id="kpi-kw-change" style="color:var(--muted)">Connect GSC for data</div>
+            <div class="kpi-bar"><div class="kpi-bar-fill" id="kpi-kw-bar" style="width:0%;background:var(--blue)"></div></div>
           </div>
           <div class="kpi">
             <div class="kpi-label">Avg. Position</div>
-            <div class="kpi-val" style="color:var(--amber)" id="kpi-rank">14.2</div>
-            <div class="kpi-change up">▲ Improved 2.1</div>
-            <div class="kpi-bar"><div class="kpi-bar-fill" style="width:48%;background:var(--amber)"></div></div>
+            <div class="kpi-val" style="color:var(--amber)" id="kpi-rank">—</div>
+            <div class="kpi-change" id="kpi-rank-change" style="color:var(--muted)">Connect GSC for data</div>
+            <div class="kpi-bar"><div class="kpi-bar-fill" id="kpi-rank-bar" style="width:0%;background:var(--amber)"></div></div>
           </div>
           <div class="kpi">
             <div class="kpi-label">Issues Found</div>
-            <div class="kpi-val" style="color:var(--red)" id="kpi-issues">31</div>
-            <div class="kpi-change down">▼ 8 critical need fix</div>
-            <div class="kpi-bar"><div class="kpi-bar-fill" style="width:31%;background:var(--red)"></div></div>
+            <div class="kpi-val" style="color:var(--red)" id="kpi-issues">—</div>
+            <div class="kpi-change" id="kpi-issues-change" style="color:var(--muted)">Run audit to check</div>
+            <div class="kpi-bar"><div class="kpi-bar-fill" id="kpi-issues-bar" style="width:0%;background:var(--red)"></div></div>
           </div>
         </div>
 
@@ -907,8 +907,8 @@ select.form-input option{background:var(--bg3);color:var(--text)}
                 <circle cx="400" cy="15" r="4" fill="var(--accent)"/>
                 <text x="5" y="115" font-size="9" fill="#6b6b88" font-family="DM Mono">-30d</text>
                 <text x="370" y="115" font-size="9" fill="#6b6b88" font-family="DM Mono">Today</text>
-                <text x="5" y="15" font-size="9" fill="var(--accent)" font-family="DM Mono">Pos.15</text>
-                <text x="352" y="12" font-size="9" fill="var(--accent)" font-family="DM Mono">14.2</text>
+                <text x="5" y="15" font-size="9" fill="var(--accent)" font-family="JetBrains Mono" id="chart-start-pos">Connecting...</text>
+                <text x="352" y="12" font-size="9" fill="var(--accent)" font-family="JetBrains Mono" id="chart-end-pos">—</text>
               </svg>
             </div>
           </div>
@@ -942,7 +942,7 @@ select.form-input option{background:var(--bg3);color:var(--text)}
         <div class="card" style="margin-bottom:22px">
           <div class="card-header">
             <div class="card-title">🎯 Top Performing Keywords</div>
-            <button class="topbar-btn btn-secondary" style="font-size:11px;padding:5px 10px" onclick="showView('keywords',document.getElementById('nav-keywords'))">View All 248 →</button>
+            <button class="topbar-btn btn-secondary" style="font-size:11px;padding:5px 10px" onclick="showView('keywords',document.getElementById('nav-keywords'))">View All Keywords →</button>
           </div>
           <table class="data-table">
             <thead><tr><th>Keyword</th><th>Position</th><th>Change</th><th>Volume</th><th>Difficulty</th></tr></thead>
@@ -2114,6 +2114,10 @@ function finishLogin(email, name, picture) {
   // Restore GSC if previously connected
   setTimeout(restoreGSCSession, 800);
 
+  // Run background audit to populate health score
+  var defaultSite = localStorage.getItem('zr_default_site') || 'https://zenarank.com';
+  setTimeout(function(){ runBackgroundAudit(defaultSite); }, 1500);
+
   // Update sidebar
   updateSidebarForUser();
 
@@ -2319,13 +2323,36 @@ async function fetchGSCData() {
     var summaryData = await summaryRes.json();
     if (summaryData.rows && summaryData.rows[0]) {
       var r = summaryData.rows[0];
-      document.getElementById('gsc-clicks').textContent = Math.round(r.clicks).toLocaleString();
-      document.getElementById('gsc-impressions').textContent = Math.round(r.impressions).toLocaleString();
-      document.getElementById('gsc-ctr').textContent = (r.ctr * 100).toFixed(1) + '%';
-      document.getElementById('gsc-position').textContent = r.position.toFixed(1);
-      // Update main dashboard KPIs
-      document.getElementById('kpi-rank').textContent = r.position.toFixed(1);
-      document.getElementById('kpi-keywords').textContent = '—';
+      var clicks = Math.round(r.clicks);
+      var impressions = Math.round(r.impressions);
+      var ctr = (r.ctr * 100).toFixed(1);
+      var pos = r.position.toFixed(1);
+
+      document.getElementById('gsc-clicks').textContent = clicks.toLocaleString();
+      document.getElementById('gsc-impressions').textContent = impressions.toLocaleString();
+      document.getElementById('gsc-ctr').textContent = ctr + '%';
+      document.getElementById('gsc-position').textContent = pos;
+
+      // ── Update REAL dashboard KPIs ──
+      document.getElementById('kpi-rank').textContent = pos;
+      document.getElementById('kpi-rank').style.color = pos <= 10 ? 'var(--green)' : pos <= 20 ? 'var(--amber)' : 'var(--red)';
+      var rankBar = document.getElementById('kpi-rank-bar');
+      if (rankBar) rankBar.style.width = Math.max(5, Math.round(100 - pos*3)) + '%';
+      var rankChange = document.getElementById('kpi-rank-change');
+      if (rankChange) { rankChange.textContent = 'Avg position from GSC · Real data'; rankChange.className = 'kpi-change up'; }
+
+      var kpiKw = document.getElementById('kpi-keywords');
+      if (kpiKw && kpiKw.textContent === '—') kpiKw.textContent = impressions > 0 ? impressions.toLocaleString() : '0';
+      var kwBar = document.getElementById('kpi-kw-bar');
+      if (kwBar) kwBar.style.width = Math.min(100, Math.round(impressions/100)) + '%';
+      var kwChange = document.getElementById('kpi-kw-change');
+      if (kwChange) { kwChange.textContent = 'Total impressions · Last ' + days + ' days'; kwChange.className = 'kpi-change up'; }
+
+      // Update chart
+      var chartStart = document.getElementById('chart-start-pos');
+      var chartEnd = document.getElementById('chart-end-pos');
+      if (chartStart) chartStart.textContent = '-' + days + 'd';
+      if (chartEnd) chartEnd.textContent = 'Pos.' + pos;
     }
 
     // Fetch top keywords
@@ -2343,18 +2370,39 @@ async function fetchGSCData() {
         var posColor = row.position <= 3 ? 'var(--green)' : row.position <= 10 ? 'var(--amber)' : 'var(--muted)';
         return '<tr><td style="font-weight:500">' + row.keys[0] + '</td><td>' + Math.round(row.clicks) + '</td><td>' + Math.round(row.impressions).toLocaleString() + '</td><td>' + (row.ctr*100).toFixed(1) + '%</td><td style="color:' + posColor + ';font-weight:700">#' + row.position.toFixed(1) + '</td></tr>';
       }).join('');
-      document.getElementById('kpi-keywords').textContent = kwData.rows.length + '+';
-      // Update top keywords table in dashboard
+
+      // Update keywords KPI
+      var kpiKw = document.getElementById('kpi-keywords');
+      if (kpiKw) kpiKw.textContent = kwData.rows.length + '+';
+      var kwBar = document.getElementById('kpi-kw-bar');
+      if (kwBar) kwBar.style.width = Math.min(100, kwData.rows.length * 5) + '%';
+
+      // ── Push real keywords to dashboard table ──
       var dashBody = document.querySelector('#view-dashboard .data-table tbody');
-      if (dashBody) {
+      if (dashBody && kwData.rows.length > 0) {
         dashBody.innerHTML = kwData.rows.slice(0,5).map(function(row){
-          var posColor = row.position <= 3 ? 'var(--green)' : row.position <= 10 ? 'var(--amber)' : 'var(--muted)';
-          return '<tr><td>' + row.keys[0] + '</td><td style="color:' + posColor + ';font-weight:700">#' + Math.round(row.position) + '</td><td><span class="rank-change rank-same">— live</span></td><td>' + Math.round(row.impressions).toLocaleString() + '</td><td>—</td></tr>';
+          var pos = Math.round(row.position);
+          var posColor = pos <= 3 ? 'var(--green)' : pos <= 10 ? 'var(--amber)' : 'var(--muted)';
+          return '<tr>'
+            + '<td style="font-weight:500">' + row.keys[0] + '</td>'
+            + '<td style="color:' + posColor + ';font-weight:700">#' + pos + '</td>'
+            + '<td><span class="rank-change rank-same" style="font-size:10px">● live</span></td>'
+            + '<td>' + Math.round(row.impressions).toLocaleString() + '</td>'
+            + '<td>—</td>'
+            + '</tr>';
         }).join('');
+        // Update "View All" button
+        var viewAllBtn = document.querySelector('#view-dashboard .card-header .topbar-btn');
+        if (viewAllBtn) viewAllBtn.textContent = 'View All ' + kwData.rows.length + ' →';
       }
       toast('Real GSC data loaded — ' + kwData.rows.length + ' keywords found!', 'success');
     } else {
-      document.getElementById('gsc-keywords-body').innerHTML = '<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:20px">No keyword data found for this property in the selected date range. Make sure this exact URL is verified in your Search Console.</td></tr>';
+      document.getElementById('gsc-keywords-body').innerHTML = '<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:20px">No keyword data yet for this property. Google needs 7–14 days to collect data after verification.</td></tr>';
+      // Show helpful message on dashboard
+      var dashBody = document.querySelector('#view-dashboard .data-table tbody');
+      if (dashBody) {
+        dashBody.innerHTML = '<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:20px;font-size:13px">✅ GSC Connected — waiting for Google to collect data (7–14 days for new sites)</td></tr>';
+      }
     }
   } catch(err) {
     if (err.message && err.message.includes('401')) {
@@ -2413,6 +2461,10 @@ function restoreSession() {
       updateSidebarForUser();
       document.getElementById('homePage').style.display = 'none';
       document.getElementById('appShell').style.display = 'flex';
+      // Restore GSC + run background audit
+      setTimeout(restoreGSCSession, 800);
+      var defaultSite = localStorage.getItem('zr_default_site') || 'https://zenarank.com';
+      setTimeout(function(){ runBackgroundAudit(defaultSite); }, 1500);
     } catch(e) {
       localStorage.removeItem('zr_session');
     }
@@ -3364,16 +3416,74 @@ async function checkAlgoUpdates() {
   toast('Latest Google updates loaded', 'success');
 }
 
+// ── Background silent audit to populate dashboard health score ──
+async function runBackgroundAudit(url) {
+  if (!url) return;
+  try {
+    var proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+    var res = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
+    var json = await res.json();
+    var html = json.contents || '';
+    if (html.length < 100) return;
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(html, 'text/html');
+    // Quick check count
+    var issues = 0, warns = 0;
+    if (!doc.querySelector('title') || doc.querySelector('title').textContent.trim().length < 10) issues++;
+    if (!doc.querySelector('meta[name="description"]')) issues++;
+    if (doc.querySelectorAll('h1').length === 0) issues++;
+    if (doc.querySelectorAll('h1').length > 1) warns++;
+    if (!doc.querySelector('meta[name="viewport"]')) issues++;
+    if (!doc.querySelector('script[type="application/ld+json"]')) warns++;
+    var imgs = doc.querySelectorAll('img');
+    var noAlt = 0; imgs.forEach(function(i){ if (!i.getAttribute('alt')) noAlt++; });
+    if (noAlt > 0) warns++;
+    if (!doc.querySelector('link[rel="canonical"]')) warns++;
+    if (!doc.querySelector('meta[property="og:title"]')) warns++;
+    var score = Math.max(20, 100 - (issues * 12) - (warns * 4));
+
+    // Update health KPI with real score
+    var healthEl = document.getElementById('kpi-health');
+    if (healthEl) {
+      healthEl.textContent = score;
+      healthEl.style.color = score >= 70 ? 'var(--green)' : score >= 45 ? 'var(--amber)' : 'var(--red)';
+    }
+    var healthBar = document.getElementById('kpi-health-bar');
+    if (healthBar) { healthBar.style.width = score + '%'; }
+    var healthChange = document.getElementById('kpi-health-change');
+    if (healthChange) {
+      healthChange.textContent = issues + ' critical · ' + warns + ' warnings found';
+      healthChange.className = issues > 0 ? 'kpi-change down' : 'kpi-change up';
+    }
+    // Issues KPI
+    var issuesEl = document.getElementById('kpi-issues');
+    if (issuesEl) issuesEl.textContent = issues + warns;
+    var issuesBar = document.getElementById('kpi-issues-bar');
+    if (issuesBar) issuesBar.style.width = Math.min(100, (issues + warns) * 8) + '%';
+    var issuesChange = document.getElementById('kpi-issues-change');
+    if (issuesChange) {
+      issuesChange.textContent = issues + ' critical need fix';
+      issuesChange.className = issues > 0 ? 'kpi-change down' : 'kpi-change up';
+    }
+  } catch(e) {
+    // Silent fail — just leave dashes
+  }
+}
+
 function refreshData() {
   var now = new Date();
   var time = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-  toast('Dashboard refreshed at ' + time + ' ✓', 'success');
-  // Animate KPI bars
-  document.querySelectorAll('.kpi-bar-fill').forEach(function(bar){
-    var w = bar.style.width;
-    bar.style.width = '0%';
-    setTimeout(function(){ bar.style.width = w; }, 100);
-  });
+  toast('Refreshing dashboard...', 'success');
+  var defaultSite = localStorage.getItem('zr_default_site') || 'https://zenarank.com';
+  runBackgroundAudit(defaultSite);
+  if (_gscToken) setTimeout(fetchGSCData, 500);
+  setTimeout(function(){
+    toast('Dashboard refreshed at ' + time + ' ✓', 'success');
+    document.querySelectorAll('.kpi-bar-fill').forEach(function(bar){
+      var w = bar.style.width; bar.style.width = '0%';
+      setTimeout(function(){ bar.style.width = w; }, 100);
+    });
+  }, 2200);
 }
 function showUpgradePrompt() {
   toast('Upgrade at zenarank.com/pricing — €19/mo Starter · €39/mo Pro', 'success');
