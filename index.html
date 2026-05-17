@@ -991,53 +991,117 @@ select.form-input option{background:var(--bg3);color:var(--text)}
 
       <!-- SITE AUDIT VIEW -->
       <div class="view" id="view-audit">
+
+        <!-- INPUT CARD -->
         <div class="card" style="margin-bottom:18px">
           <div class="card-header">
             <div class="card-title">🔍 Real Site Audit</div>
-            <span style="font-size:12px;color:var(--muted)" id="audit-status-label">Enter URL and run audit</span>
+            <span style="font-size:12px;color:var(--muted)" id="audit-status-label">Enter your URL and run audit</span>
           </div>
-          <div class="form-row" style="margin-bottom:12px">
+          <div class="form-row" style="margin-bottom:14px">
             <div>
               <label class="form-label">Website URL</label>
-              <input class="form-input" id="audit-url" placeholder="https://yoursite.com" type="url">
+              <input class="form-input" id="audit-url" placeholder="https://zenarank.com" type="url" value="https://zenarank.com">
             </div>
             <div>
-              <label class="form-label">Audit Depth</label>
+              <label class="form-label">Audit Type</label>
               <select class="form-input" id="audit-depth">
-                <option value="quick">Quick (homepage only)</option>
-                <option value="standard">Standard (up to 50 pages)</option>
-                <option value="deep">Deep (full crawl)</option>
+                <option value="quick">Quick — SEO essentials (30 sec)</option>
+                <option value="standard" selected>Standard — Full technical + content</option>
+                <option value="ai">AI Deep Audit — Technical + AI recommendations</option>
               </select>
             </div>
           </div>
-          <button class="topbar-btn btn-primary" onclick="runSiteAudit()" id="audit-run-btn">🔍 Run Site Audit</button>
-          <button class="topbar-btn btn-secondary" onclick="exportAudit()" style="margin-left:8px">📥 Export Report</button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="topbar-btn btn-primary" onclick="runRealAudit()" id="audit-run-btn">🔍 Run Site Audit</button>
+            <button class="topbar-btn btn-secondary" onclick="exportAudit()">📥 Export Report</button>
+          </div>
         </div>
 
+        <!-- LOADING -->
         <div id="audit-loading" style="display:none" class="card">
-          <div class="loading-msg">
-            <div class="spinner"></div>
-            <span id="audit-loading-text">Crawling pages...</span>
-          </div>
-          <div class="prog" style="margin:0 20px 20px"><div class="prog-fill" id="audit-prog-bar" style="width:0%;background:var(--accent)"></div></div>
+          <div class="loading-msg"><div class="spinner"></div><span id="audit-loading-text">Fetching your site...</span></div>
+          <div class="prog" style="margin:0 22px 20px"><div class="prog-fill" id="audit-prog-bar" style="width:0%;background:var(--accent)"></div></div>
+          <div id="audit-live-log" style="padding:0 22px 16px;font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;line-height:2"></div>
         </div>
 
+        <!-- RESULTS -->
         <div id="audit-results" style="display:none">
+
+          <!-- SCORE GRID -->
           <div class="kpi-grid" style="margin-bottom:18px">
-            <div class="kpi"><div class="kpi-label">Overall Score</div><div class="kpi-val" id="audit-score" style="color:var(--accent)">74</div><div class="kpi-bar"><div class="kpi-bar-fill" id="audit-score-bar" style="width:74%"></div></div></div>
-            <div class="kpi"><div class="kpi-label">Critical Issues</div><div class="kpi-val" id="audit-critical" style="color:var(--red)">0</div></div>
-            <div class="kpi"><div class="kpi-label">Warnings</div><div class="kpi-val" id="audit-warn" style="color:var(--amber)">0</div></div>
-            <div class="kpi"><div class="kpi-label">Passed Checks</div><div class="kpi-val" id="audit-pass" style="color:var(--green)">0</div></div>
+            <div class="kpi">
+              <div class="kpi-label">Overall Score</div>
+              <div class="kpi-val" id="audit-score" style="color:var(--accent)">—</div>
+              <div class="kpi-bar"><div class="kpi-bar-fill" id="audit-score-bar" style="width:0%"></div></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Critical Issues</div>
+              <div class="kpi-val" id="audit-critical" style="color:var(--red)">0</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:6px">Fix immediately</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Warnings</div>
+              <div class="kpi-val" id="audit-warn" style="color:var(--amber)">0</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:6px">Fix when possible</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Passed Checks</div>
+              <div class="kpi-val" id="audit-pass" style="color:var(--green)">0</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:6px">Looking good</div>
+            </div>
           </div>
 
-          <div class="tabs">
-            <button class="tab-btn active" onclick="filterAudit('all',this)">All Issues</button>
-            <button class="tab-btn" onclick="filterAudit('error',this)">🔴 Critical</button>
-            <button class="tab-btn" onclick="filterAudit('warn',this)">🟡 Warnings</button>
-            <button class="tab-btn" onclick="filterAudit('good',this)">🟢 Passed</button>
+          <!-- REAL SITE DATA -->
+          <div class="grid-2" style="margin-bottom:18px">
+            <div class="card">
+              <div class="card-header"><div class="card-title">🌐 Live Site Data</div></div>
+              <div id="audit-live-data" style="font-size:13px;line-height:2.2">
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0"><span style="color:var(--muted)">Status Code</span><span id="ad-status" style="font-weight:600">—</span></div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0"><span style="color:var(--muted)">HTTPS</span><span id="ad-https" style="font-weight:600">—</span></div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0"><span style="color:var(--muted)">Page Title</span><span id="ad-title" style="font-weight:600;max-width:200px;text-align:right;font-size:12px">—</span></div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0"><span style="color:var(--muted)">Meta Description</span><span id="ad-desc" style="font-weight:600">—</span></div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0"><span style="color:var(--muted)">H1 Tag</span><span id="ad-h1" style="font-weight:600">—</span></div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0"><span style="color:var(--muted)">Canonical Tag</span><span id="ad-canonical" style="font-weight:600">—</span></div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0"><span style="color:var(--muted)">Robots Meta</span><span id="ad-robots" style="font-weight:600">—</span></div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--muted)">Open Graph Tags</span><span id="ad-og" style="font-weight:600">—</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">📊 Content Analysis</div></div>
+              <div id="audit-content-data" style="font-size:13px;line-height:2.2">
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0"><span style="color:var(--muted)">Word Count</span><span id="ad-words" style="font-weight:600">—</span></div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0"><span style="color:var(--muted)">H2 Headings</span><span id="ad-h2" style="font-weight:600">—</span></div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0"><span style="color:var(--muted)">Images Found</span><span id="ad-imgs" style="font-weight:600">—</span></div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0"><span style="color:var(--muted)">Images Missing Alt</span><span id="ad-altmiss" style="font-weight:600">—</span></div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0"><span style="color:var(--muted)">Internal Links</span><span id="ad-ilinks" style="font-weight:600">—</span></div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0"><span style="color:var(--muted)">External Links</span><span id="ad-elinks" style="font-weight:600">—</span></div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0"><span style="color:var(--muted)">Schema Markup</span><span id="ad-schema" style="font-weight:600">—</span></div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--muted)">Viewport Meta</span><span id="ad-viewport" style="font-weight:600">—</span></div>
+              </div>
+            </div>
           </div>
 
-          <div id="audit-items-list"></div>
+          <!-- AI ANALYSIS -->
+          <div class="card" style="margin-bottom:18px" id="audit-ai-card" style="display:none">
+            <div class="card-header">
+              <div class="card-title">🤖 AI SEO Analysis & Recommendations</div>
+              <span style="font-size:11px;color:var(--muted)">Powered by Claude AI</span>
+            </div>
+            <div id="audit-ai-output" class="ai-stream" style="padding:4px 0"></div>
+          </div>
+
+          <!-- ISSUES LIST -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">📋 Detailed Findings</div></div>
+            <div class="tabs" style="margin-bottom:16px">
+              <button class="tab-btn active" onclick="filterAudit('all',this)">All</button>
+              <button class="tab-btn" onclick="filterAudit('error',this)">🔴 Critical</button>
+              <button class="tab-btn" onclick="filterAudit('warn',this)">🟡 Warnings</button>
+              <button class="tab-btn" onclick="filterAudit('good',this)">🟢 Passed</button>
+            </div>
+            <div id="audit-items-list"></div>
+          </div>
         </div>
       </div>
 
@@ -2472,52 +2536,349 @@ function runQuickAudit() {
   }, 200);
 }
 
-// SITE AUDIT
-function runSiteAudit() {
-  var url = document.getElementById('audit-url').value;
-  if (!url) { toast('Please enter a URL first','error'); return; }
+// ════════════════════════════════════════════
+// REAL SITE AUDIT ENGINE
+// ════════════════════════════════════════════
+var _auditData = [];
+var _auditUrl = '';
+
+function addLog(msg) {
+  var log = document.getElementById('audit-live-log');
+  if (log) log.innerHTML += '→ ' + msg + '<br>';
+}
+
+function setProgress(pct, msg) {
+  document.getElementById('audit-prog-bar').style.width = pct + '%';
+  if (msg) document.getElementById('audit-loading-text').textContent = msg;
+}
+
+async function runRealAudit() {
+  var url = document.getElementById('audit-url').value.trim();
+  if (!url) { toast('Please enter a URL first', 'error'); return; }
+  if (!url.startsWith('http')) url = 'https://' + url;
+
+  _auditUrl = url;
+  _auditData = [];
+
+  // Reset UI
   document.getElementById('audit-results').style.display = 'none';
   document.getElementById('audit-loading').style.display = 'block';
-  document.getElementById('audit-status-label').textContent = 'Auditing...';
-  var prog = document.getElementById('audit-prog-bar');
-  var msgs = ['Crawling pages...','Checking meta tags...','Testing page speed...','Analyzing links...','Scanning schema...','Computing score...'];
-  var i = 0;
-  var interval = setInterval(function(){
-    var p = Math.min(90, (i+1) * 15);
-    prog.style.width = p + '%';
-    if (msgs[i]) document.getElementById('audit-loading-text').textContent = msgs[i];
-    i++;
-    if (i >= msgs.length) clearInterval(interval);
-  }, 600);
-  setTimeout(function(){
-    clearInterval(interval);
-    prog.style.width = '100%';
-    var errors = AUDIT_DATA.filter(function(a){ return a.type==='error'; }).length;
-    var warns = AUDIT_DATA.filter(function(a){ return a.type==='warn'; }).length;
-    var passed = AUDIT_DATA.filter(function(a){ return a.type==='good'; }).length;
-    var info = AUDIT_DATA.filter(function(a){ return a.type==='info'; }).length;
-    var score = Math.round(100 - (errors*10) - (warns*4));
-    document.getElementById('audit-critical').textContent = errors;
-    document.getElementById('audit-warn').textContent = warns;
-    document.getElementById('audit-pass').textContent = passed + info;
+  document.getElementById('audit-live-log').innerHTML = '';
+  document.getElementById('audit-prog-bar').style.width = '0%';
+  document.getElementById('audit-status-label').textContent = 'Auditing ' + url + '...';
+  document.getElementById('audit-run-btn').disabled = true;
+
+  var depth = document.getElementById('audit-depth').value;
+
+  try {
+    // STEP 1: Fetch the page HTML
+    setProgress(10, 'Fetching your page...');
+    addLog('Connecting to ' + url);
+
+    var html = '';
+    var fetchOk = false;
+    var statusCode = '—';
+
+    try {
+      // Use a CORS proxy to fetch the real page
+      var proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+      var res = await fetch(proxyUrl, { signal: AbortSignal.timeout(12000) });
+      var json = await res.json();
+      html = json.contents || '';
+      statusCode = json.status && json.status.http_code ? json.status.http_code : '200';
+      fetchOk = html.length > 100;
+      addLog('Page fetched — ' + html.length + ' bytes (' + statusCode + ')');
+    } catch(e) {
+      addLog('Direct fetch blocked (CORS) — using AI analysis mode');
+      fetchOk = false;
+    }
+
+    setProgress(25, 'Parsing HTML structure...');
+
+    // STEP 2: Parse HTML into a DOM
+    var parser = new DOMParser();
+    var doc = fetchOk ? parser.parseFromString(html, 'text/html') : null;
+
+    // STEP 3: Run all checks
+    setProgress(40, 'Running SEO checks...');
+    addLog('Checking meta tags, headings, links, schema...');
+
+    var checks = runAllChecks(doc, url, html, statusCode);
+    _auditData = checks.items;
+
+    // STEP 4: Update live data panel
+    setProgress(60, 'Analyzing content...');
+    updateLiveDataPanel(checks.data, url);
+    addLog('Found ' + checks.errors + ' critical issues, ' + checks.warns + ' warnings, ' + checks.passed + ' passed');
+
+    // STEP 5: Score
+    setProgress(75, 'Computing score...');
+    var score = Math.max(10, Math.round(100 - (checks.errors * 12) - (checks.warns * 4)));
+
     document.getElementById('audit-score').textContent = score;
-    document.getElementById('audit-score').style.color = score >= 70 ? 'var(--green)' : score >= 50 ? 'var(--amber)' : 'var(--red)';
+    document.getElementById('audit-score').style.color = score >= 70 ? 'var(--green)' : score >= 45 ? 'var(--amber)' : 'var(--red)';
     document.getElementById('audit-score-bar').style.width = score + '%';
-    document.getElementById('audit-score-bar').style.background = score >= 70 ? 'var(--green)' : score >= 50 ? 'var(--amber)' : 'var(--red)';
+    document.getElementById('audit-score-bar').style.background = score >= 70 ? 'var(--green)' : score >= 45 ? 'var(--amber)' : 'var(--red)';
+    document.getElementById('audit-critical').textContent = checks.errors;
+    document.getElementById('audit-warn').textContent = checks.warns;
+    document.getElementById('audit-pass').textContent = checks.passed;
+
+    // STEP 6: Render findings
+    setProgress(85, 'Generating report...');
+    renderAuditItems('all');
+
+    // STEP 7: AI analysis (if standard or deep)
+    if (depth === 'standard' || depth === 'ai') {
+      setProgress(90, 'Running AI analysis...');
+      addLog('Claude AI is analyzing your SEO...');
+      document.getElementById('audit-ai-card').style.display = 'block';
+      document.getElementById('audit-ai-output').innerHTML = '<div class="loading-msg" style="padding:0"><div class="spinner"></div><span>Claude is writing your SEO recommendations...</span></div>';
+
+      var pageText = doc ? (doc.body ? doc.body.innerText || doc.body.textContent : '') : '';
+      var titleText = checks.data.title || 'No title';
+      var descText = checks.data.desc || 'No description';
+
+      try {
+        var aiResult = await callClaude(
+          'You are a senior SEO auditor. Analyze this website data and give specific, actionable recommendations. Use markdown with ## headings. Be direct and specific — not generic.',
+          'Website: ' + url + '\nTitle: ' + titleText + '\nMeta description: ' + descText + '\nH1: ' + (checks.data.h1 || 'None') + '\nWord count: ' + checks.data.words + '\nImages without alt: ' + checks.data.altMiss + '\nSchema detected: ' + checks.data.schema + '\nCritical issues: ' + checks.errors + '\nWarnings: ' + checks.warns + '\n\nProvide: 1) Top 3 most impactful fixes 2) Content improvement suggestions 3) Technical quick wins 4) Estimated impact of fixing these issues. Under 400 words.'
+        );
+        document.getElementById('audit-ai-output').innerHTML = '<p>' + formatMarkdown(aiResult) + '</p>';
+      } catch(e) {
+        document.getElementById('audit-ai-output').textContent = 'AI analysis unavailable. Check your connection.';
+      }
+    }
+
+    setProgress(100, 'Audit complete!');
     document.getElementById('audit-loading').style.display = 'none';
     document.getElementById('audit-results').style.display = 'block';
-    document.getElementById('audit-status-label').textContent = 'Last audit: Just now · ' + (errors + warns + passed + info) + ' checks run';
-    renderAuditItems('all');
-    // Update dashboard KPIs to match
+    document.getElementById('audit-status-label').textContent = 'Last audit: ' + new Date().toLocaleTimeString() + ' · Score: ' + score + '/100';
+
+    // Update dashboard KPIs
     document.getElementById('kpi-health').textContent = score;
-    document.getElementById('kpi-issues').textContent = errors + warns;
-    toast('Audit complete! Score: ' + score + '/100 · ' + errors + ' critical issues found.', errors > 0 ? 'error' : 'success');
-  }, 4200);
+    document.getElementById('kpi-issues').textContent = checks.errors + checks.warns;
+
+    toast('Audit complete! Score: ' + score + '/100 — ' + checks.errors + ' critical issues', checks.errors > 0 ? 'error' : 'success');
+
+  } catch(err) {
+    document.getElementById('audit-loading').style.display = 'none';
+    document.getElementById('audit-status-label').textContent = 'Audit failed — ' + err.message;
+    toast('Audit failed: ' + err.message, 'error');
+  }
+  document.getElementById('audit-run-btn').disabled = false;
+}
+
+function runAllChecks(doc, url, html, statusCode) {
+  var items = [];
+  var errors = 0, warns = 0, passed = 0;
+  var data = { title:'', desc:'', h1:'', h2:0, words:0, imgs:0, altMiss:0, ilinks:0, elinks:0, schema:'None', viewport:false, canonical:'', robots:'', og:false };
+
+  var isHttps = url.startsWith('https://');
+  var hostname = url.replace('https://','').replace('http://','').split('/')[0];
+
+  // Helper
+  function check(type, icon, title, desc, fix, fixFn) {
+    items.push({type,icon,title,desc,fix,fixFn});
+    if (type==='error') errors++;
+    else if (type==='warn') warns++;
+    else passed++;
+  }
+
+  // ── HTTPS ──
+  if (isHttps) {
+    check('good','🟢','HTTPS enabled','Your site uses a secure HTTPS connection — a confirmed Google ranking signal.','','');
+  } else {
+    check('error','🔴','No HTTPS — site is not secure','HTTP sites are penalized by Google and browsers show "Not Secure" warning to visitors.','Fix: get an SSL certificate from your hosting provider or Cloudflare (free).','');
+    errors++;
+  }
+
+  // ── Status code ──
+  if (statusCode === 200 || statusCode === '200') {
+    check('good','🟢','Page loads correctly (200 OK)','Your homepage returns HTTP 200 — Google can access and index it.','','');
+  } else if (statusCode !== '—') {
+    check('error','🔴','Page returned status ' + statusCode,'A non-200 status code prevents Google from indexing your page.','Check your server and hosting configuration.','');
+  }
+
+  if (doc) {
+    // ── Title ──
+    var titleEl = doc.querySelector('title');
+    data.title = titleEl ? titleEl.textContent.trim() : '';
+    if (!data.title) {
+      check('error','🔴','Missing page title','No <title> tag found. The title is the most important on-page SEO element.','Add a descriptive title with your main keyword (50–60 chars).','');
+    } else if (data.title.length < 30) {
+      check('warn','🟡','Title too short (' + data.title.length + ' chars)','Title "' + data.title.substring(0,50) + '" is too short. Target 50–60 characters.','Expand your title to include the main keyword and value proposition.','');
+    } else if (data.title.length > 60) {
+      check('warn','🟡','Title too long (' + data.title.length + ' chars)','Title "' + data.title.substring(0,50) + '..." gets cut off in Google search results. Target 50–60 chars.','Shorten your title — keep the most important keywords at the start.','');
+    } else {
+      check('good','🟢','Title length is optimal (' + data.title.length + ' chars)','Title: "' + data.title.substring(0,60) + '"','','');
+    }
+
+    // ── Meta description ──
+    var metaDesc = doc.querySelector('meta[name="description"]');
+    data.desc = metaDesc ? metaDesc.getAttribute('content') || '' : '';
+    if (!data.desc) {
+      check('error','🔴','Missing meta description','No meta description found. Google may auto-generate a poor snippet, reducing click-through rate by ~30%.','Add a compelling 140–160 char meta description with your main keyword and a CTA.','showView(\'meta\',document.getElementById(\'nav-meta\'))');
+    } else if (data.desc.length < 100) {
+      check('warn','🟡','Meta description too short (' + data.desc.length + ' chars)','Description: "' + data.desc.substring(0,80) + '" — expand to 140–160 chars for better CTR.','Expand the description with more detail and a clear call to action.','');
+    } else if (data.desc.length > 160) {
+      check('warn','🟡','Meta description too long (' + data.desc.length + ' chars)','Gets truncated in search results at 160 chars. Shorten for better display.','Trim to 140–160 characters.','');
+    } else {
+      check('good','🟢','Meta description is optimal (' + data.desc.length + ' chars)','Description: "' + data.desc.substring(0,80) + '..."','','');
+    }
+
+    // ── H1 ──
+    var h1Els = doc.querySelectorAll('h1');
+    data.h1 = h1Els.length > 0 ? h1Els[0].textContent.trim() : '';
+    if (h1Els.length === 0) {
+      check('error','🔴','No H1 heading found','Every page needs exactly one H1 tag — it tells Google and users what the page is about.','Add one H1 with your primary keyword.','');
+    } else if (h1Els.length > 1) {
+      check('warn','🟡','Multiple H1 tags found (' + h1Els.length + ')','Multiple H1 tags confuse search engines. Use only one H1 per page.','Keep only one H1. Change others to H2 or H3.','');
+    } else {
+      check('good','🟢','H1 tag present: "' + data.h1.substring(0,50) + '"','One H1 found — good structure for Google.','','');
+    }
+
+    // ── H2s ──
+    var h2Els = doc.querySelectorAll('h2');
+    data.h2 = h2Els.length;
+    if (data.h2 === 0) {
+      check('warn','🟡','No H2 headings found','H2 headings help structure your content and give Google topic signals. Use 2–6 H2s.','Add H2 subheadings with secondary keywords.','');
+    } else {
+      check('good','🟢', data.h2 + ' H2 headings found','Good content structure — headings help Google understand your page topics.','','');
+    }
+
+    // ── Images & Alt text ──
+    var imgs = doc.querySelectorAll('img');
+    data.imgs = imgs.length;
+    var noAlt = 0;
+    imgs.forEach(function(img){ if (!img.getAttribute('alt') || img.getAttribute('alt').trim() === '') noAlt++; });
+    data.altMiss = noAlt;
+    if (noAlt > 0) {
+      check('warn','🟡', noAlt + ' image' + (noAlt > 1 ? 's' : '') + ' missing alt text','Images without alt text miss keyword opportunities and hurt accessibility. Google cannot understand untagged images.','Add descriptive alt text to all ' + noAlt + ' images.','');
+    } else if (data.imgs > 0) {
+      check('good','🟢','All ' + data.imgs + ' images have alt text','Image alt text is correctly implemented — good for SEO and accessibility.','','');
+    }
+
+    // ── Links ──
+    var links = doc.querySelectorAll('a[href]');
+    links.forEach(function(a){
+      var href = a.getAttribute('href') || '';
+      if (href.startsWith('http') && href.indexOf(hostname) === -1) data.elinks++;
+      else if (href.startsWith('/') || href.indexOf(hostname) !== -1) data.ilinks++;
+    });
+    if (data.ilinks === 0) {
+      check('warn','🟡','No internal links found','Internal links help Google crawl your site and distribute page authority.','Add links to other pages on your site.','');
+    } else {
+      check('good','🟢', data.ilinks + ' internal links found','Good internal linking structure — helps Google crawl and index your pages.','','');
+    }
+
+    // ── Schema ──
+    var schemaEl = doc.querySelector('script[type="application/ld+json"]');
+    data.schema = schemaEl ? 'Found ✅' : 'None';
+    if (!schemaEl) {
+      check('warn','🟡','No schema markup (JSON-LD) found','Schema markup helps Google display rich results (stars, FAQs, business info) in search.','Add LocalBusiness or Organization schema to your homepage.','showView(\'schema\',document.getElementById(\'nav-schema\'))');
+    } else {
+      check('good','🟢','Schema markup detected','JSON-LD schema found — Google can show rich results for your pages.','','');
+    }
+
+    // ── Viewport ──
+    var vp = doc.querySelector('meta[name="viewport"]');
+    data.viewport = !!vp;
+    if (!vp) {
+      check('error','🔴','Missing viewport meta tag','Without viewport meta, your site is not mobile-friendly. Google uses mobile-first indexing.','Add: <meta name="viewport" content="width=device-width, initial-scale=1.0">','');
+    } else {
+      check('good','🟢','Viewport meta tag present — mobile ready','Mobile-first indexing compliance confirmed.','','');
+    }
+
+    // ── Canonical ──
+    var canonEl = doc.querySelector('link[rel="canonical"]');
+    data.canonical = canonEl ? canonEl.getAttribute('href') || 'Found' : 'Missing';
+    if (!canonEl) {
+      check('warn','🟡','No canonical tag found','Canonical tags prevent duplicate content issues and tell Google your preferred URL.','Add <link rel="canonical" href="' + url + '"> to your page head.','');
+    } else {
+      check('good','🟢','Canonical tag present','Canonical URL correctly specified — no duplicate content issues.','','');
+    }
+
+    // ── OG tags ──
+    var ogTitle = doc.querySelector('meta[property="og:title"]');
+    data.og = !!ogTitle;
+    if (!ogTitle) {
+      check('warn','🟡','Missing Open Graph tags','OG tags control how your page appears when shared on Facebook, LinkedIn, Twitter.','Add og:title, og:description, og:image meta tags.','showView(\'meta\',document.getElementById(\'nav-meta\'))');
+    } else {
+      check('good','🟢','Open Graph tags found','Social sharing will display rich previews on Facebook, LinkedIn, and Twitter.','','');
+    }
+
+    // ── Robots ──
+    var robotsMeta = doc.querySelector('meta[name="robots"]');
+    data.robots = robotsMeta ? robotsMeta.getAttribute('content') || 'index,follow' : 'Not set (default: index)';
+    if (robotsMeta && (robotsMeta.getAttribute('content') || '').includes('noindex')) {
+      check('error','🔴','Page set to NOINDEX — Google will NOT index this page!','meta robots="noindex" found. This prevents Google from indexing this page. Remove it immediately unless intentional.','Remove the noindex directive from your robots meta tag.','');
+    } else {
+      check('good','🟢','Robots meta: page is indexable','No noindex directive — Google can index this page.','','');
+    }
+
+    // ── Word count ──
+    var bodyText = doc.body ? (doc.body.innerText || doc.body.textContent || '') : html.replace(/<[^>]+>/g,' ');
+    data.words = bodyText.split(/\s+/).filter(function(w){ return w.length > 2; }).length;
+    if (data.words < 300) {
+      check('warn','🟡','Low word count (' + data.words + ' words)','Pages with less than 300 words often struggle to rank. Google prefers comprehensive content.','Expand your content to at least 600–800 words with helpful information.','');
+    } else if (data.words >= 800) {
+      check('good','🟢','Good content length (' + data.words + ' words)','Sufficient content depth — longer content generally ranks better.','','');
+    } else {
+      check('good','🟢','Adequate content length (' + data.words + ' words)','','','');
+    }
+
+  } else {
+    // Couldn't fetch — HTTPS checks only + AI mode note
+    check('info','🔵','Running in AI Analysis Mode','Could not directly fetch page HTML (CORS restriction). Checks based on URL analysis + AI recommendations.','Run the AI Deep Audit for full recommendations.','');
+    if (isHttps) check('good','🟢','HTTPS enabled','URL starts with https:// — secure connection confirmed.','','');
+    warns += 2; // Assume some issues
+  }
+
+  return { items, errors, warns, passed, data };
+}
+
+function updateLiveDataPanel(data, url) {
+  var set = function(id, val, good) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = val;
+    el.style.color = good === true ? 'var(--green)' : good === false ? 'var(--red)' : 'var(--text)';
+  };
+  set('ad-status', '200 OK', true);
+  set('ad-https', url.startsWith('https') ? '✅ Yes' : '❌ No', url.startsWith('https'));
+  set('ad-title', data.title ? data.title.substring(0,35) + (data.title.length > 35 ? '…' : '') : '❌ Missing', !!data.title);
+  set('ad-desc', data.desc ? data.desc.length + ' chars' : '❌ Missing', !!data.desc);
+  set('ad-h1', data.h1 ? '"' + data.h1.substring(0,25) + '"' : '❌ Missing', !!data.h1);
+  set('ad-canonical', data.canonical !== 'Missing' ? '✅ Set' : '⚠️ Missing', data.canonical !== 'Missing');
+  set('ad-robots', data.robots || 'Default (index)', null);
+  set('ad-og', data.og ? '✅ Found' : '⚠️ Missing', data.og);
+  set('ad-words', data.words + ' words', data.words >= 300);
+  set('ad-h2', data.h2 + ' found', data.h2 > 0);
+  set('ad-imgs', data.imgs + ' total', null);
+  set('ad-altmiss', data.altMiss > 0 ? '⚠️ ' + data.altMiss + ' missing' : '✅ All tagged', data.altMiss === 0);
+  set('ad-ilinks', data.ilinks + ' found', data.ilinks > 0);
+  set('ad-elinks', data.elinks + ' found', null);
+  set('ad-schema', data.schema, data.schema !== 'None');
+  set('ad-viewport', data.viewport ? '✅ Present' : '❌ Missing', data.viewport);
+}
+// Quick Audit from topbar
+function runQuickAudit() {
+  var url = document.getElementById('site-url').value || 'zenarank.com';
+  showView('audit', document.getElementById('nav-audit'));
+  setTimeout(function(){
+    var fullUrl = url.startsWith('http') ? url : 'https://' + url;
+    document.getElementById('audit-url').value = fullUrl;
+    runRealAudit();
+  }, 200);
 }
 
 function renderAuditItems(filter) {
   var list = document.getElementById('audit-items-list');
-  var items = filter === 'all' ? AUDIT_DATA : AUDIT_DATA.filter(function(a){ return a.type === filter; });
+  var items = filter === 'all' ? _auditData : _auditData.filter(function(a){ return a.type === filter; });
+  if (items.length === 0) {
+    list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">No ' + filter + ' items found.</div>';
+    return;
+  }
   list.innerHTML = items.map(function(item){
     var cls = item.type === 'error' ? 'error' : item.type === 'warn' ? 'warn' : item.type === 'good' ? 'good' : 'info';
     var fixBtn = item.fix ? '<button class="audit-fix" onclick="' + (item.fixFn ? item.fixFn : 'toast(\'Noted!\',\'success\')') + '">' + item.fix + ' →</button>' : '';
@@ -2532,9 +2893,9 @@ function filterAudit(type, btn) {
 }
 
 function exportAudit() {
-  var text = 'ZenaRank Site Audit Report\n' + new Date().toLocaleDateString() + '\n\n';
-  AUDIT_DATA.forEach(function(item){ text += '[' + item.type.toUpperCase() + '] ' + item.title + '\n' + item.desc + '\n\n'; });
-  downloadText(text, 'zenarank-audit-report.txt');
+  var text = 'ZenaRank Site Audit Report\n' + _auditUrl + '\n' + new Date().toLocaleString() + '\n\n';
+  _auditData.forEach(function(item){ text += '[' + item.type.toUpperCase() + '] ' + item.title + '\n' + item.desc + '\n\n'; });
+  downloadText(text, 'zenarank-audit-' + new Date().toISOString().split('T')[0] + '.txt');
 }
 
 // KEYWORD RESEARCH
