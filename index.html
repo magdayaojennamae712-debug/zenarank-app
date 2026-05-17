@@ -923,9 +923,9 @@ select.form-input option{background:var(--bg3);color:var(--text)}
               <div class="score-ring">
                 <svg viewBox="0 0 130 130" width="130" height="130">
                   <circle cx="65" cy="65" r="55" fill="none" stroke="#1a1a2e" stroke-width="12"/>
-                  <circle cx="65" cy="65" r="55" fill="none" stroke="var(--accent)" stroke-width="12" stroke-dasharray="345.6" stroke-dashoffset="89.8" stroke-linecap="round"/>
+                  <circle cx="65" cy="65" r="55" fill="none" stroke="var(--accent)" stroke-width="12" stroke-dasharray="345.6" stroke-dashoffset="345.6" stroke-linecap="round" id="score-ring-circle" style="transition:stroke-dashoffset 1s ease"/>
                 </svg>
-                <div class="score-ring-num"><div class="num" style="color:var(--accent)">74</div><div class="lbl">/ 100</div></div>
+                <div class="score-ring-num"><div class="num" style="color:var(--accent)" id="score-ring-num">—</div><div class="lbl">/ 100</div></div>
               </div>
               <div class="score-items" style="max-width:220px">
                 <div class="score-item"><span class="status-dot live"></span><span class="score-item-name">On-Page SEO</span><span class="score-item-val" style="color:var(--green)">82/100</span></div>
@@ -2631,19 +2631,28 @@ async function runRealAudit() {
     var fetchOk = false;
     var statusCode = '—';
 
-    try {
-      // Use a CORS proxy to fetch the real page
-      var proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
-      var res = await fetch(proxyUrl, { signal: AbortSignal.timeout(12000) });
-      var json = await res.json();
-      html = json.contents || '';
-      statusCode = json.status && json.status.http_code ? json.status.http_code : '200';
-      fetchOk = html.length > 100;
-      addLog('Page fetched — ' + html.length + ' bytes (' + statusCode + ')');
-    } catch(e) {
-      addLog('Direct fetch blocked (CORS) — using AI analysis mode');
-      fetchOk = false;
+    var proxies = [
+      'https://api.allorigins.win/get?url=',
+      'https://corsproxy.io/?',
+      'https://api.codetabs.com/v1/proxy?quest='
+    ];
+    for (var pi = 0; pi < proxies.length; pi++) {
+      try {
+        addLog('Trying proxy ' + (pi+1) + '/' + proxies.length + '...');
+        if (pi === 0) {
+          var res = await fetch(proxies[0] + encodeURIComponent(url), { signal: AbortSignal.timeout(10000) });
+          var json = await res.json();
+          html = json.contents || '';
+          statusCode = json.status && json.status.http_code ? String(json.status.http_code) : '200';
+        } else {
+          var res = await fetch(proxies[pi] + encodeURIComponent(url), { signal: AbortSignal.timeout(10000) });
+          html = await res.text();
+          statusCode = '200';
+        }
+        if (html && html.length > 500) { fetchOk = true; addLog('✅ Page fetched — ' + html.length + ' bytes'); break; }
+      } catch(e) { addLog('Proxy ' + (pi+1) + ' failed, trying next...'); }
     }
+    if (!fetchOk) addLog('⚠️ All proxies failed — running AI-only analysis');
 
     setProgress(25, 'Parsing HTML structure...');
 
@@ -2671,6 +2680,11 @@ async function runRealAudit() {
     document.getElementById('audit-score').style.color = score >= 70 ? 'var(--green)' : score >= 45 ? 'var(--amber)' : 'var(--red)';
     document.getElementById('audit-score-bar').style.width = score + '%';
     document.getElementById('audit-score-bar').style.background = score >= 70 ? 'var(--green)' : score >= 45 ? 'var(--amber)' : 'var(--red)';
+    // Sync dashboard ring
+    var ringNum = document.getElementById('score-ring-num');
+    var ringCircle = document.getElementById('score-ring-circle');
+    if (ringNum) { ringNum.textContent = score; ringNum.style.color = score >= 70 ? 'var(--green)' : score >= 45 ? 'var(--amber)' : 'var(--red)'; }
+    if (ringCircle) { var off = 345.6 - (score/100)*345.6; ringCircle.style.strokeDashoffset = off; ringCircle.style.stroke = score >= 70 ? 'var(--green)' : score >= 45 ? 'var(--amber)' : 'var(--red)'; }
     document.getElementById('audit-critical').textContent = checks.errors;
     document.getElementById('audit-warn').textContent = checks.warns;
     document.getElementById('audit-pass').textContent = checks.passed;
@@ -3420,10 +3434,20 @@ async function checkAlgoUpdates() {
 async function runBackgroundAudit(url) {
   if (!url) return;
   try {
-    var proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
-    var res = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
-    var json = await res.json();
-    var html = json.contents || '';
+    var html = '';
+    var bgProxies = ['https://api.allorigins.win/get?url=', 'https://corsproxy.io/?'];
+    for (var bpi = 0; bpi < bgProxies.length; bpi++) {
+      try {
+        if (bpi === 0) {
+          var res = await fetch(bgProxies[0] + encodeURIComponent(url), { signal: AbortSignal.timeout(8000) });
+          var json = await res.json(); html = json.contents || '';
+        } else {
+          var res = await fetch(bgProxies[bpi] + encodeURIComponent(url), { signal: AbortSignal.timeout(8000) });
+          html = await res.text();
+        }
+        if (html && html.length > 500) break;
+      } catch(e) {}
+    }
     if (html.length < 100) return;
     var parser = new DOMParser();
     var doc = parser.parseFromString(html, 'text/html');
@@ -3450,6 +3474,16 @@ async function runBackgroundAudit(url) {
     }
     var healthBar = document.getElementById('kpi-health-bar');
     if (healthBar) { healthBar.style.width = score + '%'; }
+    // Update score ring
+    var ringNum = document.getElementById('score-ring-num');
+    var ringCircle = document.getElementById('score-ring-circle');
+    if (ringNum) { ringNum.textContent = score; ringNum.style.color = score >= 70 ? 'var(--green)' : score >= 45 ? 'var(--amber)' : 'var(--red)'; }
+    if (ringCircle) {
+      var circumference = 345.6;
+      var offset = circumference - (score / 100) * circumference;
+      ringCircle.style.strokeDashoffset = offset;
+      ringCircle.style.stroke = score >= 70 ? 'var(--green)' : score >= 45 ? 'var(--amber)' : 'var(--red)';
+    }
     var healthChange = document.getElementById('kpi-health-change');
     if (healthChange) {
       healthChange.textContent = issues + ' critical · ' + warns + ' warnings found';
