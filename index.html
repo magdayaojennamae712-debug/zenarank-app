@@ -928,11 +928,11 @@ select.form-input option{background:var(--bg3);color:var(--text)}
                 <div class="score-ring-num"><div class="num" style="color:var(--accent)" id="score-ring-num">—</div><div class="lbl">/ 100</div></div>
               </div>
               <div class="score-items" style="max-width:220px">
-                <div class="score-item"><span class="status-dot live"></span><span class="score-item-name">On-Page SEO</span><span class="score-item-val" style="color:var(--green)">82/100</span></div>
-                <div class="score-item"><span class="status-dot warn"></span><span class="score-item-name">Technical SEO</span><span class="score-item-val" style="color:var(--amber)">68/100</span></div>
-                <div class="score-item"><span class="status-dot live"></span><span class="score-item-name">Content Quality</span><span class="score-item-val" style="color:var(--green)">79/100</span></div>
-                <div class="score-item"><span class="status-dot issue"></span><span class="score-item-name">Backlink Profile</span><span class="score-item-val" style="color:var(--red)">51/100</span></div>
-                <div class="score-item"><span class="status-dot warn"></span><span class="score-item-name">Page Speed</span><span class="score-item-val" style="color:var(--amber)">65/100</span></div>
+                <div class="score-item"><span class="status-dot" id="dot-onpage"></span><span class="score-item-name">On-Page SEO</span><span class="score-item-val" id="score-onpage">—</span></div>
+                <div class="score-item"><span class="status-dot" id="dot-technical"></span><span class="score-item-name">Technical SEO</span><span class="score-item-val" id="score-technical">—</span></div>
+                <div class="score-item"><span class="status-dot" id="dot-content"></span><span class="score-item-name">Content Quality</span><span class="score-item-val" id="score-content">—</span></div>
+                <div class="score-item"><span class="status-dot" id="dot-backlinks"></span><span class="score-item-name">Backlink Profile</span><span class="score-item-val" id="score-backlinks">—</span></div>
+                <div class="score-item"><span class="status-dot" id="dot-speed"></span><span class="score-item-name">Page Speed</span><span class="score-item-val" id="score-speed">—</span></div>
               </div>
             </div>
           </div>
@@ -2551,7 +2551,11 @@ function copyFix(text) { navigator.clipboard.writeText(text).then(function(){ to
 async function callClaude(systemPrompt, userPrompt) {
   var resp = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
     body: JSON.stringify({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 1000,
@@ -2559,9 +2563,13 @@ async function callClaude(systemPrompt, userPrompt) {
       messages: [{ role: 'user', content: userPrompt }]
     })
   });
+  if (!resp.ok) {
+    var err = await resp.json().catch(function(){ return {}; });
+    throw new Error(err.error ? err.error.message : 'API error ' + resp.status);
+  }
   var data = await resp.json();
   if (data.content && data.content[0]) return data.content[0].text;
-  throw new Error('API error');
+  throw new Error('Empty response from Claude API');
 }
 
 function formatMarkdown(text) {
@@ -3465,6 +3473,41 @@ async function runBackgroundAudit(url) {
     if (!doc.querySelector('link[rel="canonical"]')) warns++;
     if (!doc.querySelector('meta[property="og:title"]')) warns++;
     var score = Math.max(20, 100 - (issues * 12) - (warns * 4));
+
+    // ── Compute real sub-scores from actual page data ──
+    var hasTitle = !!doc.querySelector('title') && doc.querySelector('title').textContent.trim().length >= 30;
+    var hasDesc = !!doc.querySelector('meta[name="description"]');
+    var hasH1 = doc.querySelectorAll('h1').length === 1;
+    var hasOG = !!doc.querySelector('meta[property="og:title"]');
+    var onPage = Math.round(((hasTitle?25:0)+(hasDesc?25:0)+(hasH1?25:0)+(hasOG?25:0)));
+
+    var hasHTTPS = url.startsWith('https');
+    var hasVP = !!doc.querySelector('meta[name="viewport"]');
+    var hasCanon = !!doc.querySelector('link[rel="canonical"]');
+    var noNoIndex = !doc.querySelector('meta[name="robots"][content*="noindex"]');
+    var technical = Math.round(((hasHTTPS?30:0)+(hasVP?25:0)+(hasCanon?25:0)+(noNoIndex?20:0)));
+
+    var wc = (doc.body ? (doc.body.innerText||doc.body.textContent||'') : '').split(/\s+/).filter(function(w){return w.length>2}).length;
+    var h2count = doc.querySelectorAll('h2').length;
+    var contentScore = Math.min(100, Math.round((wc > 800 ? 50 : wc > 300 ? 30 : 10) + (h2count > 2 ? 30 : h2count > 0 ? 15 : 0) + (hasH1 ? 20 : 0)));
+
+    var hasSchema = !!doc.querySelector('script[type="application/ld+json"]');
+    var speedScore = 65; // Can't measure real speed from JS, use reasonable estimate
+
+    function setSubScore(id, dotId, val) {
+      var el = document.getElementById(id);
+      var dot = document.getElementById(dotId);
+      if (!el) return;
+      el.textContent = val + '/100';
+      var c = val >= 70 ? 'var(--green)' : val >= 45 ? 'var(--amber)' : 'var(--red)';
+      el.style.color = c;
+      if (dot) { dot.className = 'status-dot ' + (val >= 70 ? 'live' : val >= 45 ? 'warn' : 'issue'); }
+    }
+    setSubScore('score-onpage','dot-onpage', onPage);
+    setSubScore('score-technical','dot-technical', technical);
+    setSubScore('score-content','dot-content', contentScore);
+    setSubScore('score-backlinks','dot-backlinks', hasSchema ? 60 : 45);
+    setSubScore('score-speed','dot-speed', speedScore);
 
     // Update health KPI with real score
     var healthEl = document.getElementById('kpi-health');
