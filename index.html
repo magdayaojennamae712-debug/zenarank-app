@@ -2153,10 +2153,12 @@ function connectGSC() {
   btn.textContent = '⏳ Connecting...';
   btn.disabled = true;
 
-  // Build Google OAuth URL
+  // Use exact origin as redirect — must match Google Cloud Console exactly
+  var redirectUri = window.location.origin;
+
   var params = new URLSearchParams({
     client_id: GSC_CLIENT_ID,
-    redirect_uri: window.location.origin + window.location.pathname,
+    redirect_uri: redirectUri,
     response_type: 'token',
     scope: GSC_SCOPE,
     state: 'gsc_connect',
@@ -2164,50 +2166,55 @@ function connectGSC() {
     prompt: 'select_account'
   });
 
-  // Store intent
   localStorage.setItem('zr_gsc_pending', site);
-  localStorage.setItem('zr_gsc_range', document.getElementById('gsc-range').value);
+  localStorage.setItem('zr_gsc_range', document.getElementById('gsc-range').value || '28');
 
-  // Open OAuth popup
   var popup = window.open(
     'https://accounts.google.com/o/oauth2/v2/auth?' + params.toString(),
     'gsc_auth',
-    'width=500,height=600,scrollbars=yes,resizable=yes'
+    'width=520,height=640,scrollbars=yes,resizable=yes,left=200,top=100'
   );
 
-  // Listen for redirect with token
+  if (!popup) {
+    toast('Popup blocked! Please allow popups for zenarank.com and try again.', 'error');
+    btn.textContent = '🔗 Connect Google Search Console';
+    btn.disabled = false;
+    return;
+  }
+
   var interval = setInterval(function() {
     try {
       if (popup.closed) {
         clearInterval(interval);
         btn.textContent = '🔗 Connect Google Search Console';
         btn.disabled = false;
-        // Check if token landed in localStorage from redirect
         var token = localStorage.getItem('zr_gsc_token');
         if (token) { _gscToken = token; onGSCConnected(); }
         return;
       }
-      var hash = popup.location.hash;
-      if (hash && hash.includes('access_token')) {
+      var hash = popup.location.hash || '';
+      var href = popup.location.href || '';
+      if (hash.includes('access_token') || href.includes('access_token')) {
         clearInterval(interval);
-        popup.close();
-        var tokenMatch = hash.match(/access_token=([^&]+)/);
+        var src = hash.includes('access_token') ? hash : href;
+        var tokenMatch = src.match(/access_token=([^&]+)/);
         if (tokenMatch) {
-          _gscToken = tokenMatch[1];
+          _gscToken = decodeURIComponent(tokenMatch[1]);
           localStorage.setItem('zr_gsc_token', _gscToken);
           localStorage.setItem('zr_gsc_site', _gscSite);
+          popup.close();
           onGSCConnected();
         }
       }
-    } catch(e) { /* cross-origin, keep waiting */ }
-  }, 500);
+    } catch(e) { /* cross-origin — keep polling */ }
+  }, 600);
 
-  // Timeout after 3 minutes
   setTimeout(function(){
     clearInterval(interval);
     if (!_gscToken) {
       btn.textContent = '🔗 Connect Google Search Console';
       btn.disabled = false;
+      toast('Connection timed out. Please try again.', 'error');
     }
   }, 180000);
 }
