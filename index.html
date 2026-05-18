@@ -1705,6 +1705,26 @@ select.form-input option{background:var(--bg3);color:var(--text)}
             <div class="audit-icon good">✅</div>
             <div><div class="audit-title">Claude AI (Anthropic)</div><div class="audit-desc">Connected · Powering all AI tools — Blog Generator, Meta Optimizer, Schema Builder, Rank Recovery, E-E-A-T Scorer</div></div>
           </div>
+
+          <!-- ANTHROPIC API KEY -->
+          <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:16px;margin:12px 0">
+            <div style="font-size:13px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px">🔑 Anthropic API Key <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;background:rgba(201,168,76,.15);color:#c9a84c">Required for AI features</span></div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6">Get your free API key at <strong style="color:#c9a84c">console.anthropic.com</strong> → API Keys → Create Key. Paste it below to enable all AI tools.</div>
+            <div style="display:flex;gap:8px">
+              <input class="form-input" id="settings-api-key" type="password" placeholder="sk-ant-api03-..." style="flex:1;font-family:'JetBrains Mono',monospace;font-size:12px">
+              <button onclick="saveApiKey()" style="padding:10px 18px;background:linear-gradient(135deg,#c9a84c,#a8883a);border:none;border-radius:9px;font-size:13px;font-weight:600;color:#0c0e14;cursor:pointer;font-family:inherit;white-space:nowrap">Save Key</button>
+            </div>
+            <div id="api-key-status" style="font-size:12px;margin-top:8px;color:var(--muted)"></div>
+          </div>
+
+          <!-- PROXY URL (advanced) -->
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px">
+            <div style="font-size:12px;font-weight:600;margin-bottom:6px;color:var(--muted)">⚡ Cloudflare Worker Proxy URL (optional — more secure)</div>
+            <div style="display:flex;gap:8px">
+              <input class="form-input" id="settings-proxy-url" placeholder="https://your-worker.workers.dev" style="flex:1;font-size:12px;font-family:'JetBrains Mono',monospace">
+              <button onclick="saveProxyUrl()" style="padding:10px 16px;background:var(--bg2);border:1px solid var(--border2);border-radius:9px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer;font-family:inherit">Save</button>
+            </div>
+          </div>
           <div class="audit-item" id="gsc-api-item">
             <div class="audit-icon warn" id="gsc-api-icon">⚠️</div>
             <div style="flex:1">
@@ -2549,6 +2569,9 @@ function restoreSession() {
       setTimeout(restoreGSCSession, 800);
       var defaultSite = localStorage.getItem('zr_default_site') || 'https://zenarank.com';
       setTimeout(function(){ runBackgroundAudit(defaultSite); }, 1500);
+      // Load API key settings
+      CLAUDE_API_KEY = localStorage.getItem('zr_claude_key') || '';
+      CLAUDE_PROXY = localStorage.getItem('zr_claude_proxy') || '';
     } catch(e) {
       localStorage.removeItem('zr_session');
     }
@@ -2622,6 +2645,7 @@ function showView(viewId, navEl) {
   _currentView = viewId;
   var titles = {dashboard:'Dashboard',audit:'Site Audit',keywords:'Keyword Research',competitor:'Competitor Analysis',backlinks:'Backlink Checker',blog:'AI Blog Generator',meta:'Meta Tag Optimizer',schema:'Schema Builder',reports:'Monthly Reports',clients:'Client Management',settings:'Settings'};
   document.getElementById('topbar-title').textContent = titles[viewId] || viewId;
+  if (viewId === 'settings') setTimeout(loadApiSettings, 100);
 }
 
 function toast(msg, type) {
@@ -2632,14 +2656,28 @@ function toast(msg, type) {
 
 function copyFix(text) { navigator.clipboard.writeText(text).then(function(){ toast('Copied to clipboard!','success'); }); }
 
+// ── API Configuration ──
+var CLAUDE_PROXY = localStorage.getItem('zr_claude_proxy') || '';
+var CLAUDE_API_KEY = localStorage.getItem('zr_claude_key') || '';
+
 async function callClaude(systemPrompt, userPrompt) {
-  var resp = await fetch('https://api.anthropic.com/v1/messages', {
+  var endpoint = CLAUDE_PROXY || 'https://api.anthropic.com/v1/messages';
+  var headers = { 'Content-Type': 'application/json' };
+
+  if (CLAUDE_PROXY) {
+    // Using our secure proxy — no API key needed in browser
+  } else if (CLAUDE_API_KEY) {
+    // Direct with user-provided key
+    headers['x-api-key'] = CLAUDE_API_KEY;
+    headers['anthropic-version'] = '2023-06-01';
+    headers['anthropic-dangerous-direct-browser-access'] = 'true';
+  } else {
+    throw new Error('No API key configured. Go to ⚙️ Settings → Add your Anthropic API key to enable AI features.');
+  }
+
+  var resp = await fetch(endpoint, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
+    headers: headers,
     body: JSON.stringify({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 1000,
@@ -3755,8 +3793,45 @@ function refreshData() {
     });
   }, 2200);
 }
-function showUpgradePrompt() {
-  toast('Upgrade at zenarank.com/pricing — €19/mo Starter · €39/mo Pro', 'success');
+function saveApiKey() {
+  var key = document.getElementById('settings-api-key').value.trim();
+  if (!key) { toast('Enter your Anthropic API key first', 'error'); return; }
+  if (!key.startsWith('sk-ant-')) {
+    toast('Invalid key format — should start with sk-ant-', 'error'); return;
+  }
+  CLAUDE_API_KEY = key;
+  localStorage.setItem('zr_claude_key', key);
+  document.getElementById('api-key-status').innerHTML = '✅ <span style="color:var(--green)">API key saved — AI features are now enabled!</span>';
+  toast('API key saved! All AI tools are now active ✅', 'success');
+}
+
+function saveProxyUrl() {
+  var url = document.getElementById('settings-proxy-url').value.trim();
+  CLAUDE_PROXY = url;
+  if (url) {
+    localStorage.setItem('zr_claude_proxy', url);
+    toast('Proxy URL saved!', 'success');
+  } else {
+    localStorage.removeItem('zr_claude_proxy');
+    toast('Proxy URL cleared', 'success');
+  }
+}
+
+function loadApiSettings() {
+  var key = localStorage.getItem('zr_claude_key') || '';
+  var proxy = localStorage.getItem('zr_claude_proxy') || '';
+  var keyInput = document.getElementById('settings-api-key');
+  var proxyInput = document.getElementById('settings-proxy-url');
+  var status = document.getElementById('api-key-status');
+  if (keyInput && key) { keyInput.value = key; }
+  if (proxyInput && proxy) { proxyInput.value = proxy; }
+  if (status) {
+    if (proxy) { status.innerHTML = '✅ <span style="color:var(--green)">Using Cloudflare Worker proxy</span>'; }
+    else if (key) { status.innerHTML = '✅ <span style="color:var(--green)">API key configured — AI features active</span>'; }
+    else { status.innerHTML = '⚠️ <span style="color:var(--amber)">No API key — add one above to enable AI features</span>'; }
+  }
+  CLAUDE_API_KEY = key;
+  CLAUDE_PROXY = proxy;
 }
 function addClientModal() { toast('Client management coming soon!','success'); }
 
