@@ -1658,33 +1658,68 @@ select.form-input option{background:var(--bg3);color:var(--text)}
         <div class="card" style="margin-bottom:18px">
           <div class="card-header">
             <div class="card-title">👥 Client Management</div>
-            <button class="topbar-btn btn-primary" onclick="addClientModal()">+ Add Client</button>
+            <button class="topbar-btn btn-primary" onclick="showAddClientForm()">+ Add Client</button>
+          </div>
+          <p style="font-size:13px;color:var(--muted)">Manage your SEO clients. Each client gets their own audit, keyword tracking, and monthly report.</p>
+        </div>
+
+        <!-- ADD CLIENT FORM (hidden by default) -->
+        <div id="add-client-form" class="card" style="display:none;margin-bottom:18px;border-color:rgba(201,168,76,.25)">
+          <div class="card-header">
+            <div class="card-title">➕ Add New Client</div>
+            <button onclick="hideAddClientForm()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px">✕</button>
+          </div>
+          <div class="form-row" style="margin-bottom:12px">
+            <div>
+              <label class="form-label">Business Name *</label>
+              <input class="form-input" id="new-client-name" placeholder="e.g. Cafe Aino Helsinki">
+            </div>
+            <div>
+              <label class="form-label">Website URL *</label>
+              <input class="form-input" id="new-client-url" placeholder="https://ainohelsinki.fi">
+            </div>
+          </div>
+          <div class="form-row" style="margin-bottom:14px">
+            <div>
+              <label class="form-label">Business Category</label>
+              <select class="form-input" id="new-client-cat">
+                <option>Restaurant / Cafe</option>
+                <option>Plumber / Contractor</option>
+                <option>Dental / Medical</option>
+                <option>Law / Legal</option>
+                <option>Retail Store</option>
+                <option>Marketing Agency</option>
+                <option>E-commerce</option>
+                <option>SaaS / Tech</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Notes (optional)</label>
+              <input class="form-input" id="new-client-notes" placeholder="e.g. Focus on local SEO, Helsinki">
+            </div>
+          </div>
+          <button class="topbar-btn btn-primary" onclick="saveNewClient()">💾 Save Client</button>
+        </div>
+
+        <!-- CLIENT GRID -->
+        <div id="clients-grid" class="grid-3"></div>
+
+        <!-- EMPTY STATE -->
+        <div id="clients-empty" style="display:none" class="card" style="text-align:center;padding:48px 24px">
+          <div style="text-align:center;padding:48px 24px">
+            <div style="font-size:36px;margin-bottom:16px">👥</div>
+            <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:10px">No Clients Yet</div>
+            <div style="font-size:13px;color:var(--muted);margin-bottom:20px">Add your first client to start tracking their SEO performance.</div>
+            <button class="topbar-btn btn-primary" onclick="showAddClientForm()">+ Add Your First Client</button>
           </div>
         </div>
-        <div class="grid-3">
-          <div class="card comp-card" style="margin-bottom:0">
-            <div class="comp-domain">🏢 Cafe Aino Helsinki</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:10px">ainohelsinki.fi · SEO since Jan 2026</div>
-            <div class="comp-meta" style="margin-bottom:10px">
-              <div class="comp-stat">Health Score<span style="color:var(--green)">81</span></div>
-              <div class="comp-stat">Keywords<span>64</span></div>
-              <div class="comp-stat">Rank Avg<span>8.4</span></div>
-            </div>
-            <button class="audit-fix" onclick="showView('dashboard',document.getElementById('nav-dashboard'))">View Dashboard →</button>
-          </div>
-          <div class="card comp-card" style="margin-bottom:0">
-            <div class="comp-domain">🔧 Nordic Plumbers Oy</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:10px">nordicplumbers.fi · SEO since Feb 2026</div>
-            <div class="comp-meta" style="margin-bottom:10px">
-              <div class="comp-stat">Health Score<span style="color:var(--amber)">62</span></div>
-              <div class="comp-stat">Keywords<span>31</span></div>
-              <div class="comp-stat">Rank Avg<span>18.2</span></div>
-            </div>
-            <button class="audit-fix" onclick="showView('audit',document.getElementById('nav-audit'))">Run Audit →</button>
-          </div>
-          <div class="card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:30px;cursor:pointer;color:var(--muted)" onclick="addClientModal()">
-            <div style="font-size:28px">+</div>
-            <div style="font-size:13px">Add New Client</div>
+
+        <!-- CLIENT DETAIL MODAL -->
+        <div id="client-detail-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:200;align-items:center;justify-content:center">
+          <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:32px;width:580px;max-width:94vw;max-height:90vh;overflow-y:auto;position:relative">
+            <button onclick="closeClientDetail()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer">✕</button>
+            <div id="client-detail-content"></div>
           </div>
         </div>
       </div>
@@ -2648,6 +2683,7 @@ function restoreSession() {
       // Load API key settings
       CLAUDE_API_KEY = localStorage.getItem('zr_claude_key') || '';
       CLAUDE_PROXY = localStorage.getItem('zr_claude_proxy') || '';
+      setTimeout(loadClients, 500);
     } catch(e) {
       localStorage.removeItem('zr_session');
     }
@@ -4117,7 +4153,157 @@ function loadApiSettings() {
   CLAUDE_API_KEY = key;
   CLAUDE_PROXY = proxy;
 }
-function addClientModal() { toast('Client management coming soon!','success'); }
+// ════════════════════════════════════════════
+// REAL CLIENT MANAGEMENT
+// ════════════════════════════════════════════
+var _clients = [];
+
+function loadClients() {
+  try { _clients = JSON.parse(localStorage.getItem('zr_clients') || '[]'); } catch(e) { _clients = []; }
+  renderClientsGrid();
+}
+
+function saveClients() {
+  localStorage.setItem('zr_clients', JSON.stringify(_clients));
+  // Update sidebar badge
+  var badge = document.querySelector('#nav-clients .badge-num');
+  if (badge) badge.textContent = _clients.length;
+}
+
+function renderClientsGrid() {
+  var grid = document.getElementById('clients-grid');
+  var empty = document.getElementById('clients-empty');
+  if (!grid) return;
+  if (_clients.length === 0) {
+    grid.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  var catIcons = {'Restaurant / Cafe':'🏠','Plumber / Contractor':'🔧','Dental / Medical':'🏥','Law / Legal':'⚖️','Retail Store':'🛍️','Marketing Agency':'📢','E-commerce':'🛒','SaaS / Tech':'💻','Other':'🏢'};
+  grid.innerHTML = _clients.map(function(c, i){
+    var icon = catIcons[c.category] || '🏢';
+    var healthColor = (c.health || 0) >= 70 ? 'var(--green)' : (c.health || 0) >= 45 ? 'var(--amber)' : 'var(--red)';
+    var added = c.added ? new Date(c.added).toLocaleDateString('en-GB', {month:'short',year:'numeric'}) : 'Recently';
+    return '<div class="card" style="margin-bottom:0;transition:border-color .2s" onmouseover="this.style.borderColor=\'rgba(201,168,76,.3)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">'
+      + '<div style="font-size:14px;font-weight:700">' + icon + ' ' + c.name + '</div>'
+      + '<button onclick="deleteClient(' + i + ')" style="background:none;border:none;color:var(--dim);cursor:pointer;font-size:14px;padding:2px 4px" title="Delete">🗑</button>'
+      + '</div>'
+      + '<div style="font-size:12px;color:var(--muted);margin-bottom:12px">' + (c.url || '') + ' · Added ' + added + '</div>'
+      + '<div style="display:flex;gap:12px;margin-bottom:14px">'
+      + '<div style="text-align:center"><div style="font-size:10px;color:var(--muted);margin-bottom:2px">HEALTH</div><div style="font-size:18px;font-weight:700;color:' + healthColor + '">' + (c.health || '—') + '</div></div>'
+      + '<div style="text-align:center"><div style="font-size:10px;color:var(--muted);margin-bottom:2px">CATEGORY</div><div style="font-size:11px;font-weight:600;color:var(--muted)">' + (c.category || 'Other') + '</div></div>'
+      + '</div>'
+      + '<div style="display:flex;gap:6px;flex-wrap:wrap">'
+      + '<button class="audit-fix" onclick="auditClientSite(\'' + (c.url||'').replace(/'/g,"\\'") + '\')">🔍 Audit</button>'
+      + '<button class="audit-fix" onclick="viewClientDetail(' + i + ')">📋 Details</button>'
+      + '<button class="audit-fix" onclick="generateClientReport(' + i + ')">📈 Report</button>'
+      + '</div>'
+      + '</div>';
+  }).join('') + '<div class="card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:30px;cursor:pointer;color:var(--muted);margin-bottom:0" onclick="showAddClientForm()" onmouseover="this.style.borderColor=\'rgba(201,168,76,.3)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
+      + '<div style="font-size:28px">+</div><div style="font-size:13px">Add New Client</div></div>';
+}
+
+function showAddClientForm() {
+  document.getElementById('add-client-form').style.display = 'block';
+  document.getElementById('new-client-name').focus();
+}
+
+function hideAddClientForm() {
+  document.getElementById('add-client-form').style.display = 'none';
+  document.getElementById('new-client-name').value = '';
+  document.getElementById('new-client-url').value = '';
+  document.getElementById('new-client-notes').value = '';
+}
+
+function saveNewClient() {
+  var name = document.getElementById('new-client-name').value.trim();
+  var url = document.getElementById('new-client-url').value.trim();
+  if (!name) { toast('Enter client business name', 'error'); return; }
+  if (!url) { toast('Enter client website URL', 'error'); return; }
+  if (!url.startsWith('http')) url = 'https://' + url;
+  var client = {
+    name: name, url: url,
+    category: document.getElementById('new-client-cat').value,
+    notes: document.getElementById('new-client-notes').value.trim(),
+    added: Date.now(), health: null
+  };
+  _clients.push(client);
+  saveClients();
+  hideAddClientForm();
+  renderClientsGrid();
+  toast('Client "' + name + '" added! Running quick audit...', 'success');
+  // Auto-run background audit for new client
+  auditClientBackground(client, _clients.length - 1);
+}
+
+async function auditClientBackground(client, idx) {
+  try {
+    var html = await fetchSiteData(client.url);
+    if (!html) return;
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    var issues = 0, warns = 0;
+    if (!doc.querySelector('title') || doc.querySelector('title').textContent.trim().length < 10) issues++;
+    if (!doc.querySelector('meta[name="description"]')) issues++;
+    if (doc.querySelectorAll('h1').length === 0) issues++;
+    if (!doc.querySelector('meta[name="viewport"]')) issues++;
+    if (!doc.querySelector('script[type="application/ld+json"]')) warns++;
+    var score = Math.max(20, 100 - (issues * 12) - (warns * 4));
+    _clients[idx].health = score;
+    _clients[idx].lastAudit = Date.now();
+    saveClients();
+    renderClientsGrid();
+    toast(client.name + ' audit complete — Score: ' + score, 'success');
+  } catch(e) {}
+}
+
+function auditClientSite(url) {
+  document.getElementById('audit-url').value = url;
+  showView('audit', document.getElementById('nav-audit'));
+  setTimeout(runRealAudit, 200);
+}
+
+function deleteClient(idx) {
+  if (!confirm('Remove client "' + _clients[idx].name + '"?')) return;
+  _clients.splice(idx, 1);
+  saveClients();
+  renderClientsGrid();
+  toast('Client removed', 'success');
+}
+
+function viewClientDetail(idx) {
+  var c = _clients[idx];
+  var modal = document.getElementById('client-detail-modal');
+  var content = document.getElementById('client-detail-content');
+  content.innerHTML = '<h2 style="font-family:\'Playfair Display\',serif;font-size:20px;margin-bottom:6px">' + c.name + '</h2>'
+    + '<p style="font-size:13px;color:var(--muted);margin-bottom:20px">' + c.url + ' · ' + c.category + '</p>'
+    + (c.notes ? '<p style="font-size:13px;color:var(--muted);margin-bottom:16px;background:var(--bg3);padding:10px;border-radius:8px">' + c.notes + '</p>' : '')
+    + '<div style="display:flex;gap:12px;margin-bottom:20px">'
+    + '<div class="kpi" style="flex:1"><div class="kpi-label">Health Score</div><div class="kpi-val" style="color:' + ((c.health||0)>=70?'var(--green)':(c.health||0)>=45?'var(--amber)':'var(--red)') + '">' + (c.health || '—') + '</div></div>'
+    + '<div class="kpi" style="flex:1"><div class="kpi-label">Added</div><div style="font-size:14px;font-weight:600;margin-top:8px">' + new Date(c.added).toLocaleDateString() + '</div></div>'
+    + '<div class="kpi" style="flex:1"><div class="kpi-label">Last Audit</div><div style="font-size:14px;font-weight:600;margin-top:8px">' + (c.lastAudit ? new Date(c.lastAudit).toLocaleDateString() : 'Never') + '</div></div>'
+    + '</div>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+    + '<button class="topbar-btn btn-primary" onclick="auditClientSite(\'' + c.url + '\');closeClientDetail()">🔍 Run Full Audit</button>'
+    + '<button class="topbar-btn btn-secondary" onclick="generateClientReport(' + idx + ')">📈 Generate Report</button>'
+    + '</div>';
+  modal.style.display = 'flex';
+}
+
+function closeClientDetail() {
+  document.getElementById('client-detail-modal').style.display = 'none';
+}
+
+function generateClientReport(idx) {
+  var c = _clients[idx];
+  document.getElementById('report-client').value = c.name;
+  showView('reports', document.getElementById('nav-reports'));
+  toast('Generating report for ' + c.name + '...', 'success');
+  setTimeout(runReportGenerator, 300);
+}
+
+function addClientModal() { showAddClientForm(); }
 
 function downloadText(text, filename) {
   var blob = new Blob([text], {type:'text/plain'});
