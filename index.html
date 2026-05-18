@@ -947,11 +947,10 @@ select.form-input option{background:var(--bg3);color:var(--text)}
           <table class="data-table">
             <thead><tr><th>Keyword</th><th>Position</th><th>Change</th><th>Volume</th><th>Difficulty</th></tr></thead>
             <tbody>
-              <tr><td>local SEO services Helsinki</td><td>#3</td><td><span class="rank-change rank-up">▲ 4</span></td><td>880</td><td><span class="kw-difficulty diff-med">Medium</span></td></tr>
-              <tr><td>SEO agency Finland</td><td>#5</td><td><span class="rank-change rank-up">▲ 2</span></td><td>1,900</td><td><span class="kw-difficulty diff-high">Hard</span></td></tr>
-              <tr><td>website audit tool free</td><td>#9</td><td><span class="rank-change rank-same">– 0</span></td><td>6,600</td><td><span class="kw-difficulty diff-med">Medium</span></td></tr>
-              <tr><td>AI SEO content writer</td><td>#12</td><td><span class="rank-change rank-down">▼ 1</span></td><td>2,400</td><td><span class="kw-difficulty diff-high">Hard</span></td></tr>
-              <tr><td>zenarank review</td><td>#1</td><td><span class="rank-change rank-up">▲ 0</span></td><td>210</td><td><span class="kw-difficulty diff-low">Easy</span></td></tr>
+              <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted);font-size:13px">
+                Connect Google Search Console in ⚙️ Settings to see your real keyword rankings here.
+                <br><button class="audit-fix" style="margin-top:8px" onclick="showView('settings',null)">Connect GSC →</button>
+              </td></tr>
             </tbody>
           </table>
         </div>
@@ -1629,7 +1628,7 @@ select.form-input option{background:var(--bg3);color:var(--text)}
             <div>
               <label class="form-label">Client / Project</label>
               <select class="form-input" id="report-client">
-                <option>My Own Website</option><option>Client: Cafe Aino Helsinki</option><option>Client: Nordic Plumbers Oy</option>
+                <option>My Own Website</option>
               </select>
             </div>
             <div>
@@ -1672,7 +1671,7 @@ select.form-input option{background:var(--bg3);color:var(--text)}
           <div class="form-row" style="margin-bottom:12px">
             <div>
               <label class="form-label">Business Name *</label>
-              <input class="form-input" id="new-client-name" placeholder="e.g. Cafe Aino Helsinki">
+              <input class="form-input" id="new-client-name" placeholder="e.g. My Client Business">
             </div>
             <div>
               <label class="form-label">Website URL *</label>
@@ -2052,7 +2051,7 @@ select.form-input option{background:var(--bg3);color:var(--text)}
           <div class="form-row">
             <div>
               <label class="form-label">Business Name</label>
-              <input class="form-input" id="local-name" placeholder="e.g. Cafe Aino Helsinki">
+              <input class="form-input" id="local-name" placeholder="e.g. My Client Business">
             </div>
             <div>
               <label class="form-label">City / Location</label>
@@ -2219,20 +2218,7 @@ var _blogPosts = [];
 var _auditFilter = 'all';
 var _currentView = 'dashboard';
 
-var AUDIT_DATA = [
-  {type:'error',icon:'🔴',title:'Missing meta descriptions on 3 pages',desc:'Pages /about, /services, /contact have no meta description. This reduces click-through rate in search results.',fix:'Fix with AI Meta Optimizer',fixFn:"showView('meta',document.getElementById('nav-meta'))"},
-  {type:'error',icon:'🔴',title:'Duplicate H1 tags found on 2 pages',desc:'Two pages (/blog and /articles) have more than one H1 tag. Search engines expect exactly one H1 per page.',fix:'View pages'},
-  {type:'error',icon:'🔴',title:'12 broken internal links (404)',desc:'12 links point to pages that return 404 errors. This wastes crawl budget and breaks user experience.',fix:'View all broken links'},
-  {type:'warn',icon:'🟡',title:'Page speed: LCP 2.8s (target < 2.5s)',desc:'Largest Contentful Paint is 2.8 seconds. Main issues: unoptimized hero image (1.2MB), render-blocking scripts.',fix:'Copy fix'},
-  {type:'warn',icon:'🟡',title:'3 images missing alt text',desc:'Images without alt text hurt accessibility and miss keyword opportunities. Found on /services and /about.',fix:'View images'},
-  {type:'warn',icon:'🟡',title:'No XML sitemap found',desc:'A sitemap helps Google discover and index your pages faster. Create and submit one in Google Search Console.',fix:'Generate sitemap'},
-  {type:'warn',icon:'🟡',title:'HTTP links found (not HTTPS)',desc:'6 internal links still use HTTP instead of HTTPS, which may cause mixed content warnings.',fix:'View links'},
-  {type:'good',icon:'🟢',title:'SSL certificate valid',desc:'Your site uses a valid SSL certificate. Secure connection is a confirmed Google ranking factor.'},
-  {type:'good',icon:'🟢',title:'Robots.txt present and configured',desc:'robots.txt file found and correctly configured. No important pages are being blocked from crawl.'},
-  {type:'good',icon:'🟢',title:'Mobile-friendly: Passed',desc:'Your site passes Google\'s mobile usability test. All pages render correctly on mobile devices.'},
-  {type:'good',icon:'🟢',title:'Canonical tags present',desc:'Canonical tags are correctly implemented, preventing duplicate content issues.'},
-  {type:'info',icon:'🔵',title:'Schema markup: LocalBusiness detected',desc:'Basic LocalBusiness schema found. Consider adding FAQ and Review schema for richer search results.',fix:'Add Schema',fixFn:"showView('schema',document.getElementById('nav-schema'))"},
-];
+var AUDIT_DATA = []; // Filled by real site audit
 
 // ═══════════════════════════════════════════════
 // ZENARANK AUTH SYSTEM
