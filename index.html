@@ -1252,71 +1252,123 @@ select.form-input option{background:var(--bg3);color:var(--text)}
 
       <!-- COMPETITOR VIEW -->
       <div class="view" id="view-competitor">
+
+        <!-- INPUT -->
         <div class="card" style="margin-bottom:18px">
           <div class="card-header">
             <div class="card-title">⚔️ Competitor Analysis</div>
+            <span style="font-size:12px;color:var(--muted)">AI fetches & compares both sites in real time</span>
           </div>
-          <div class="form-row" style="margin-bottom:12px">
+          <div class="form-row" style="margin-bottom:14px">
             <div>
               <label class="form-label">Your Domain</label>
-              <input class="form-input" id="comp-your" placeholder="yoursite.com" value="zenarank.com">
+              <input class="form-input" id="comp-your" placeholder="zenarank.com" value="zenarank.com">
             </div>
             <div>
-              <label class="form-label">Competitor Domain</label>
-              <input class="form-input" id="comp-their" placeholder="competitor.com">
+              <label class="form-label">Competitor Domain *</label>
+              <input class="form-input" id="comp-their" placeholder="e.g. semrush.com, ahrefs.com, moz.com">
             </div>
           </div>
-          <button class="topbar-btn btn-primary" onclick="runCompetitorAI()">🤖 Analyze with AI</button>
+          <div class="form-row" style="margin-bottom:14px">
+            <div>
+              <label class="form-label">Your Industry / Niche</label>
+              <input class="form-input" id="comp-niche" placeholder="e.g. SEO tools for small businesses in Finland">
+            </div>
+            <div>
+              <label class="form-label">Target Market</label>
+              <select class="form-input" id="comp-market">
+                <option>Finland (Finnish)</option>
+                <option>Finland (English)</option>
+                <option>Nordic markets</option>
+                <option>United Kingdom</option>
+                <option>United States</option>
+                <option>Global (English)</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="topbar-btn btn-primary" onclick="runCompetitorAnalysis()" id="comp-run-btn">🤖 Analyze Competitor</button>
+            <button class="topbar-btn btn-secondary" onclick="addCompetitor()" id="comp-add-btn" style="display:none">+ Add Another Competitor</button>
+          </div>
         </div>
 
-        <div id="comp-loading" style="display:none" class="loading-msg card"><div class="spinner"></div><span>Analyzing competitor with AI...</span></div>
+        <!-- LOADING -->
+        <div id="comp-loading" style="display:none" class="card">
+          <div class="loading-msg"><div class="spinner"></div><span id="comp-loading-text">Fetching competitor site...</span></div>
+          <div class="prog" style="margin:0 22px 18px"><div class="prog-fill" id="comp-prog" style="width:0%;background:var(--accent)"></div></div>
+        </div>
 
-        <div id="comp-results">
-          <div class="grid-3">
+        <!-- EMPTY STATE -->
+        <div id="comp-empty" class="card" style="text-align:center;padding:48px 24px">
+          <div style="font-size:36px;margin-bottom:16px">⚔️</div>
+          <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:10px">Know Your Competition</div>
+          <div style="font-size:13px;color:var(--muted);max-width:420px;margin:0 auto;line-height:1.7">Enter any competitor domain above. Claude AI will fetch both sites, identify keyword gaps, content they rank for that you don't, and give you a step-by-step strategy to outrank them.</div>
+          <div style="margin-top:24px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <button onclick="quickComp('semrush.com')" style="padding:8px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.color='#c9a84c';this.style.borderColor='rgba(201,168,76,.4)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border2)'">semrush.com</button>
+            <button onclick="quickComp('ahrefs.com')" style="padding:8px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.color='#c9a84c';this.style.borderColor='rgba(201,168,76,.4)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border2)'">ahrefs.com</button>
+            <button onclick="quickComp('ubersuggest.com')" style="padding:8px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.color='#c9a84c';this.style.borderColor='rgba(201,168,76,.4)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border2)'">ubersuggest.com</button>
+            <button onclick="quickComp('moz.com')" style="padding:8px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.color='#c9a84c';this.style.borderColor='rgba(201,168,76,.4)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border2)'">moz.com</button>
+          </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div id="comp-results" style="display:none">
+
+          <!-- COMPARISON CARDS -->
+          <div class="grid-3" style="margin-bottom:18px">
             <div class="card">
-              <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Your site</div>
-              <div class="comp-domain">zenarank.com <span class="status-dot live"></span></div>
-              <div class="comp-meta">
-                <div class="comp-stat">Domain Rating<span>42</span></div>
-                <div class="comp-stat">Keywords<span>248</span></div>
-                <div class="comp-stat">Backlinks<span>1,240</span></div>
-              </div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Your Site</div>
+              <div class="comp-domain" id="comp-your-domain">zenarank.com <span class="status-dot live"></span></div>
+              <div class="comp-meta" id="comp-your-meta"></div>
             </div>
-            <div class="card" style="border-color:var(--border3)">
-              <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Competitor</div>
-              <div class="comp-domain">semrush.com <span class="status-dot warn"></span></div>
-              <div class="comp-meta">
-                <div class="comp-stat">Domain Rating<span>89</span></div>
-                <div class="comp-stat">Keywords<span>4.2M</span></div>
-                <div class="comp-stat">Backlinks<span>8.1M</span></div>
-              </div>
+            <div class="card" style="border-color:rgba(201,168,76,.2)">
+              <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Competitor</div>
+              <div class="comp-domain" id="comp-their-domain">— <span class="status-dot warn"></span></div>
+              <div class="comp-meta" id="comp-their-meta"></div>
             </div>
             <div class="card">
-              <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Gap Opportunity</div>
-              <div style="font-size:22px;font-weight:800;font-family:'Playfair Display',serif;color:var(--accent);margin-bottom:6px">High</div>
-              <div style="font-size:12px;color:var(--muted);line-height:1.6">Target local + SMB keywords where semrush.com doesn't rank. Focus on Nordic markets.</div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Gap Opportunity</div>
+              <div id="comp-opportunity" style="font-size:24px;font-weight:800;font-family:'Playfair Display',serif;color:#c9a84c;margin-bottom:8px">—</div>
+              <div id="comp-opportunity-desc" style="font-size:12px;color:var(--muted);line-height:1.65"></div>
             </div>
           </div>
 
+          <!-- REAL PAGE COMPARISON -->
+          <div class="grid-2" style="margin-bottom:18px">
+            <div class="card">
+              <div class="card-header"><div class="card-title">🌐 Your Site Analysis</div></div>
+              <div id="comp-your-analysis" style="font-size:13px;line-height:2;color:var(--muted)">Fetching...</div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">🌐 Competitor Site Analysis</div></div>
+              <div id="comp-their-analysis" style="font-size:13px;line-height:2;color:var(--muted)">Fetching...</div>
+            </div>
+          </div>
+
+          <!-- AI INSIGHTS -->
+          <div class="card" style="margin-bottom:18px">
+            <div class="card-header">
+              <div class="card-title">🤖 AI Competitive Strategy</div>
+              <span style="font-size:11px;color:var(--muted)">Based on real page analysis</span>
+            </div>
+            <div id="comp-ai-output" class="ai-stream" style="padding:4px 0"></div>
+          </div>
+
+          <!-- KEYWORD GAP -->
           <div class="card">
             <div class="card-header">
-              <div class="card-title">🤖 AI Competitive Insights</div>
+              <div class="card-title">📊 Keyword Gap Opportunities</div>
+              <button class="audit-fix" onclick="runKeywordGap()">🔄 Refresh Gaps</button>
             </div>
-            <div id="comp-ai-output" class="ai-stream" style="padding:10px 0;color:var(--muted);font-size:13px">Run competitor analysis to get AI-powered insights about gap opportunities, their top content, and how to outrank them.</div>
-          </div>
-
-          <div class="card" style="margin-top:18px">
-            <div class="card-header"><div class="card-title">📊 Keyword Gap Analysis</div></div>
             <table class="data-table">
-              <thead><tr><th>Keyword</th><th>Their Rank</th><th>Your Rank</th><th>Volume</th><th>Opportunity</th></tr></thead>
-              <tbody>
-                <tr><td>SEO software for small business</td><td>#4</td><td>Not ranked</td><td>2,900</td><td><button class="audit-fix" onclick="showView('blog',document.getElementById('nav-blog'))">Create Content</button></td></tr>
-                <tr><td>rank tracking tool</td><td>#2</td><td>#19</td><td>5,400</td><td><button class="audit-fix" onclick="showView('blog',document.getElementById('nav-blog'))">Create Content</button></td></tr>
-                <tr><td>white label SEO reports</td><td>#6</td><td>Not ranked</td><td>1,600</td><td><button class="audit-fix">Track</button></td></tr>
+              <thead><tr><th>Gap Topic / Keyword</th><th>Est. Volume</th><th>Difficulty</th><th>Why They Win</th><th>Action</th></tr></thead>
+              <tbody id="comp-gap-tbody">
+                <tr><td colspan="5" style="color:var(--muted);text-align:center;padding:20px">Run competitor analysis to see keyword gaps</td></tr>
               </tbody>
             </table>
           </div>
         </div>
+
       </div>
 
       <!-- BACKLINKS VIEW -->
@@ -3241,22 +3293,167 @@ function toggleAllKw(cb) {
 function filterKw(val) { filterKwTable(); }
 function sortKw(val) { sortKwTable(); }
 
-// COMPETITOR AI
-async function runCompetitorAI() {
-  var their = document.getElementById('comp-their').value || 'ahrefs.com';
+// ════════════════════════════════════════════
+// REAL COMPETITOR ANALYSIS
+// ════════════════════════════════════════════
+function quickComp(domain) {
+  document.getElementById('comp-their').value = domain;
+  runCompetitorAnalysis();
+}
+
+function addCompetitor() {
+  var c = prompt('Enter another competitor domain:');
+  if (c) { document.getElementById('comp-their').value = c; runCompetitorAnalysis(); }
+}
+
+async function fetchSiteData(url) {
+  var proxies = ['https://api.allorigins.win/get?url=', 'https://corsproxy.io/?'];
+  for (var i = 0; i < proxies.length; i++) {
+    try {
+      if (i === 0) {
+        var r = await fetch(proxies[0] + encodeURIComponent(url), { signal: AbortSignal.timeout(10000) });
+        var j = await r.json(); var h = j.contents || '';
+        if (h.length > 200) return h;
+      } else {
+        var r = await fetch(proxies[i] + encodeURIComponent(url), { signal: AbortSignal.timeout(10000) });
+        var h = await r.text();
+        if (h.length > 200) return h;
+      }
+    } catch(e) {}
+  }
+  return '';
+}
+
+function parseSiteInfo(html, domain) {
+  if (!html) return { title:'—', desc:'—', h1:'—', words:0, h2:0, schema:false, hasDesc:false };
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(html, 'text/html');
+  var title = doc.querySelector('title') ? doc.querySelector('title').textContent.trim() : '—';
+  var descEl = doc.querySelector('meta[name="description"]');
+  var desc = descEl ? (descEl.getAttribute('content') || '—') : '—';
+  var h1El = doc.querySelector('h1');
+  var h1 = h1El ? h1El.textContent.trim().substring(0,60) : '—';
+  var bodyText = doc.body ? (doc.body.innerText || doc.body.textContent || '') : '';
+  var words = bodyText.split(/\s+/).filter(function(w){ return w.length > 2; }).length;
+  var h2 = doc.querySelectorAll('h2').length;
+  var schema = !!doc.querySelector('script[type="application/ld+json"]');
+  return { title, desc, h1, words, h2, schema, hasDesc: desc !== '—' };
+}
+
+function renderSiteAnalysis(elId, info, domain) {
+  var el = document.getElementById(elId);
+  if (!el) return;
+  var row = function(label, val, good) {
+    var c = good === true ? 'var(--green)' : good === false ? 'var(--red)' : 'var(--text)';
+    return '<div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:5px 0;font-size:12px"><span style="color:var(--muted)">' + label + '</span><span style="font-weight:600;color:' + c + ';max-width:200px;text-align:right">' + val + '</span></div>';
+  };
+  el.innerHTML =
+    row('Domain', domain, null) +
+    row('Title', info.title.substring(0,35) + (info.title.length > 35 ? '…' : ''), info.title !== '—') +
+    row('Meta Desc', info.hasDesc ? info.desc.substring(0,35) + '…' : '❌ Missing', info.hasDesc) +
+    row('H1', info.h1 !== '—' ? '"' + info.h1.substring(0,30) + '"' : '❌ Missing', info.h1 !== '—') +
+    row('Word Count', info.words > 0 ? info.words + ' words' : 'Unknown', info.words > 500) +
+    row('H2 Headings', info.h2 > 0 ? info.h2 + ' found' : 'None', info.h2 > 0) +
+    row('Schema Markup', info.schema ? '✅ Present' : '❌ Missing', info.schema);
+}
+
+async function runCompetitorAnalysis() {
+  var yourDomain = document.getElementById('comp-your').value.trim() || 'zenarank.com';
+  var theirDomain = document.getElementById('comp-their').value.trim();
+  var niche = document.getElementById('comp-niche').value.trim();
+  var market = document.getElementById('comp-market').value;
+  if (!theirDomain) { toast('Enter a competitor domain first', 'error'); return; }
+
+  // Reset
+  document.getElementById('comp-empty').style.display = 'none';
+  document.getElementById('comp-results').style.display = 'none';
+  document.getElementById('comp-loading').style.display = 'block';
+  document.getElementById('comp-run-btn').disabled = true;
+
+  var prog = document.getElementById('comp-prog');
+  var setText = function(t) { document.getElementById('comp-loading-text').textContent = t; };
+
+  try {
+    // Step 1: Fetch both sites
+    setText('Fetching ' + yourDomain + '...');
+    prog.style.width = '15%';
+    var yourUrl = yourDomain.startsWith('http') ? yourDomain : 'https://' + yourDomain;
+    var theirUrl = theirDomain.startsWith('http') ? theirDomain : 'https://' + theirDomain;
+
+    var [yourHtml, theirHtml] = await Promise.all([fetchSiteData(yourUrl), fetchSiteData(theirUrl)]);
+
+    setText('Analyzing both sites...');
+    prog.style.width = '40%';
+
+    var yourInfo = parseSiteInfo(yourHtml, yourDomain);
+    var theirInfo = parseSiteInfo(theirHtml, theirDomain);
+
+    // Step 2: Render comparison cards
+    document.getElementById('comp-your-domain').innerHTML = yourDomain + ' <span class="status-dot live"></span>';
+    document.getElementById('comp-their-domain').innerHTML = theirDomain + ' <span class="status-dot warn"></span>';
+
+    var yourMeta = document.getElementById('comp-your-meta');
+    var theirMeta = document.getElementById('comp-their-meta');
+    yourMeta.innerHTML = '<div class="comp-stat">Words<span>' + yourInfo.words + '</span></div><div class="comp-stat">H2s<span>' + yourInfo.h2 + '</span></div><div class="comp-stat">Schema<span>' + (yourInfo.schema ? '✅' : '❌') + '</span></div>';
+    theirMeta.innerHTML = '<div class="comp-stat">Words<span>' + theirInfo.words + '</span></div><div class="comp-stat">H2s<span>' + theirInfo.h2 + '</span></div><div class="comp-stat">Schema<span>' + (theirInfo.schema ? '✅' : '❌') + '</span></div>';
+
+    renderSiteAnalysis('comp-your-analysis', yourInfo, yourDomain);
+    renderSiteAnalysis('comp-their-analysis', theirInfo, theirDomain);
+
+    // Step 3: AI analysis
+    setText('Running AI competitive analysis...');
+    prog.style.width = '65%';
+
+    var aiPrompt = 'Compare these two SEO/SaaS websites:\n\nYOUR SITE (' + yourDomain + '):\nTitle: ' + yourInfo.title + '\nMeta: ' + yourInfo.desc + '\nH1: ' + yourInfo.h1 + '\nWords: ' + yourInfo.words + '\nSchema: ' + yourInfo.schema + '\n\nCOMPETITOR (' + theirDomain + '):\nTitle: ' + theirInfo.title + '\nMeta: ' + theirInfo.desc + '\nH1: ' + theirInfo.h1 + '\nWords: ' + theirInfo.words + '\nSchema: ' + theirInfo.schema + '\n\nIndustry: ' + (niche || 'SEO tools') + '\nMarket: ' + market + '\n\nProvide: 1) Gap opportunity level (High/Medium/Low) with one reason 2) Top 3 content advantages your competitor has 3) Top 3 quick wins to outrank them 4) Unique angle you should target. Under 350 words. Use ## headings.';
+
+    var aiResult = await callClaude('You are a competitive SEO strategist. Analyze real page data and give specific, actionable insights. Be direct and tactical.', aiPrompt);
+    document.getElementById('comp-ai-output').innerHTML = '<p>' + formatMarkdown(aiResult) + '</p>';
+
+    // Extract opportunity level from AI response
+    var opp = aiResult.includes('High') ? 'High' : aiResult.includes('Medium') ? 'Medium' : 'Low';
+    var oppColor = opp === 'High' ? 'var(--green)' : opp === 'Medium' ? '#c9a84c' : 'var(--red)';
+    document.getElementById('comp-opportunity').textContent = opp;
+    document.getElementById('comp-opportunity').style.color = oppColor;
+    document.getElementById('comp-opportunity-desc').textContent = 'Based on real page analysis of both sites in ' + market;
+
+    // Step 4: Keyword gaps
+    setText('Finding keyword gaps...');
+    prog.style.width = '85%';
+    await runKeywordGap();
+
+    prog.style.width = '100%';
+    document.getElementById('comp-loading').style.display = 'none';
+    document.getElementById('comp-results').style.display = 'block';
+    document.getElementById('comp-add-btn').style.display = 'inline-flex';
+    toast('Competitor analysis complete!', 'success');
+
+  } catch(e) {
+    document.getElementById('comp-loading').style.display = 'none';
+    document.getElementById('comp-empty').style.display = 'block';
+    toast('Analysis failed: ' + e.message, 'error');
+  }
+  document.getElementById('comp-run-btn').disabled = false;
+}
+
+async function runKeywordGap() {
   var your = document.getElementById('comp-your').value || 'zenarank.com';
-  document.getElementById('comp-loading').style.display = 'flex';
-  document.getElementById('comp-ai-output').innerHTML = '<div class="loading-msg" style="padding:0"><div class="spinner"></div><span>Analyzing...</span></div>';
+  var their = document.getElementById('comp-their').value || 'semrush.com';
+  var niche = document.getElementById('comp-niche').value || 'SEO tools';
+  var market = document.getElementById('comp-market').value || 'Finland';
   try {
     var result = await callClaude(
-      'You are an SEO competitive intelligence expert. Provide strategic insights in clear markdown format. Be specific, actionable, and realistic.',
-      'Analyze the competitive landscape between ' + your + ' (smaller/newer SEO tool) and ' + their + ' (established competitor). Cover: 1. Key content gaps to exploit 2. Keywords they rank for that we should target 3. Their weaknesses and our opportunities 4. Top 3 quick wins. Keep it under 400 words.'
+      'You are an SEO keyword gap analyst. Return ONLY a JSON array, no markdown.',
+      'Find 8 keyword gap opportunities where ' + their + ' likely ranks but ' + your + ' does not, in the ' + niche + ' niche for ' + market + ' market. Return JSON array: [{"keyword":"string","volume":number,"difficulty":number,"reason":"why competitor wins in 6 words"}]. Realistic volumes for the market.'
     );
-    document.getElementById('comp-ai-output').innerHTML = '<p>' + formatMarkdown(result) + '</p>';
+    var clean = result.replace(/```json|```/g,'').trim();
+    var gaps = JSON.parse(clean);
+    document.getElementById('comp-gap-tbody').innerHTML = gaps.map(function(g){
+      var diff = g.difficulty < 40 ? 'diff-low' : g.difficulty < 65 ? 'diff-med' : 'diff-high';
+      return '<tr><td style="font-weight:500">' + g.keyword + '</td><td>' + (g.volume||0).toLocaleString() + '</td><td><span class="kw-difficulty ' + diff + '">' + g.difficulty + '/100</span></td><td style="font-size:12px;color:var(--muted)">' + (g.reason||'') + '</td><td><button class="audit-fix" onclick="prefillBlogKw(\'' + g.keyword.replace(/'/g,"\\'") + '\')">Create Content</button></td></tr>';
+    }).join('');
   } catch(e) {
-    document.getElementById('comp-ai-output').textContent = 'AI analysis unavailable. Please check your connection.';
+    document.getElementById('comp-gap-tbody').innerHTML = '<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:16px">Could not load keyword gaps. Try again.</td></tr>';
   }
-  document.getElementById('comp-loading').style.display = 'none';
 }
 
 // BACKLINK AI
