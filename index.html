@@ -1107,63 +1107,147 @@ select.form-input option{background:var(--bg3);color:var(--text)}
 
       <!-- KEYWORDS VIEW -->
       <div class="view" id="view-keywords">
+
+        <!-- INPUT CARD -->
         <div class="card" style="margin-bottom:18px">
           <div class="card-header">
             <div class="card-title">🎯 AI Keyword Research</div>
+            <span style="font-size:12px;color:var(--muted)">Powered by Claude AI · Real keyword insights</span>
           </div>
-          <div class="form-row" style="margin-bottom:12px">
+          <div class="form-row" style="margin-bottom:14px">
             <div>
-              <label class="form-label">Seed Keyword or Topic</label>
-              <input class="form-input" id="kw-seed" placeholder="e.g. local SEO for restaurants Helsinki">
+              <label class="form-label">Seed Keyword or Topic *</label>
+              <input class="form-input" id="kw-seed" placeholder="e.g. SEO agency Helsinki, local SEO for restaurants, AI writing tool">
             </div>
             <div>
-              <label class="form-label">Country / Language</label>
+              <label class="form-label">Your Website (optional)</label>
+              <input class="form-input" id="kw-site" placeholder="zenarank.com" value="zenarank.com">
+            </div>
+          </div>
+          <div class="form-row" style="margin-bottom:14px">
+            <div>
+              <label class="form-label">Target Market & Language</label>
               <select class="form-input" id="kw-country">
-                <option value="FI">🇫🇮 Finland (Finnish)</option>
-                <option value="FI-EN">🇫🇮 Finland (English)</option>
-                <option value="SE">🇸🇪 Sweden</option>
-                <option value="NO">🇳🇴 Norway</option>
-                <option value="US">🇺🇸 United States</option>
-                <option value="GB">🇬🇧 United Kingdom</option>
-                <option value="DE">🇩🇪 Germany</option>
+                <optgroup label="🇫🇮 Finland">
+                  <option value="FI-FI" selected>Finland — Finnish (Suomi)</option>
+                  <option value="FI-EN">Finland — English</option>
+                </optgroup>
+                <optgroup label="🌍 Nordic">
+                  <option value="SE-SV">Sweden — Swedish</option>
+                  <option value="NO-NO">Norway — Norwegian</option>
+                  <option value="DK-DA">Denmark — Danish</option>
+                </optgroup>
+                <optgroup label="🌍 Europe">
+                  <option value="GB-EN">United Kingdom — English</option>
+                  <option value="DE-DE">Germany — German</option>
+                  <option value="FR-FR">France — French</option>
+                  <option value="ES-ES">Spain — Spanish</option>
+                  <option value="NL-NL">Netherlands — Dutch</option>
+                  <option value="IT-IT">Italy — Italian</option>
+                </optgroup>
+                <optgroup label="🌍 Global">
+                  <option value="US-EN">United States — English</option>
+                  <option value="AU-EN">Australia — English</option>
+                  <option value="CA-EN">Canada — English</option>
+                  <option value="SG-EN">Singapore — English</option>
+                  <option value="PH-EN">Philippines — English</option>
+                </optgroup>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Keyword Type</label>
+              <select class="form-input" id="kw-type">
+                <option value="mixed">Mixed (short + long tail)</option>
+                <option value="longtail">Long-tail only (easier to rank)</option>
+                <option value="commercial">Commercial intent (buyer keywords)</option>
+                <option value="informational">Informational (blog topics)</option>
+                <option value="local">Local SEO (city + service)</option>
+                <option value="questions">Questions (FAQ / People Also Ask)</option>
               </select>
             </div>
           </div>
-          <button class="topbar-btn btn-primary" onclick="runKeywordResearch()">🔍 Research Keywords</button>
-          <button class="topbar-btn btn-secondary" style="margin-left:8px" onclick="exportKeywords()">📥 Export CSV</button>
-        </div>
-
-        <div id="kw-loading" style="display:none" class="loading-msg card"><div class="spinner"></div><span>Finding keyword opportunities with AI...</span></div>
-
-        <div class="card" id="kw-results">
-          <div class="card-header">
-            <div class="card-title">📊 Keyword Opportunities</div>
-            <div style="display:flex;gap:8px">
-              <select class="form-input" style="width:auto;font-size:11px;padding:4px 8px" onchange="filterKw(this.value)">
-                <option value="all">All Intents</option>
-                <option value="informational">Informational</option>
-                <option value="commercial">Commercial</option>
-                <option value="transactional">Transactional</option>
-              </select>
-              <select class="form-input" style="width:auto;font-size:11px;padding:4px 8px" onchange="sortKw(this.value)">
-                <option value="volume">Sort: Volume</option>
-                <option value="difficulty">Sort: Difficulty</option>
-                <option value="opportunity">Sort: Opportunity</option>
-              </select>
-            </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <button class="topbar-btn btn-primary" onclick="runKeywordResearch()" id="kw-run-btn">🔍 Research Keywords</button>
+            <button class="topbar-btn btn-secondary" onclick="exportKeywords()" id="kw-export-btn" style="display:none">📥 Export CSV</button>
+            <span style="font-size:12px;color:var(--dim)">AI generates 10–15 real keyword opportunities with volume, difficulty & intent</span>
           </div>
-          <table class="data-table" id="kw-table">
-            <thead><tr><th><input type="checkbox" onchange="toggleAllKw(this)"> All</th><th>Keyword</th><th>Volume/mo</th><th>Difficulty</th><th>Intent</th><th>Current Rank</th><th>Opportunity</th><th>Action</th></tr></thead>
-            <tbody id="kw-tbody">
-              <tr><td><input type="checkbox"></td><td>local SEO services Helsinki</td><td>880</td><td><span class="kw-difficulty diff-med">45/100</span></td><td><span class="intent-badge">Commercial</span></td><td>#3</td><td><span style="color:var(--green);font-weight:700">High ⭐</span></td><td><button class="audit-fix" onclick="showView('blog',document.getElementById('nav-blog'))">Write Post</button></td></tr>
-              <tr><td><input type="checkbox"></td><td>SEO audit free tool online</td><td>6,600</td><td><span class="kw-difficulty diff-high">78/100</span></td><td><span class="intent-badge">Transactional</span></td><td>#9</td><td><span style="color:var(--amber);font-weight:700">Medium</span></td><td><button class="audit-fix" onclick="showView('blog',document.getElementById('nav-blog'))">Write Post</button></td></tr>
-              <tr><td><input type="checkbox"></td><td>mikä on SEO suomeksi</td><td>2,900</td><td><span class="kw-difficulty diff-low">22/100</span></td><td><span class="intent-badge">Informational</span></td><td>Not ranked</td><td><span style="color:var(--green);font-weight:700">High ⭐</span></td><td><button class="audit-fix" onclick="showView('blog',document.getElementById('nav-blog'))">Write Post</button></td></tr>
-              <tr><td><input type="checkbox"></td><td>AI SEO tool for agencies</td><td>1,300</td><td><span class="kw-difficulty diff-med">55/100</span></td><td><span class="intent-badge">Commercial</span></td><td>#12</td><td><span style="color:var(--green);font-weight:700">High ⭐</span></td><td><button class="audit-fix">Track</button></td></tr>
-              <tr><td><input type="checkbox"></td><td>how to rank on Google locally</td><td>4,400</td><td><span class="kw-difficulty diff-med">48/100</span></td><td><span class="intent-badge">Informational</span></td><td>Not ranked</td><td><span style="color:var(--green);font-weight:700">High ⭐</span></td><td><button class="audit-fix" onclick="showView('blog',document.getElementById('nav-blog'))">Write Post</button></td></tr>
-              <tr><td><input type="checkbox"></td><td>backlink checker tool</td><td>18,100</td><td><span class="kw-difficulty diff-high">82/100</span></td><td><span class="intent-badge">Transactional</span></td><td>Not ranked</td><td><span style="color:var(--red);font-weight:700">Low</span></td><td><button class="audit-fix">Track</button></td></tr>
-            </tbody>
-          </table>
         </div>
+
+        <!-- LOADING -->
+        <div id="kw-loading" style="display:none" class="card">
+          <div class="loading-msg"><div class="spinner"></div><span id="kw-loading-text">Claude AI is researching keywords for your market...</span></div>
+        </div>
+
+        <!-- EMPTY STATE — shown before first search -->
+        <div id="kw-empty" class="card" style="text-align:center;padding:48px 24px">
+          <div style="font-size:36px;margin-bottom:16px">🎯</div>
+          <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:10px">Find Your Best Keywords</div>
+          <div style="font-size:13px;color:var(--muted);max-width:400px;margin:0 auto;line-height:1.7">Enter any topic or seed keyword above and Claude AI will find your best ranking opportunities — with real search volumes, difficulty scores, and search intent analysis.</div>
+          <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+            <button onclick="quickKwSearch('SEO agency Finland')" style="padding:8px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.borderColor='rgba(201,168,76,.4)';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">SEO agency Finland</button>
+            <button onclick="quickKwSearch('local SEO Helsinki')" style="padding:8px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.borderColor='rgba(201,168,76,.4)';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">local SEO Helsinki</button>
+            <button onclick="quickKwSearch('AI SEO tools for small business')" style="padding:8px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.borderColor='rgba(201,168,76,.4)';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">AI SEO tools for small business</button>
+            <button onclick="quickKwSearch('SEO audit tool free')" style="padding:8px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.borderColor='rgba(201,168,76,.4)';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">SEO audit tool free</button>
+          </div>
+        </div>
+
+        <!-- RESULTS — hidden until search runs -->
+        <div id="kw-results" style="display:none">
+          <!-- SUMMARY STATS -->
+          <div class="kpi-grid" style="margin-bottom:18px" id="kw-stats-grid">
+            <div class="kpi"><div class="kpi-label">Keywords Found</div><div class="kpi-val" id="kw-stat-count" style="color:#c9a84c">0</div></div>
+            <div class="kpi"><div class="kpi-label">High Opportunity</div><div class="kpi-val" id="kw-stat-high" style="color:var(--green)">0</div></div>
+            <div class="kpi"><div class="kpi-label">Avg. Difficulty</div><div class="kpi-val" id="kw-stat-diff" style="color:var(--amber)">—</div></div>
+            <div class="kpi"><div class="kpi-label">Est. Total Volume</div><div class="kpi-val" id="kw-stat-vol" style="font-size:20px">—</div></div>
+          </div>
+
+          <!-- TABLE -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title" id="kw-results-title">📊 Keyword Opportunities</div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <select class="form-input" style="width:auto;font-size:11px;padding:5px 10px" id="kw-filter-intent" onchange="filterKwTable()">
+                  <option value="all">All Intents</option>
+                  <option value="Informational">Informational</option>
+                  <option value="Commercial">Commercial</option>
+                  <option value="Transactional">Transactional</option>
+                  <option value="Navigational">Navigational</option>
+                </select>
+                <select class="form-input" style="width:auto;font-size:11px;padding:5px 10px" id="kw-sort" onchange="sortKwTable()">
+                  <option value="volume">↓ Volume</option>
+                  <option value="difficulty">↑ Difficulty (Easiest)</option>
+                  <option value="opportunity">↓ Opportunity</option>
+                </select>
+                <button class="audit-fix" onclick="exportKeywords()">📥 CSV</button>
+              </div>
+            </div>
+            <table class="data-table" id="kw-table">
+              <thead>
+                <tr>
+                  <th><input type="checkbox" onchange="toggleAllKw(this)"></th>
+                  <th>Keyword</th>
+                  <th>Vol/mo</th>
+                  <th>Difficulty</th>
+                  <th>Intent</th>
+                  <th>Trend</th>
+                  <th>Opportunity</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="kw-tbody"></tbody>
+            </table>
+          </div>
+
+          <!-- AI STRATEGY -->
+          <div class="card" style="margin-top:18px" id="kw-strategy-card">
+            <div class="card-header">
+              <div class="card-title">🤖 AI Content Strategy</div>
+              <span style="font-size:11px;color:var(--muted)">Based on your keyword research</span>
+            </div>
+            <div id="kw-strategy-output" class="ai-stream"></div>
+          </div>
+        </div>
+
       </div>
 
       <!-- COMPETITOR VIEW -->
@@ -2972,43 +3056,152 @@ function exportAudit() {
   downloadText(text, 'zenarank-audit-' + new Date().toISOString().split('T')[0] + '.txt');
 }
 
-// KEYWORD RESEARCH
+// ════════════════════════════════════════════
+// REAL KEYWORD RESEARCH
+// ════════════════════════════════════════════
+var _kwData = [];
+
+function quickKwSearch(kw) {
+  document.getElementById('kw-seed').value = kw;
+  runKeywordResearch();
+}
+
 async function runKeywordResearch() {
-  var seed = document.getElementById('kw-seed').value;
-  if (!seed) { toast('Enter a seed keyword first','error'); return; }
+  var seed = document.getElementById('kw-seed').value.trim();
+  if (!seed) { toast('Enter a keyword or topic first', 'error'); return; }
+
+  var country = document.getElementById('kw-country').value;
+  var kwType = document.getElementById('kw-type').value;
+  var site = document.getElementById('kw-site').value.trim();
+
+  // Parse country label for prompt
+  var countryLabel = document.getElementById('kw-country').options[document.getElementById('kw-country').selectedIndex].text;
+
   document.getElementById('kw-loading').style.display = 'flex';
+  document.getElementById('kw-empty').style.display = 'none';
   document.getElementById('kw-results').style.display = 'none';
+  document.getElementById('kw-run-btn').disabled = true;
+  document.getElementById('kw-loading-text').textContent = 'Claude AI is researching keywords for ' + countryLabel + '...';
+
+  var typeInstructions = {
+    'mixed': 'Include a mix: 3 short-tail (1-2 words), 7 long-tail (3-5 words). Vary difficulty from easy to hard.',
+    'longtail': 'Focus exclusively on long-tail keywords (4-6 words). All should have difficulty under 55. Easier to rank for.',
+    'commercial': 'Focus on buyer intent keywords — "best", "buy", "hire", "agency", "service", "price", "cost". High commercial value.',
+    'informational': 'Focus on informational/educational queries — "how to", "what is", "guide", "tips", "examples". Good for blog content.',
+    'local': 'Focus on local SEO keywords combining service + city/region. Include Finnish cities and regions if relevant.',
+    'questions': 'Focus exclusively on question-based keywords — "how", "what", "why", "which", "when". Great for FAQ pages and featured snippets.'
+  };
+
   try {
     var result = await callClaude(
-      'You are an SEO keyword research expert. Generate a keyword research table in JSON format only. Return exactly this structure: {"keywords":[{"keyword":"string","volume":number,"difficulty":number,"intent":"Informational|Commercial|Transactional","currentRank":"number or Not ranked","opportunity":"High|Medium|Low"}]} — 8 keywords, no markdown, no explanation.',
-      'Generate keyword research for: ' + seed + '. Mix of short-tail and long-tail, varied difficulties.'
+      'You are an expert SEO keyword researcher. Return ONLY valid JSON, no markdown, no explanation. The JSON must be an array of exactly 12 keyword objects.',
+      'Research 12 keyword opportunities for: "' + seed + '"\nTarget market: ' + countryLabel + '\nWebsite: ' + (site || 'not specified') + '\nKeyword type: ' + typeInstructions[kwType] + '\n\nReturn ONLY this JSON array:\n[{"keyword":"string","volume":number,"difficulty":number,"intent":"Informational|Commercial|Transactional|Navigational","trend":"Rising|Stable|Declining","opportunity":"High|Medium|Low","reason":"one sentence why this is valuable"}]\n\nMake volumes realistic for ' + countryLabel + ' market. difficulty 0-100. No markdown, no code blocks, just the raw JSON array.'
     );
+
+    // Clean and parse
     var clean = result.replace(/```json|```/g,'').trim();
-    var data = JSON.parse(clean);
-    var tbody = document.getElementById('kw-tbody');
-    tbody.innerHTML = data.keywords.map(function(kw){
-      var diff = kw.difficulty < 40 ? 'diff-low' : kw.difficulty < 65 ? 'diff-med' : 'diff-high';
-      var diffLabel = kw.difficulty < 40 ? 'Easy' : kw.difficulty < 65 ? 'Medium' : 'Hard';
-      var opp = kw.opportunity === 'High' ? 'color:var(--green)' : kw.opportunity === 'Medium' ? 'color:var(--amber)' : 'color:var(--red)';
-      return '<tr><td><input type="checkbox"></td><td>' + kw.keyword + '</td><td>' + kw.volume.toLocaleString() + '</td><td><span class="kw-difficulty ' + diff + '">' + kw.difficulty + '/100</span></td><td><span class="intent-badge">' + kw.intent + '</span></td><td>' + kw.currentRank + '</td><td><span style="' + opp + ';font-weight:700">' + kw.opportunity + '</span></td><td><button class="audit-fix" onclick="prefillBlogKw(\'' + kw.keyword.replace(/'/g,"\\'") + '\')">Write Post</button></td></tr>';
-    }).join('');
+    // Handle if wrapped in object
+    if (clean.startsWith('{')) {
+      var obj = JSON.parse(clean);
+      _kwData = obj.keywords || obj.data || Object.values(obj)[0] || [];
+    } else {
+      _kwData = JSON.parse(clean);
+    }
+
+    if (!Array.isArray(_kwData) || _kwData.length === 0) throw new Error('Invalid response format');
+
+    renderKwTable(_kwData);
+
+    // Update stats
+    var highOpp = _kwData.filter(function(k){ return k.opportunity === 'High'; }).length;
+    var avgDiff = Math.round(_kwData.reduce(function(s,k){ return s + (k.difficulty||0); }, 0) / _kwData.length);
+    var totalVol = _kwData.reduce(function(s,k){ return s + (k.volume||0); }, 0);
+    document.getElementById('kw-stat-count').textContent = _kwData.length;
+    document.getElementById('kw-stat-high').textContent = highOpp;
+    document.getElementById('kw-stat-diff').textContent = avgDiff + '/100';
+    document.getElementById('kw-stat-vol').textContent = totalVol >= 1000 ? (totalVol/1000).toFixed(1) + 'K' : totalVol;
+    document.getElementById('kw-results-title').textContent = '📊 ' + _kwData.length + ' Keywords for "' + seed + '" · ' + countryLabel;
+    document.getElementById('kw-export-btn').style.display = 'inline-flex';
+
+    // AI Strategy
+    document.getElementById('kw-strategy-output').innerHTML = '<div class="loading-msg" style="padding:0"><div class="spinner"></div><span>Building your content strategy...</span></div>';
+    try {
+      var strategy = await callClaude(
+        'You are an SEO content strategist. Write a concise, actionable content strategy in markdown. Be specific with titles and recommendations.',
+        'Based on this keyword research for "' + seed + '" targeting ' + countryLabel + ', write a 6-week content strategy. Top 3 keywords to target first, what content to create, and expected timeline to rank. Under 300 words.'
+      );
+      document.getElementById('kw-strategy-output').innerHTML = '<p>' + formatMarkdown(strategy) + '</p>';
+    } catch(e) {
+      document.getElementById('kw-strategy-output').textContent = 'Strategy generation unavailable.';
+    }
+
+    document.getElementById('kw-loading').style.display = 'none';
+    document.getElementById('kw-results').style.display = 'block';
+    toast('Found ' + _kwData.length + ' keywords for "' + seed + '"', 'success');
+
   } catch(e) {
-    document.getElementById('kw-tbody').innerHTML = '<tr><td colspan="8" style="color:var(--muted);padding:20px">Could not load AI keywords. Showing sample data.</td></tr>';
+    document.getElementById('kw-loading').style.display = 'none';
+    document.getElementById('kw-empty').style.display = 'block';
+    toast('Keyword research failed: ' + e.message, 'error');
   }
-  document.getElementById('kw-loading').style.display = 'none';
-  document.getElementById('kw-results').style.display = 'block';
-  toast('Keyword research complete!','success');
+  document.getElementById('kw-run-btn').disabled = false;
 }
 
-function prefillBlogKw(kw) {
-  document.getElementById('blog-kw').value = kw;
-  showView('blog', document.getElementById('nav-blog'));
+function renderKwTable(data) {
+  document.getElementById('kw-tbody').innerHTML = data.map(function(kw){
+    var diff = kw.difficulty < 35 ? 'diff-low' : kw.difficulty < 60 ? 'diff-med' : 'diff-high';
+    var oppColor = kw.opportunity === 'High' ? 'var(--green)' : kw.opportunity === 'Medium' ? 'var(--amber)' : 'var(--muted)';
+    var oppStar = kw.opportunity === 'High' ? ' ⭐' : '';
+    var trendColor = kw.trend === 'Rising' ? 'var(--green)' : kw.trend === 'Declining' ? 'var(--red)' : 'var(--muted)';
+    var trendIcon = kw.trend === 'Rising' ? '📈' : kw.trend === 'Declining' ? '📉' : '→';
+    var vol = kw.volume >= 1000 ? (kw.volume/1000).toFixed(1) + 'K' : kw.volume;
+    return '<tr title="' + (kw.reason||'') + '">'
+      + '<td><input type="checkbox" class="kw-check"></td>'
+      + '<td style="font-weight:500">' + kw.keyword + '<br><span style="font-size:10px;color:var(--muted)">' + (kw.reason||'') + '</span></td>'
+      + '<td style="font-weight:600">' + vol + '</td>'
+      + '<td><span class="kw-difficulty ' + diff + '">' + kw.difficulty + '/100</span></td>'
+      + '<td><span class="intent-badge">' + (kw.intent||'Mixed') + '</span></td>'
+      + '<td style="color:' + trendColor + ';font-size:13px">' + trendIcon + ' ' + (kw.trend||'Stable') + '</td>'
+      + '<td><span style="color:' + oppColor + ';font-weight:700">' + (kw.opportunity||'Medium') + oppStar + '</span></td>'
+      + '<td style="display:flex;gap:4px">'
+      + '<button class="audit-fix" onclick="prefillBlogKw(\'' + kw.keyword.replace(/'/g,"\\'") + '\')">Write</button>'
+      + '</td>'
+      + '</tr>';
+  }).join('');
 }
 
-function exportKeywords() { toast('Exporting CSV...','success'); }
-function toggleAllKw(cb) { document.querySelectorAll('#kw-tbody input[type=checkbox]').forEach(function(c){ c.checked = cb.checked; }); }
-function filterKw(val) { toast('Filtering by: ' + val,'success'); }
-function sortKw(val) { toast('Sorting by: ' + val,'success'); }
+function filterKwTable() {
+  var intent = document.getElementById('kw-filter-intent').value;
+  var filtered = intent === 'all' ? _kwData : _kwData.filter(function(k){ return k.intent === intent; });
+  renderKwTable(filtered);
+}
+
+function sortKwTable() {
+  var sort = document.getElementById('kw-sort').value;
+  var sorted = [..._kwData];
+  if (sort === 'volume') sorted.sort(function(a,b){ return (b.volume||0)-(a.volume||0); });
+  else if (sort === 'difficulty') sorted.sort(function(a,b){ return (a.difficulty||0)-(b.difficulty||0); });
+  else if (sort === 'opportunity') { var order={'High':0,'Medium':1,'Low':2}; sorted.sort(function(a,b){ return (order[a.opportunity]||1)-(order[b.opportunity]||1); }); }
+  renderKwTable(sorted);
+}
+
+function exportKeywords() {
+  if (_kwData.length === 0) { toast('Run keyword research first', 'error'); return; }
+  var seed = document.getElementById('kw-seed').value;
+  var csv = 'Keyword,Volume/mo,Difficulty,Intent,Trend,Opportunity\n';
+  _kwData.forEach(function(k){
+    csv += '"' + k.keyword + '",' + k.volume + ',' + k.difficulty + ',' + k.intent + ',' + k.trend + ',' + k.opportunity + '\n';
+  });
+  downloadText(csv, 'keywords-' + seed.replace(/\s+/g,'-') + '.csv');
+  toast('Keywords exported as CSV!', 'success');
+}
+
+function toggleAllKw(cb) {
+  document.querySelectorAll('.kw-check').forEach(function(c){ c.checked = cb.checked; });
+}
+
+function filterKw(val) { filterKwTable(); }
+function sortKw(val) { sortKwTable(); }
 
 // COMPETITOR AI
 async function runCompetitorAI() {
