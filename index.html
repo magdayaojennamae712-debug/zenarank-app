@@ -1373,50 +1373,74 @@ select.form-input option{background:var(--bg3);color:var(--text)}
 
       <!-- BACKLINKS VIEW -->
       <div class="view" id="view-backlinks">
+        <!-- INPUT -->
         <div class="card" style="margin-bottom:18px">
           <div class="card-header">
-            <div class="card-title">🔗 Backlink Profile</div>
+            <div class="card-title">🔗 Backlink Analyzer</div>
+            <span style="font-size:12px;color:var(--muted)">AI-powered backlink strategy & toxic link detection</span>
           </div>
-          <div class="form-row" style="margin-bottom:12px">
+          <div class="form-row" style="margin-bottom:14px">
             <div>
-              <label class="form-label">Check Domain</label>
-              <input class="form-input" id="bl-domain" placeholder="yoursite.com" value="zenarank.com">
+              <label class="form-label">Your Domain</label>
+              <input class="form-input" id="bl-domain" placeholder="zenarank.com" value="zenarank.com">
             </div>
             <div>
-              <label class="form-label">Filter</label>
-              <select class="form-input">
-                <option>All Backlinks</option><option>Dofollow Only</option><option>High DR Only (50+)</option>
-              </select>
+              <label class="form-label">Industry / Niche</label>
+              <input class="form-input" id="bl-niche" placeholder="e.g. SEO tools, local business, e-commerce">
             </div>
           </div>
-          <button class="topbar-btn btn-primary" onclick="runBacklinkAI()">🔍 Analyze Backlinks</button>
+          <button class="topbar-btn btn-primary" onclick="runBacklinkAnalysis()" id="bl-run-btn">🔍 Analyze Backlinks</button>
         </div>
 
-        <div id="bl-loading" style="display:none" class="loading-msg card"><div class="spinner"></div><span>Analyzing backlink profile with AI...</span></div>
-
-        <div class="kpi-grid" style="margin-bottom:18px">
-          <div class="kpi"><div class="kpi-label">Total Backlinks</div><div class="kpi-val">1,240</div></div>
-          <div class="kpi"><div class="kpi-label">Referring Domains</div><div class="kpi-val">87</div></div>
-          <div class="kpi"><div class="kpi-label">Dofollow</div><div class="kpi-val" style="color:var(--green)">78%</div></div>
-          <div class="kpi"><div class="kpi-label">Avg DR</div><div class="kpi-val" style="color:var(--amber)">34</div></div>
+        <!-- LOADING -->
+        <div id="bl-loading" style="display:none" class="card">
+          <div class="loading-msg"><div class="spinner"></div><span>Claude AI is building your backlink strategy...</span></div>
         </div>
 
-        <div class="card">
-          <div class="card-header"><div class="card-title">🤖 AI Backlink Strategy</div></div>
-          <div id="bl-ai-output" class="ai-stream" style="padding:10px 0;color:var(--muted);font-size:13px">Click "Analyze Backlinks" to get AI recommendations for link building, toxic link warnings, and outreach opportunities.</div>
+        <!-- EMPTY STATE -->
+        <div id="bl-empty" class="card" style="text-align:center;padding:48px 24px">
+          <div style="font-size:36px;margin-bottom:16px">🔗</div>
+          <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:10px">Backlink Strategy & Analysis</div>
+          <div style="font-size:13px;color:var(--muted);max-width:420px;margin:0 auto;line-height:1.7">Enter your domain above and Claude AI will build a complete backlink strategy — link building tactics, outreach targets, toxic link warnings, and realistic timeline to improve your domain rating.</div>
         </div>
 
-        <div class="card" style="margin-top:18px">
-          <div class="card-header"><div class="card-title">Top Referring Domains</div></div>
-          <table class="data-table">
-            <thead><tr><th>Domain</th><th>DR</th><th>Links</th><th>Type</th><th>Status</th></tr></thead>
-            <tbody>
-              <tr><td>techcrunch.com</td><td>95</td><td>3</td><td>Dofollow</td><td><span class="status-dot live"></span>Active</td></tr>
-              <tr><td>ycombinator.com</td><td>91</td><td>1</td><td>Dofollow</td><td><span class="status-dot live"></span>Active</td></tr>
-              <tr><td>medium.com</td><td>78</td><td>12</td><td>Nofollow</td><td><span class="status-dot warn"></span>Low value</td></tr>
-              <tr><td>spamsite99.ru</td><td>4</td><td>45</td><td>Dofollow</td><td><span class="status-dot issue"></span>Disavow</td></tr>
-            </tbody>
-          </table>
+        <!-- RESULTS -->
+        <div id="bl-results" style="display:none">
+          <!-- KPIs -->
+          <div class="kpi-grid" style="margin-bottom:18px">
+            <div class="kpi"><div class="kpi-label">Est. Backlinks</div><div class="kpi-val" id="bl-kpi-links" style="color:#c9a84c">—</div><div style="font-size:11px;color:var(--muted);margin-top:4px">AI estimate</div></div>
+            <div class="kpi"><div class="kpi-label">Referring Domains</div><div class="kpi-val" id="bl-kpi-domains">—</div></div>
+            <div class="kpi"><div class="kpi-label">Domain Rating</div><div class="kpi-val" id="bl-kpi-dr" style="color:var(--amber)">—</div></div>
+            <div class="kpi"><div class="kpi-label">Link Quality</div><div class="kpi-val" id="bl-kpi-quality" style="color:var(--green)">—</div></div>
+          </div>
+
+          <!-- AI STRATEGY -->
+          <div class="card" style="margin-bottom:18px">
+            <div class="card-header">
+              <div class="card-title">🤖 AI Backlink Strategy</div>
+              <span style="font-size:11px;color:var(--muted)">Powered by Claude AI</span>
+            </div>
+            <div id="bl-ai-output" class="ai-stream" style="padding:4px 0"></div>
+          </div>
+
+          <!-- LINK BUILDING TARGETS -->
+          <div class="card" style="margin-bottom:18px">
+            <div class="card-header"><div class="card-title">🎯 Top Link Building Opportunities</div></div>
+            <table class="data-table">
+              <thead><tr><th>Target Site Type</th><th>DR Range</th><th>Difficulty</th><th>Tactic</th><th>Priority</th></tr></thead>
+              <tbody id="bl-targets-tbody">
+                <tr><td colspan="5" style="color:var(--muted);text-align:center;padding:20px">Run analysis to see targets</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- DISAVOW RECOMMENDATIONS -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">⚠️ Toxic Link Patterns to Avoid</div>
+            </div>
+            <div id="bl-toxic-output" class="ai-stream" style="padding:4px 0;color:var(--muted);font-size:13px"></div>
+          </div>
         </div>
       </div>
 
@@ -3475,20 +3499,65 @@ async function runKeywordGap() {
 }
 
 // BACKLINK AI
-async function runBacklinkAI() {
+async function runBacklinkAnalysis() {
+  var domain = document.getElementById('bl-domain').value.trim() || 'zenarank.com';
+  var niche = document.getElementById('bl-niche').value.trim() || 'SEO tools';
   document.getElementById('bl-loading').style.display = 'flex';
-  document.getElementById('bl-ai-output').innerHTML = '';
+  document.getElementById('bl-empty').style.display = 'none';
+  document.getElementById('bl-results').style.display = 'none';
+  document.getElementById('bl-run-btn').disabled = true;
   try {
-    var domain = document.getElementById('bl-domain').value || 'zenarank.com';
+    // Main strategy
     var result = await callClaude(
-      'You are an SEO link building expert. Give specific, actionable backlink strategy advice in markdown.',
-      'For a new SEO SaaS platform at ' + domain + ', provide: 1. Top 5 link building tactics for a new tool 2. Types of sites to target for backlinks 3. How to identify and disavow toxic links 4. Realistic timeline expectations. Under 350 words.'
+      'You are an expert SEO link building strategist. Give specific, actionable advice. Use markdown with ## headings.',
+      'Build a complete backlink strategy for ' + domain + ' in the ' + niche + ' niche. Include: 1) Current estimated profile (give realistic DR, backlink count, domain estimates for a new/small site) as JSON on first line like {"dr":number,"links":number,"domains":number,"quality":"Good|Fair|Poor"} then 2) Top 5 link building tactics specific to this niche 3) Best outreach email template 4) 90-day link building timeline. Under 400 words.'
     );
+
+    // Parse JSON metrics from first line
+    try {
+      var jsonMatch = result.match(/\{[^}]+\}/);
+      if (jsonMatch) {
+        var metrics = JSON.parse(jsonMatch[0]);
+        document.getElementById('bl-kpi-links').textContent = (metrics.links || '—').toLocaleString();
+        document.getElementById('bl-kpi-domains').textContent = metrics.domains || '—';
+        document.getElementById('bl-kpi-dr').textContent = 'DR ' + (metrics.dr || '—');
+        document.getElementById('bl-kpi-quality').textContent = metrics.quality || '—';
+        document.getElementById('bl-kpi-quality').style.color = metrics.quality === 'Good' ? 'var(--green)' : metrics.quality === 'Fair' ? 'var(--amber)' : 'var(--red)';
+        result = result.replace(jsonMatch[0], '').trim();
+      }
+    } catch(e) {}
+
     document.getElementById('bl-ai-output').innerHTML = '<p>' + formatMarkdown(result) + '</p>';
+
+    // Link building targets
+    var targetsResult = await callClaude(
+      'You are an SEO link building expert. Return ONLY a JSON array, no markdown.',
+      'List 6 specific link building target types for ' + domain + ' in ' + niche + ' niche. JSON array: [{"type":"string","drRange":"string","difficulty":"Easy|Medium|Hard","tactic":"string in 5 words","priority":"High|Medium|Low"}]'
+    );
+    var targetsClean = targetsResult.replace(/```json|```/g,'').trim();
+    var targets = JSON.parse(targetsClean);
+    document.getElementById('bl-targets-tbody').innerHTML = targets.map(function(t){
+      var diffColor = t.difficulty === 'Easy' ? 'var(--green)' : t.difficulty === 'Medium' ? 'var(--amber)' : 'var(--red)';
+      var priClass = t.priority === 'High' ? 'p-critical' : t.priority === 'Medium' ? 'p-medium' : 'p-low';
+      return '<tr><td style="font-weight:500">' + t.type + '</td><td>' + t.drRange + '</td><td style="color:' + diffColor + ';font-weight:600">' + t.difficulty + '</td><td style="font-size:12px;color:var(--muted)">' + t.tactic + '</td><td><span class="priority-pill ' + priClass + '">' + t.priority + '</span></td></tr>';
+    }).join('');
+
+    // Toxic patterns
+    var toxicResult = await callClaude(
+      'You are an SEO expert. Be concise and specific.',
+      'List 5 toxic backlink patterns that hurt ' + niche + ' sites in Google. For each: what to watch for and how to identify it. Use ## for each pattern. Under 200 words total.'
+    );
+    document.getElementById('bl-toxic-output').innerHTML = '<p>' + formatMarkdown(toxicResult) + '</p>';
+
+    document.getElementById('bl-results').style.display = 'block';
+    document.getElementById('bl-loading').style.display = 'none';
+    toast('Backlink analysis complete!', 'success');
   } catch(e) {
-    document.getElementById('bl-ai-output').textContent = 'AI analysis unavailable.';
+    document.getElementById('bl-loading').style.display = 'none';
+    document.getElementById('bl-empty').style.display = 'block';
+    toast('Analysis failed: ' + e.message, 'error');
   }
-  document.getElementById('bl-loading').style.display = 'none';
+  document.getElementById('bl-run-btn').disabled = false;
 }
 
 // AI BLOG GENERATOR
