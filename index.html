@@ -2758,6 +2758,8 @@ function showView(viewId, navEl) {
   var titles = {dashboard:'Dashboard',audit:'Site Audit',keywords:'Keyword Research',competitor:'Competitor Analysis',backlinks:'Backlink Checker',blog:'AI Blog Generator',meta:'Meta Tag Optimizer',schema:'Schema Builder',reports:'Monthly Reports',clients:'Client Management',settings:'Settings'};
   document.getElementById('topbar-title').textContent = titles[viewId] || viewId;
   if (viewId === 'settings') setTimeout(loadApiSettings, 100);
+  if (viewId === 'serp') setTimeout(updateSerpPreview, 100);
+  if (viewId === 'clients') setTimeout(loadClients, 100);
 }
 
 function toast(msg, type) {
