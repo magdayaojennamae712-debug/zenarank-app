@@ -2713,37 +2713,55 @@ var CLAUDE_PROXY = localStorage.getItem('zr_claude_proxy') || '';
 var CLAUDE_API_KEY = localStorage.getItem('zr_claude_key') || '';
 
 async function callClaude(systemPrompt, userPrompt) {
-  var endpoint = CLAUDE_PROXY || 'https://api.anthropic.com/v1/messages';
-  var headers = { 'Content-Type': 'application/json' };
-
+  // Use proxy if available (preferred — hides API key from users)
   if (CLAUDE_PROXY) {
-    // Using our secure proxy — no API key needed in browser
-  } else if (CLAUDE_API_KEY) {
-    // Direct with user-provided key
-    headers['x-api-key'] = CLAUDE_API_KEY;
-    headers['anthropic-version'] = '2023-06-01';
-    headers['anthropic-dangerous-direct-browser-access'] = 'true';
-  } else {
-    throw new Error('No API key configured. Go to ⚙️ Settings → Add your Anthropic API key to enable AI features.');
+    var resp = await fetch(CLAUDE_PROXY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userPrompt }]
+      })
+    });
+    if (!resp.ok) {
+      var err = await resp.json().catch(function(){ return {}; });
+      throw new Error(err.error ? err.error.message : 'Proxy error ' + resp.status);
+    }
+    var data = await resp.json();
+    if (data.content && data.content[0]) return data.content[0].text;
+    if (data.error) throw new Error(data.error.message || 'API error');
+    throw new Error('Empty response from proxy');
   }
 
-  var resp = await fetch(endpoint, {
-    method: 'POST',
-    headers: headers,
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }]
-    })
-  });
-  if (!resp.ok) {
-    var err = await resp.json().catch(function(){ return {}; });
-    throw new Error(err.error ? err.error.message : 'API error ' + resp.status);
+  // Direct API call with user key (fallback)
+  if (CLAUDE_API_KEY) {
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': CLAUDE_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userPrompt }]
+      })
+    });
+    if (!resp.ok) {
+      var err = await resp.json().catch(function(){ return {}; });
+      throw new Error(err.error ? err.error.message : 'API error ' + resp.status);
+    }
+    var data = await resp.json();
+    if (data.content && data.content[0]) return data.content[0].text;
+    throw new Error('Empty response from Claude API');
   }
-  var data = await resp.json();
-  if (data.content && data.content[0]) return data.content[0].text;
-  throw new Error('Empty response from Claude API');
+
+  throw new Error('No API configured. Go to ⚙️ Settings → add Cloudflare Worker URL or API key.');
 }
 
 function formatMarkdown(text) {
